@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 
 void main() {
   runApp(const MyApp());
@@ -158,7 +159,11 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
           padding: const EdgeInsets.all(12),
           child: Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFE6EEFF),
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [IntroPage.primaryBlue, IntroPage.secondaryBlue],
+              ),
               borderRadius: BorderRadius.circular(22),
             ),
             child: ClipRRect(
@@ -197,7 +202,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                       angle: 0.6,
                       child: Container(
                         height: 56,
-                        color: const Color(0x334A78D4),
+                        color: const Color(0x33FFFFFF),
                       ),
                     ),
                   ),
@@ -209,7 +214,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                           height: 250,
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFD7E5FF),
+                            color: const Color(0x22FFFFFF),
                             borderRadius: BorderRadius.circular(24),
                           ),
                           clipBehavior: Clip.antiAlias,
@@ -233,7 +238,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                           'CeylonHS',
                           style: TextStyle(
                             fontSize: 42,
-                            color: Color(0xFF0C2C75),
+                            color: Colors.white,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -243,7 +248,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20,
-                            color: Color(0xFF1D4595),
+                            color: Color(0xE6FFFFFF),
                             fontWeight: FontWeight.w500,
                             height: 1.3,
                           ),
@@ -252,7 +257,8 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                         SizedBox(
                           width: double.infinity,
                           height: 58,
-                          child: OutlinedButton(
+                          child: _GlassyActionButton(
+                            label: 'Sign up',
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute<void>(
@@ -260,26 +266,14 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                                 ),
                               );
                             },
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: const Color(0xFF2E6EEB),
-                              side: const BorderSide(color: Color(0xFFDCE7FF)),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              textStyle: const TextStyle(
-                                fontSize: 35,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            child: const Text('Sign up'),
                           ),
                         ),
                         const SizedBox(height: 14),
                         SizedBox(
                           width: double.infinity,
                           height: 58,
-                          child: ElevatedButton(
+                          child: _GlassyActionButton(
+                            label: 'Log in',
                             onPressed: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute<void>(
@@ -287,19 +281,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                                 ),
                               );
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF2E6EEB),
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              textStyle: const TextStyle(
-                                fontSize: 35,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            child: const Text('Log in'),
+                            isFilled: true,
                           ),
                         ),
                       ],
@@ -310,6 +292,63 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _GlassyActionButton extends StatelessWidget {
+  const _GlassyActionButton({
+    required this.label,
+    required this.onPressed,
+    this.isFilled = false,
+  });
+
+  final String label;
+  final VoidCallback onPressed;
+  final bool isFilled;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: const SizedBox.expand(),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: isFilled
+                  ? const Color(0x66FFFFFF)
+                  : const Color(0x40FFFFFF),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: const Color(0x99FFFFFF),
+                width: 1.2,
+              ),
+            ),
+            child: ElevatedButton(
+              onPressed: onPressed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: const TextStyle(
+                  fontSize: 35,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              child: Text(label),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -352,27 +391,7 @@ class SignUpPage extends StatelessWidget {
                     constraints: const BoxConstraints(),
                   ),
                   const SizedBox(height: 8),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Text(
-                        'CeylonHS',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.14),
-                          fontSize: 78,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const Text(
-                        'CeylonHS',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 56,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
+                  const _AuthPageTitle(),
                   const SizedBox(height: 78),
                   const Text(
                     'Username',
@@ -490,27 +509,7 @@ class LoginPage extends StatelessWidget {
                     constraints: const BoxConstraints(),
                   ),
                   const SizedBox(height: 8),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Text(
-                        'CeylonHS',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.14),
-                          fontSize: 78,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const Text(
-                        'CeylonHS',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 56,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
+                  const _AuthPageTitle(),
                   const SizedBox(height: 90),
                   const Text(
                     'Username',
@@ -572,6 +571,42 @@ class LoginPage extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _AuthPageTitle extends StatelessWidget {
+  const _AuthPageTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Text(
+            'CeylonHS',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.14),
+              fontSize: 78,
+              fontWeight: FontWeight.w700,
+              height: 1,
+            ),
+          ),
+          const Text(
+            'CeylonHS',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 56,
+              fontWeight: FontWeight.w700,
+              height: 1,
+            ),
+          ),
+        ],
       ),
     );
   }
