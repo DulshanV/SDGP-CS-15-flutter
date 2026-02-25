@@ -261,7 +261,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                       color: Color(0xFFF6F7FA),
                       borderRadius: BorderRadius.vertical(top: Radius.circular(34)),
                     ),
-                    child: SingleChildScrollView(
+                    child: Padding(
                       padding: const EdgeInsets.fromLTRB(24, 42, 24, 12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,7 +275,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                               fontWeight: FontWeight.w800,
                             ),
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 28),
                           Center(
                             child: SizedBox(
                               width: 208,
@@ -297,7 +297,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
                           Center(
                             child: TextButton(
                               onPressed: () {
@@ -380,6 +380,15 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
       bottomNavigationBar: _EntryBottomNav(
         onTap: (index) {
           if (index == 0) {
+            return;
+          }
+
+          if (index == 1) {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const HsCodeFinderPage(),
+              ),
+            );
             return;
           }
 
@@ -536,6 +545,448 @@ class _EntryBottomNavItem extends StatelessWidget {
             fontSize: 12,
             fontWeight: active ? FontWeight.w600 : FontWeight.w500,
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class HsCodeFinderPage extends StatefulWidget {
+  const HsCodeFinderPage({super.key});
+
+  @override
+  State<HsCodeFinderPage> createState() => _HsCodeFinderPageState();
+}
+
+class _HsCodeFinderPageState extends State<HsCodeFinderPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _itemPriceController = TextEditingController();
+  final TextEditingController _detailsController = TextEditingController();
+
+  String? _selectedOrigin;
+  String? _selectedDestination;
+  String? _selectedCurrency = 'USD - US Dollar';
+
+  static const List<String> _countries = [
+    'Sri Lanka',
+    'India',
+    'China',
+    'Singapore',
+    'United Arab Emirates',
+  ];
+
+  static const List<String> _currencies = [
+    'USD - US Dollar',
+    'LKR - Sri Lankan Rupee',
+    'EUR - Euro',
+    'INR - Indian Rupee',
+  ];
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _itemPriceController.dispose();
+    _detailsController.dispose();
+    super.dispose();
+  }
+
+  void _submitSearch() {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Searching HS code...'),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF2F4F8),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(22, 14, 22, 86),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFF133665), Color(0xFF3A9EEA)],
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: -42,
+                      left: -38,
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0x14000000),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 54,
+                      right: -24,
+                      child: Container(
+                        width: 148,
+                        height: 148,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0x12000000),
+                        ),
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(
+                              Icons.public,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            SizedBox(width: 6),
+                            Text(
+                              'CeylonHS',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 34,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        SizedBox(
+                          height: 96,
+                          child: Image.asset(
+                            'assets/images/fallback_city.png',
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'HS Code Finder',
+                            style: TextStyle(
+                              color: Color(0xFF0F223C),
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Fill in the details below to your harmonized system code',
+                            style: TextStyle(
+                              color: Color(0xE6FFFFFF),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Transform.translate(
+                offset: const Offset(0, -48),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.fromLTRB(12, 14, 12, 16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8F9FB),
+                      borderRadius: BorderRadius.circular(22),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x16000000),
+                          blurRadius: 12,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const _SearchFieldLabel('Email'),
+                          const SizedBox(height: 6),
+                          TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: _searchInputDecoration('Enter your email'),
+                            validator: (value) {
+                              final String input = value?.trim() ?? '';
+                              if (input.isEmpty || !input.contains('@')) {
+                                return 'Enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _LabeledDropdown(
+                                  label: 'Made In',
+                                  hint: 'Select Country',
+                                  value: _selectedOrigin,
+                                  items: _countries,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedOrigin = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _LabeledDropdown(
+                                  label: 'Ship To',
+                                  hint: 'Select Destination',
+                                  value: _selectedDestination,
+                                  items: _countries,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedDestination = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const _SearchFieldLabel('Item Price'),
+                                    const SizedBox(height: 6),
+                                    TextFormField(
+                                      controller: _itemPriceController,
+                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                      decoration: _searchInputDecoration('0.00'),
+                                      validator: (value) {
+                                        final String input = value?.trim() ?? '';
+                                        if (input.isEmpty) {
+                                          return 'Required';
+                                        }
+                                        final double? parsed = double.tryParse(input);
+                                        if (parsed == null || parsed < 0) {
+                                          return 'Invalid';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _LabeledDropdown(
+                                  label: 'Currency',
+                                  hint: 'Currency',
+                                  value: _selectedCurrency,
+                                  items: _currencies,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedCurrency = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          const _SearchFieldLabel('Product Details'),
+                          const SizedBox(height: 6),
+                          TextFormField(
+                            controller: _detailsController,
+                            maxLines: 2,
+                            decoration: _searchInputDecoration('Enter product details........'),
+                            validator: (value) {
+                              if ((value ?? '').trim().isEmpty) {
+                                return 'Add product details';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          Center(
+                            child: SizedBox(
+                              width: 172,
+                              height: 42,
+                              child: ElevatedButton(
+                                onPressed: _submitSearch,
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 2,
+                                  backgroundColor: const Color(0xFF0B3EA8),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(22),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Search HS Code',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  InputDecoration _searchInputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: const TextStyle(
+        color: Color(0xFF8D96A6),
+        fontSize: 14,
+      ),
+      filled: true,
+      fillColor: const Color(0xFFF1F4F9),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Color(0xFFD0D8E5)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Color(0xFFD0D8E5)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Color(0xFF0B3EA8), width: 1.4),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Color(0xFFD9534F)),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Color(0xFFD9534F), width: 1.4),
+      ),
+      isDense: true,
+    );
+  }
+}
+
+class _SearchFieldLabel extends StatelessWidget {
+  const _SearchFieldLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        color: Color(0xFF687388),
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+}
+
+class _LabeledDropdown extends StatelessWidget {
+  const _LabeledDropdown({
+    required this.label,
+    required this.hint,
+    required this.items,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String label;
+  final String hint;
+  final List<String> items;
+  final String? value;
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _SearchFieldLabel(label),
+        const SizedBox(height: 6),
+        DropdownButtonFormField<String>(
+          value: value,
+          isExpanded: true,
+          icon: const Icon(Icons.keyboard_arrow_down_rounded),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: const Color(0xFFF1F4F9),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Color(0xFFD0D8E5)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Color(0xFFD0D8E5)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Color(0xFF0B3EA8), width: 1.4),
+            ),
+            isDense: true,
+          ),
+          hint: Text(
+            hint,
+            style: const TextStyle(
+              color: Color(0xFF8D96A6),
+              fontSize: 14,
+            ),
+          ),
+          style: const TextStyle(
+            color: Color(0xFF49576D),
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+          items: items
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(item, overflow: TextOverflow.ellipsis),
+                ),
+              )
+              .toList(),
+          onChanged: onChanged,
         ),
       ],
     );
@@ -1365,6 +1816,15 @@ class _MainHomePageState extends State<MainHomePage> {
             return Expanded(
               child: InkWell(
                 onTap: () {
+                  if (index == 1) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const HsCodeFinderPage(),
+                      ),
+                    );
+                    return;
+                  }
+
                   setState(() {
                     _selectedIndex = index;
                   });
