@@ -96,29 +96,54 @@ class IntroPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 64),
-                  InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => const AuthEntryPage(
-                            isRegistered: false,
+                  const SizedBox(height: 56),
+                  SizedBox(
+                    width: 220,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const SignUpPage(),
                           ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: accentBlue,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size.fromHeight(48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(30),
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: const BoxDecoration(
-                        color: accentBlue,
-                        shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
-                        size: 28,
+                      child: const Text(
+                        'Sign in',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: 220,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const LoginPage(),
+                          ),
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size.fromHeight(48),
+                        side: const BorderSide(color: softBlue, width: 1.5),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Log in',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
@@ -142,12 +167,9 @@ class AuthEntryPage extends StatefulWidget {
 }
 
 class _AuthEntryPageState extends State<AuthEntryPage> {
-  late bool _hasRegistered;
-
   @override
   void initState() {
     super.initState();
-    _hasRegistered = widget.isRegistered;
   }
 
   @override
@@ -552,7 +574,9 @@ class _EntryBottomNavItem extends StatelessWidget {
 }
 
 class HsCodeFinderPage extends StatefulWidget {
-  const HsCodeFinderPage({super.key});
+  const HsCodeFinderPage({super.key, this.isEmbedded = false});
+
+  final bool isEmbedded;
 
   @override
   State<HsCodeFinderPage> createState() => _HsCodeFinderPageState();
@@ -989,6 +1013,296 @@ class _LabeledDropdown extends StatelessWidget {
           onChanged: onChanged,
         ),
       ],
+    );
+  }
+}
+
+class PricingPage extends StatelessWidget {
+  const PricingPage({super.key, this.isEmbedded = false});
+
+  final bool isEmbedded;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF6F7FA),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            if (!isEmbedded)
+              Positioned(
+                top: 12,
+                left: 18,
+                child: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(
+                    Icons.arrow_back_rounded,
+                    color: Color(0xFF0B3EA8),
+                    size: 26,
+                  ),
+                ),
+              ),
+            if (!isEmbedded)
+              Positioned(
+                top: 12,
+                right: 18,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.person_outline_rounded,
+                    color: Color(0xFF0B3EA8),
+                    size: 26,
+                  ),
+                ),
+              ),
+            ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(20, isEmbedded ? 20 : 68, 20, 24),
+              children: [
+                const Text(
+                  'Simple, transparent pricing.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFF1D2F4D),
+                    fontSize: 32,
+                    fontWeight: FontWeight.w800,
+                    height: 1.15,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Choose the plan that best fits your search volume and business needs.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFF5D6778),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 280,
+                        child: _PricingCard(
+                          title: 'Starter',
+                          price: 3,
+                          features: const [
+                            '10 Search results per month',
+                            'Basic HS code matching',
+                            'Email support',
+                            'Email support',
+                          ],
+                          buttonLabel: 'Choose Starter',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Starter plan selected')),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      SizedBox(
+                        width: 280,
+                        child: _PricingCard(
+                          title: 'Business',
+                          price: 5,
+                          isMostPopular: true,
+                          features: const [
+                            '25 Search results per month',
+                            'AI-Enhanced accuracy',
+                            'Priority search speed',
+                            'Export search history',
+                          ],
+                          buttonLabel: 'Choose Business',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Business plan selected')),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      SizedBox(
+                        width: 280,
+                        child: _PricingCard(
+                          title: 'Enterprise',
+                          price: 9,
+                          features: const [
+                            '50 Search results per month',
+                            'Dedicated support',
+                            'Custom API Access',
+                            'Bulk classification',
+                          ],
+                          buttonLabel: 'Choose Enterprise',
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Enterprise plan selected')),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PricingCard extends StatelessWidget {
+  const _PricingCard({
+    required this.title,
+    required this.price,
+    required this.features,
+    required this.buttonLabel,
+    required this.onPressed,
+    this.isMostPopular = false,
+  });
+
+  final String title;
+  final int price;
+  final List<String> features;
+  final String buttonLabel;
+  final VoidCallback onPressed;
+  final bool isMostPopular;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isMostPopular ? const Color(0xFF0B3EA8) : const Color(0xFFD0D8E5),
+          width: isMostPopular ? 2 : 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0x0F000000),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          if (isMostPopular) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFF3D8BFF),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                'MOST POPULAR',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+          ],
+          Text(
+            title,
+            style: const TextStyle(
+              color: Color(0xFF1D2F4D),
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 4),
+                child: Text(
+                  r'$',
+                  style: TextStyle(
+                    color: Color(0xFF0B3EA8),
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              Text(
+                '$price',
+                style: const TextStyle(
+                  color: Color(0xFF0B3EA8),
+                  fontSize: 56,
+                  fontWeight: FontWeight.w800,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          ...features.map((feature) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.check_circle,
+                      color: Color(0xFF4A90E2),
+                      size: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        feature,
+                        style: const TextStyle(
+                          color: Color(0xFF5D6778),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 44,
+            child: ElevatedButton(
+              onPressed: onPressed,
+              style: ElevatedButton.styleFrom(
+                elevation: 2,
+                backgroundColor: const Color(0xFF0B3EA8),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                ),
+              ),
+              child: Text(
+                buttonLabel,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1447,108 +1761,6 @@ class _LoginMockField extends StatelessWidget {
   }
 }
 
-class _AuthTopImage extends StatelessWidget {
-  const _AuthTopImage();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 150,
-      decoration: BoxDecoration(
-        color: const Color(0xFF0B3EA8),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Center(
-        child: SizedBox(
-          width: 260,
-          height: 110,
-          child: Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              Transform.translate(
-                offset: const Offset(-8, -10),
-                child: const Text(
-                  'CeylonHS',
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.visible,
-                  style: TextStyle(
-                    color: Color(0x3358A0FF),
-                    fontSize: 62,
-                    fontWeight: FontWeight.w700,
-                    height: 1,
-                  ),
-                ),
-              ),
-              const Text(
-                'CeylonHS',
-                maxLines: 1,
-                softWrap: false,
-                overflow: TextOverflow.visible,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 52,
-                  fontWeight: FontWeight.w700,
-                  height: 1,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _LoginHeroTitle extends StatelessWidget {
-  const _LoginHeroTitle();
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 118,
-      child: Stack(
-        alignment: Alignment.center,
-        clipBehavior: Clip.none,
-        children: [
-          Positioned(
-            top: -6,
-            child: Text(
-              'CeylonHS',
-              maxLines: 1,
-              softWrap: false,
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.18),
-                fontSize: 62,
-                fontWeight: FontWeight.w700,
-                height: 1,
-              ),
-            ),
-          ),
-          const Positioned(
-            top: 38,
-            child: Text(
-              'CeylonHS',
-              maxLines: 1,
-              softWrap: false,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 52,
-                fontWeight: FontWeight.w700,
-                height: 1,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class MainHomePage extends StatefulWidget {
   const MainHomePage({super.key});
 
@@ -1557,9 +1769,6 @@ class MainHomePage extends StatefulWidget {
 }
 
 class _MainHomePageState extends State<MainHomePage> {
-  static const Color primaryBlue = Color(0xFF0B3EA8);
-  static const Color secondaryBlue = Color(0xFF0A2E8A);
-
   int _selectedIndex = 0;
 
   static const List<String> _labels = [
@@ -1579,22 +1788,89 @@ class _MainHomePageState extends State<MainHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: const Color(0xFFF4F7FC),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [secondaryBlue, primaryBlue],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: const [
+          _HomeContent(),
+          HsCodeFinderPage(isEmbedded: true),
+          PricingPage(isEmbedded: true),
+          _ProfileContent(),
+        ],
+      ),
+      bottomNavigationBar: Container(
+        height: 78,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(color: Color(0xFFEAEAEA)),
+          ),
+        ),
+        child: Row(
+          children: List.generate(_labels.length, (index) {
+            final bool isSelected = _selectedIndex == index;
+            return Expanded(
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      _icons[index],
+                      size: 23,
+                      color: isSelected
+                          ? const Color(0xFF0B3EA8)
+                          : const Color(0xFF8E8E8E),
                     ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _labels[index],
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: isSelected
+                            ? const Color(0xFF0B3EA8)
+                            : const Color(0xFF8E8E8E),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeContent extends StatelessWidget {
+  const _HomeContent();
+
+  static const Color primaryBlue = Color(0xFF0B3EA8);
+  static const Color secondaryBlue = Color(0xFF0A2E8A);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFFF4F7FC),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [secondaryBlue, primaryBlue],
                   ),
+                ),
                   child: Column(
                     children: [
                       Row(
@@ -1797,64 +2073,50 @@ class _MainHomePageState extends State<MainHomePage> {
                     ],
                   ),
                 ),
-              ],
-            ),
+            ],
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        height: 78,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          border: Border(
-            top: BorderSide(color: Color(0xFFEAEAEA)),
-          ),
-        ),
-        child: Row(
-          children: List.generate(_labels.length, (index) {
-            final bool isSelected = _selectedIndex == index;
-            return Expanded(
-              child: InkWell(
-                onTap: () {
-                  if (index == 1) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const HsCodeFinderPage(),
-                      ),
-                    );
-                    return;
-                  }
+    );
+  }
+}
 
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      _icons[index],
-                      size: 23,
-                      color: isSelected
-                          ? const Color(0xFF0B3EA8)
-                          : const Color(0xFF8E8E8E),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _labels[index],
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: isSelected
-                            ? const Color(0xFF0B3EA8)
-                            : const Color(0xFF8E8E8E),
-                      ),
-                    ),
-                  ],
+class _ProfileContent extends StatelessWidget {
+  const _ProfileContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFFF4F7FC),
+      child: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.person_outline_rounded,
+                size: 80,
+                color: Color(0xFF0B3EA8),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Profile',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1D2F4D),
                 ),
               ),
-            );
-          }),
+              const SizedBox(height: 8),
+              const Text(
+                'Coming soon',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF8E8E8E),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1980,43 +2242,6 @@ class _FeaturedCategoryCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _LoginInputField extends StatelessWidget {
-  const _LoginInputField({required this.hintText, required this.obscureText});
-
-  final String hintText;
-  final bool obscureText;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 52,
-      child: TextField(
-        obscureText: obscureText,
-        style: const TextStyle(
-          color: Color(0xFF0B3EA8),
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          hintText: hintText,
-          hintStyle: TextStyle(
-            color: const Color(0xFF0B3EA8).withValues(alpha: 0.5),
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          ),
-        ),
       ),
     );
   }
