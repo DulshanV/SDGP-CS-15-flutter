@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 
 void main() {
   runApp(const MyApp());
@@ -155,201 +154,390 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [IntroPage.primaryBlue, IntroPage.secondaryBlue],
-              ),
-              borderRadius: BorderRadius.circular(22),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(22),
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: -60,
-                    left: -100,
-                    right: -100,
-                    child: Transform.rotate(
-                      angle: -0.55,
-                      child: Container(
-                        height: 80,
-                        color: const Color(0x66FFFFFF),
-                      ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final double topSectionHeight = constraints.maxHeight * 0.52;
+            final double cardTop = topSectionHeight - 26;
+
+            return Stack(
+              children: [
+                Container(
+                  height: topSectionHeight,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment(-0.9, -1),
+                      end: Alignment(1, 1),
+                      colors: [Color(0xFF133665), Color(0xFF3A9EEA)],
                     ),
                   ),
-                  Positioned(
-                    bottom: 62,
-                    left: -90,
-                    right: -90,
-                    child: Transform.rotate(
-                      angle: -0.52,
-                      child: Container(
-                        height: 68,
-                        color: const Color(0x55FFFFFF),
-                      ),
+                ),
+                Positioned(
+                  top: -68,
+                  left: -58,
+                  child: Container(
+                    width: 210,
+                    height: 210,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0x12000000),
                     ),
                   ),
-                  Positioned(
-                    top: 170,
-                    left: -80,
-                    right: -80,
-                    child: Transform.rotate(
-                      angle: 0.6,
-                      child: Container(
-                        height: 56,
-                        color: const Color(0x33FFFFFF),
-                      ),
+                ),
+                Positioned(
+                  top: 78,
+                  right: -46,
+                  child: Container(
+                    width: 172,
+                    height: 172,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0x12000000),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 18, 18, 24),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 250,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: const Color(0x22FFFFFF),
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          child: Center(
-                            child: SizedBox(
-                              width: 320,
-                              height: 190,
-                              child: Image.asset(
-                                'assets/images/ceylonhs_city_blue.png',
-                                fit: BoxFit.contain,
-                                errorBuilder: (_, __, ___) => Image.asset(
-                                  'assets/images/fallback_city.png',
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
+                ),
+                const Positioned(
+                  top: 210,
+                  left: 180,
+                  child: Icon(Icons.circle, color: Color(0x44FFFFFF), size: 6),
+                ),
+                const Positioned(
+                  top: 194,
+                  right: 88,
+                  child: Icon(Icons.circle, color: Color(0x3AFFFFFF), size: 4),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  top: 28,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 138,
+                        child: Image.asset(
+                          'assets/images/fallback_city.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(height: 28),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 28),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'CeylonHS',
+                            style: TextStyle(
+                              fontSize: 42,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        const Text(
-                          'CeylonHS',
-                          style: TextStyle(
-                            fontSize: 42,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
+                      ),
+                      const SizedBox(height: 2),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 28),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Your Gateway to Global Trade.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xE6FFFFFF),
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 6),
-                        const Text(
-                          'Get instant, accurate classification\nfor your import/export goods.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Color(0xE6FFFFFF),
-                            fontWeight: FontWeight.w500,
-                            height: 1.3,
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: cardTop,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF6F7FA),
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(34)),
+                    ),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(24, 42, 24, 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Instant, AI-powered HS\ncode classification for Sri\nLanka Customs.',
+                            style: TextStyle(
+                              fontSize: 16,
+                              height: 1.35,
+                              color: Color(0xFF1B2A44),
+                              fontWeight: FontWeight.w800,
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 58,
-                          child: _GlassyActionButton(
-                            label: 'Sign up',
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => const SignUpPage(),
-                                ),
-                              );
-                            },
+                          const SizedBox(height: 30),
+                          Center(
+                            child: SizedBox(
+                              width: 208,
+                              child: _EntryActionButtons(
+                                onSignUp: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute<void>(
+                                      builder: (_) => const SignUpPage(),
+                                    ),
+                                  );
+                                },
+                                onLogIn: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute<void>(
+                                      builder: (_) => const LoginPage(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 14),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 58,
-                          child: _GlassyActionButton(
-                            label: 'Log in',
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (_) => const LoginPage(),
-                                ),
-                              );
-                            },
-                            isFilled: true,
+                          const SizedBox(height: 16),
+                          Center(
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => const LoginPage(),
+                                  ),
+                                );
+                              },
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 18,
+                                    height: 18,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: const Color(0xFFD6DBE3),
+                                        width: 1,
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        'G',
+                                        style: TextStyle(
+                                          color: Color(0xFF4A90E2),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Text(
+                                    'Already have your account?',
+                                    style: TextStyle(
+                                      color: Color(0xFF9098A8),
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-          ),
+                ),
+                Positioned(
+                  top: cardTop + 56,
+                  left: 0,
+                  child: Container(
+                    width: 8,
+                    height: 14,
+                    color: const Color(0xFF0B3C74),
+                  ),
+                ),
+                Positioned(
+                  top: cardTop + 56,
+                  right: 0,
+                  child: Container(
+                    width: 8,
+                    height: 14,
+                    color: const Color(0xFF2A90E9),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
+      ),
+      bottomNavigationBar: _EntryBottomNav(
+        onTap: (index) {
+          if (index == 0) {
+            return;
+          }
+
+          if (index == 3) {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) => const LoginPage(),
+              ),
+            );
+            return;
+          }
+
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => const MainHomePage(),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class _GlassyActionButton extends StatelessWidget {
-  const _GlassyActionButton({
-    required this.label,
-    required this.onPressed,
-    this.isFilled = false,
-  });
+class _EntryActionButtons extends StatelessWidget {
+  const _EntryActionButtons({required this.onSignUp, required this.onLogIn});
 
-  final String label;
-  final VoidCallback onPressed;
-  final bool isFilled;
+  final VoidCallback onSignUp;
+  final VoidCallback onLogIn;
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: Stack(
-        fit: StackFit.expand,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFF2B8FF0), width: 2),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-            child: const SizedBox.expand(),
-          ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: isFilled
-                  ? const Color(0x66FFFFFF)
-                  : const Color(0x40FFFFFF),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0x99FFFFFF),
-                width: 1.2,
+          SizedBox(
+            width: double.infinity,
+            height: 40,
+            child: ElevatedButton(
+              onPressed: onSignUp,
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor: const Color(0xFF2B8FF0),
+                foregroundColor: Colors.white,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                ),
+              ),
+              child: const Text(
+                'Register',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
               ),
             ),
-            child: ElevatedButton(
-              onPressed: onPressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                foregroundColor: Colors.white,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.w700,
+          ),
+          SizedBox(
+            width: double.infinity,
+            height: 40,
+            child: OutlinedButton(
+              onPressed: onLogIn,
+              style: OutlinedButton.styleFrom(
+                side: BorderSide.none,
+                foregroundColor: const Color(0xFF2B8FF0),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(8),
+                    bottomRight: Radius.circular(8),
+                  ),
                 ),
               ),
-              child: Text(label),
+              child: const Text(
+                'Log in',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _EntryBottomNav extends StatelessWidget {
+  const _EntryBottomNav({required this.onTap});
+
+  final ValueChanged<int> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    const List<_EntryBottomNavItem> items = [
+      _EntryBottomNavItem(
+        index: 0,
+        icon: Icons.home_filled,
+        label: 'Home',
+        active: true,
+      ),
+      _EntryBottomNavItem(index: 1, icon: Icons.search, label: 'History'),
+      _EntryBottomNavItem(index: 2, icon: Icons.access_time, label: 'History'),
+      _EntryBottomNavItem(index: 3, icon: Icons.person_outline, label: 'Profile'),
+    ];
+
+    return Container(
+      height: 68,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Color(0xFFE7EAF0))),
+      ),
+      child: Row(
+        children: items.map((item) {
+          return Expanded(
+            child: InkWell(
+              onTap: () => onTap(item.index),
+              child: item,
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class _EntryBottomNavItem extends StatelessWidget {
+  const _EntryBottomNavItem({
+    required this.index,
+    required this.icon,
+    required this.label,
+    this.active = false,
+  });
+
+  final int index;
+  final IconData icon;
+  final String label;
+  final bool active;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = active ? const Color(0xFF2B8FF0) : const Color(0xFF9EA6B5);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: color, size: 22),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontSize: 12,
+            fontWeight: active ? FontWeight.w600 : FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }
