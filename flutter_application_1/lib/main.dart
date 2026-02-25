@@ -118,7 +118,7 @@ class IntroPage extends StatelessWidget {
                       ),
                       child: const Text(
                         'Sign in',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
@@ -143,7 +143,7 @@ class IntroPage extends StatelessWidget {
                       ),
                       child: const Text(
                         'Log in',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
@@ -946,11 +946,19 @@ class SignUpPage extends StatelessWidget {
                           children: [
                             Row(
                               children: [
+                                IconButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  icon: const Icon(
+                                    Icons.arrow_back_rounded,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
                                 const Text(
                                   'CeylonHS',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 34,
+                                    fontSize: 24,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -985,7 +993,7 @@ class SignUpPage extends StatelessWidget {
                           'Create Your Account',
                           style: TextStyle(
                             color: Color(0xFF1D2F4D),
-                            fontSize: 46,
+                            fontSize: 28,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -994,7 +1002,7 @@ class SignUpPage extends StatelessWidget {
                           'Sign up to get instant HS codes',
                           style: TextStyle(
                             color: primaryBlue,
-                            fontSize: 28,
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -1048,7 +1056,7 @@ class SignUpPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 textStyle: const TextStyle(
-                                  fontSize: 46,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -1130,11 +1138,22 @@ class LoginPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                icon: const Icon(
+                                  Icons.arrow_back_rounded,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
                             const Text(
                               'CeylonHS',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 34,
+                                fontSize: 24,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -1164,7 +1183,7 @@ class LoginPage extends StatelessWidget {
                           'Welcome Back',
                           style: TextStyle(
                             color: Color(0xFF1D2F4D),
-                            fontSize: 46,
+                            fontSize: 28,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -1173,7 +1192,7 @@ class LoginPage extends StatelessWidget {
                           'Sign in to access your dashboard',
                           style: TextStyle(
                             color: primaryBlue,
-                            fontSize: 28,
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -1203,7 +1222,7 @@ class LoginPage extends StatelessWidget {
                             child: const Text(
                               'Forgot Password?',
                               style: TextStyle(
-                                fontSize: 22,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -1247,7 +1266,7 @@ class LoginPage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 textStyle: const TextStyle(
-                                  fontSize: 46,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -1260,7 +1279,7 @@ class LoginPage extends StatelessWidget {
                           text: const TextSpan(
                             style: TextStyle(
                               color: Color(0xFF1D2F4D),
-                              fontSize: 32,
+                              fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
                             children: [
@@ -1303,14 +1322,14 @@ class _LoginMockField extends StatelessWidget {
         obscureText: hintText == 'Password',
         style: const TextStyle(
           color: Color(0xFF1D2F4D),
-          fontSize: 22,
+          fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: TextStyle(
             color: const Color(0xFF1D2F4D).withValues(alpha: 0.45),
-            fontSize: 22,
+            fontSize: 16,
             fontWeight: FontWeight.w500,
           ),
           filled: true,
