@@ -391,8 +391,8 @@ class SignUpPage extends StatelessWidget {
                     constraints: const BoxConstraints(),
                   ),
                   const SizedBox(height: 8),
-                  const _AuthPageTitle(),
-                  const SizedBox(height: 78),
+                  const _AuthTopImage(),
+                  const SizedBox(height: 26),
                   const Text(
                     'Username',
                     style: TextStyle(
@@ -509,8 +509,8 @@ class LoginPage extends StatelessWidget {
                     constraints: const BoxConstraints(),
                   ),
                   const SizedBox(height: 8),
-                  const _AuthPageTitle(),
-                  const SizedBox(height: 90),
+                  const _AuthTopImage(),
+                  const SizedBox(height: 30),
                   const Text(
                     'Username',
                     style: TextStyle(
@@ -576,34 +576,100 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class _AuthPageTitle extends StatelessWidget {
-  const _AuthPageTitle();
+class _AuthTopImage extends StatelessWidget {
+  const _AuthTopImage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 150,
+      decoration: BoxDecoration(
+        color: const Color(0xFF0B3EA8),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Center(
+        child: SizedBox(
+          width: 260,
+          height: 110,
+          child: Stack(
+            alignment: Alignment.center,
+            clipBehavior: Clip.none,
+            children: [
+              Transform.translate(
+                offset: const Offset(-8, -10),
+                child: const Text(
+                  'CeylonHS',
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.visible,
+                  style: TextStyle(
+                    color: Color(0x3358A0FF),
+                    fontSize: 62,
+                    fontWeight: FontWeight.w700,
+                    height: 1,
+                  ),
+                ),
+              ),
+              const Text(
+                'CeylonHS',
+                maxLines: 1,
+                softWrap: false,
+                overflow: TextOverflow.visible,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 52,
+                  fontWeight: FontWeight.w700,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoginHeroTitle extends StatelessWidget {
+  const _LoginHeroTitle();
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
+      height: 118,
       child: Stack(
         alignment: Alignment.center,
+        clipBehavior: Clip.none,
         children: [
-          Text(
-            'CeylonHS',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.14),
-              fontSize: 78,
-              fontWeight: FontWeight.w700,
-              height: 1,
+          Positioned(
+            top: -6,
+            child: Text(
+              'CeylonHS',
+              maxLines: 1,
+              softWrap: false,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.18),
+                fontSize: 62,
+                fontWeight: FontWeight.w700,
+                height: 1,
+              ),
             ),
           ),
-          const Text(
-            'CeylonHS',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 56,
-              fontWeight: FontWeight.w700,
-              height: 1,
+          const Positioned(
+            top: 38,
+            child: Text(
+              'CeylonHS',
+              maxLines: 1,
+              softWrap: false,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 52,
+                fontWeight: FontWeight.w700,
+                height: 1,
+              ),
             ),
           ),
         ],
