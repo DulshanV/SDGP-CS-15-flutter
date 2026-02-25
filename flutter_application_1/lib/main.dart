@@ -421,11 +421,11 @@ class SignUpPage extends StatelessWidget {
                     height: 58,
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Sign up successful. Please log in.'),
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const MainHomePage(),
                           ),
+                          (route) => false,
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -544,7 +544,14 @@ class LoginPage extends StatelessWidget {
                     width: double.infinity,
                     height: 58,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const MainHomePage(),
+                          ),
+                          (route) => false,
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: primaryBlue,
@@ -564,6 +571,105 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class MainHomePage extends StatefulWidget {
+  const MainHomePage({super.key});
+
+  @override
+  State<MainHomePage> createState() => _MainHomePageState();
+}
+
+class _MainHomePageState extends State<MainHomePage> {
+  static const Color primaryBlue = Color(0xFF0B3EA8);
+  static const Color secondaryBlue = Color(0xFF0A2E8A);
+
+  int _selectedIndex = 0;
+
+  static const List<String> _labels = [
+    'Home',
+    'Search',
+    'Pricing',
+    'Profile',
+  ];
+
+  static const List<IconData> _icons = [
+    Icons.home_rounded,
+    Icons.search_rounded,
+    Icons.price_change_rounded,
+    Icons.person_rounded,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [primaryBlue, secondaryBlue],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: Text(
+              _labels[_selectedIndex],
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 44,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        height: 78,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            top: BorderSide(color: Color(0xFFEAEAEA)),
+          ),
+        ),
+        child: Row(
+          children: List.generate(_labels.length, (index) {
+            final bool isSelected = _selectedIndex == index;
+            return Expanded(
+              child: InkWell(
+                onTap: () {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      _icons[index],
+                      size: 23,
+                      color: isSelected ? Colors.black : const Color(0xFF8E8E8E),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _labels[index],
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: isSelected
+                            ? Colors.black
+                            : const Color(0xFF8E8E8E),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
         ),
       ),
     );
