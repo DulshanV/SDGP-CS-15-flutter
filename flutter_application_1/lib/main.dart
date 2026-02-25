@@ -172,19 +172,19 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                     child: Transform.rotate(
                       angle: -0.55,
                       child: Container(
-                        height: 82,
+                        height: 80,
                         color: const Color(0x66FFFFFF),
                       ),
                     ),
                   ),
                   Positioned(
-                    bottom: 70,
+                    bottom: 62,
                     left: -90,
                     right: -90,
                     child: Transform.rotate(
                       angle: -0.52,
                       child: Container(
-                        height: 70,
+                        height: 68,
                         color: const Color(0x55FFFFFF),
                       ),
                     ),
@@ -206,58 +206,35 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                     child: Column(
                       children: [
                         Container(
-                          height: 230,
+                          height: 250,
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: const Color(0xFFD7E5FF),
                             borderRadius: BorderRadius.circular(24),
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 300,
-                                    height: 180,
-                                    child: ClipPath(
-                                      clipper: _TopBlobClipper(),
-                                      child: Image.asset(
-                                        'assets/images/auth_template.png',
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => Container(
-                                          color: const Color(0xFFCEE0FF),
-                                          alignment: Alignment.center,
-                                          child: const Icon(
-                                            Icons.location_city_rounded,
-                                            size: 120,
-                                            color: Color(0xFF1D4FB4),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                          child: Center(
+                            child: SizedBox(
+                              width: 320,
+                              height: 190,
+                              child: Image.asset(
+                                'assets/images/ceylonhs_city_blue.png',
+                                fit: BoxFit.contain,
+                                errorBuilder: (_, __, ___) => Image.asset(
+                                  'assets/images/fallback_city.png',
+                                  fit: BoxFit.contain,
                                 ),
                               ),
-                              Positioned(
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                child: Container(
-                                  height: 34,
-                                  color: const Color(0xFF4A78D4),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 22),
+                        const SizedBox(height: 24),
                         const Text(
                           'CeylonHS',
                           style: TextStyle(
-                            fontSize: 40,
+                            fontSize: 42,
                             color: Color(0xFF0C2C75),
-                            fontWeight: FontWeight.w700,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -268,7 +245,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                             fontSize: 20,
                             color: Color(0xFF1D4595),
                             fontWeight: FontWeight.w500,
-                            height: 1.32,
+                            height: 1.3,
                           ),
                         ),
                         const Spacer(),
@@ -285,7 +262,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               textStyle: const TextStyle(
-                                fontSize: 34,
+                                fontSize: 35,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -311,14 +288,14 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                                 );
                               },
                               style: OutlinedButton.styleFrom(
-                                backgroundColor: const Color(0xFFF8F8F8),
+                                backgroundColor: Colors.white,
                                 foregroundColor: const Color(0xFF2E6EEB),
                                 side: const BorderSide(color: Color(0xFFDCE7FF)),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 textStyle: const TextStyle(
-                                  fontSize: 34,
+                                  fontSize: 35,
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
@@ -326,13 +303,7 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                             ),
                           )
                         else
-                          const Text(
-                            'Already registered? Use Log in.',
-                            style: TextStyle(
-                              color: Color(0xFF335AAB),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          const SizedBox(height: 58),
                       ],
                     ),
                   ),
@@ -344,57 +315,4 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
       ),
     );
   }
-}
-
-class _TopBlobClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.moveTo(size.width * 0.04, size.height * 0.56);
-    path.cubicTo(
-      size.width * 0.06,
-      size.height * 0.24,
-      size.width * 0.23,
-      size.height * 0.15,
-      size.width * 0.41,
-      size.height * 0.11,
-    );
-    path.cubicTo(
-      size.width * 0.62,
-      size.height * 0.06,
-      size.width * 0.86,
-      size.height * 0.16,
-      size.width * 0.92,
-      size.height * 0.38,
-    );
-    path.cubicTo(
-      size.width * 0.96,
-      size.height * 0.54,
-      size.width * 0.89,
-      size.height * 0.72,
-      size.width * 0.77,
-      size.height * 0.82,
-    );
-    path.cubicTo(
-      size.width * 0.62,
-      size.height * 0.95,
-      size.width * 0.39,
-      size.height * 0.98,
-      size.width * 0.24,
-      size.height * 0.87,
-    );
-    path.cubicTo(
-      size.width * 0.10,
-      size.height * 0.77,
-      size.width * 0.02,
-      size.height * 0.68,
-      size.width * 0.04,
-      size.height * 0.56,
-    );
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
