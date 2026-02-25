@@ -1597,14 +1597,14 @@ class _HomeContent extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _FeaturedCategoryCard(
-                              icon: Icons.camera_alt_outlined,
+                              icon: Icons.local_dining_outlined,
                               label: 'Spices',
                             ),
                           ),
                           SizedBox(width: 10),
                           Expanded(
                             child: _FeaturedCategoryCard(
-                              icon: Icons.description_outlined,
+                              icon: Icons.checkroom_outlined,
                               label: 'Apparel',
                             ),
                           ),
@@ -1615,8 +1615,8 @@ class _HomeContent extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _FeaturedCategoryCard(
-                              icon: Icons.bubble_chart_outlined,
-                              label: 'Apparel',
+                              icon: Icons.edit_note_outlined,
+                              label: 'Stationery',
                             ),
                           ),
                           SizedBox(width: 10),
