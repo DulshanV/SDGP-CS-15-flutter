@@ -252,8 +252,41 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                         SizedBox(
                           width: double.infinity,
                           height: 58,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const SignUpPage(),
+                                ),
+                              );
+                            },
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: const Color(0xFF2E6EEB),
+                              side: const BorderSide(color: Color(0xFFDCE7FF)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              textStyle: const TextStyle(
+                                fontSize: 35,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            child: const Text('Sign up'),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 58,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const LoginPage(),
+                                ),
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF2E6EEB),
                               foregroundColor: Colors.white,
@@ -269,47 +302,304 @@ class _AuthEntryPageState extends State<AuthEntryPage> {
                             child: const Text('Log in'),
                           ),
                         ),
-                        const SizedBox(height: 14),
-                        if (!_hasRegistered)
-                          SizedBox(
-                            width: double.infinity,
-                            height: 58,
-                            child: OutlinedButton(
-                              onPressed: () {
-                                setState(() {
-                                  _hasRegistered = true;
-                                });
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'Registration successful. Please log in.',
-                                    ),
-                                  ),
-                                );
-                              },
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: const Color(0xFF2E6EEB),
-                                side: const BorderSide(color: Color(0xFFDCE7FF)),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                textStyle: const TextStyle(
-                                  fontSize: 35,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              child: const Text('Sign up'),
-                            ),
-                          )
-                        else
-                          const SizedBox(height: 58),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SignUpPage extends StatelessWidget {
+  const SignUpPage({super.key});
+
+  static const Color primaryBlue = Color(0xFF0B3EA8);
+  static const Color secondaryBlue = Color(0xFF0A2E8A);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [primaryBlue, secondaryBlue],
+              ),
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white,
+                    ),
+                    tooltip: 'Back',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                  const SizedBox(height: 8),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Text(
+                        'CeylonHS',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.14),
+                          fontSize: 78,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const Text(
+                        'CeylonHS',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 56,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 78),
+                  const Text(
+                    'Username',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _LoginInputField(
+                    hintText: 'Create username',
+                    obscureText: false,
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Password',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _LoginInputField(
+                    hintText: 'Create password',
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Confirm Password',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _LoginInputField(
+                    hintText: 'Re-enter password',
+                    obscureText: true,
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 58,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Sign up successful. Please log in.'),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: primaryBlue,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        textStyle: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      child: const Text('Sign up'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
+  static const Color primaryBlue = Color(0xFF0B3EA8);
+  static const Color secondaryBlue = Color(0xFF0A2E8A);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [primaryBlue, secondaryBlue],
+              ),
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white,
+                    ),
+                    tooltip: 'Back',
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                  const SizedBox(height: 8),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Text(
+                        'CeylonHS',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.14),
+                          fontSize: 78,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const Text(
+                        'CeylonHS',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 56,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 90),
+                  const Text(
+                    'Username',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _LoginInputField(
+                    hintText: 'Enter username',
+                    obscureText: false,
+                  ),
+                  const SizedBox(height: 28),
+                  const Text(
+                    'Password',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _LoginInputField(
+                    hintText: 'Enter password',
+                    obscureText: true,
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 58,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: primaryBlue,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        textStyle: const TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      child: const Text('Log in'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LoginInputField extends StatelessWidget {
+  const _LoginInputField({required this.hintText, required this.obscureText});
+
+  final String hintText;
+  final bool obscureText;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 52,
+      child: TextField(
+        obscureText: obscureText,
+        style: const TextStyle(
+          color: Color(0xFF0B3EA8),
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          hintText: hintText,
+          hintStyle: TextStyle(
+            color: const Color(0xFF0B3EA8).withValues(alpha: 0.5),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
           ),
         ),
       ),
