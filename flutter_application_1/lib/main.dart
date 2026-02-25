@@ -1662,39 +1662,209 @@ class _ProfileContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFFF4F7FC),
-      child: SafeArea(
-        child: Center(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.person_outline_rounded,
-                size: 80,
-                color: Color(0xFF0B3EA8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: const [
+                  Icon(
+                    Icons.person_outline_rounded,
+                    color: Color(0xFF0B3EA8),
+                    size: 22,
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Profile',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF1D2F4D),
+              const SizedBox(height: 10),
+              Container(
+                width: 108,
+                height: 108,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFF0B3EA8), width: 2),
+                ),
+                child: const Icon(
+                  Icons.person_outline_rounded,
+                  size: 58,
+                  color: Color(0xFF0B3EA8),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 14),
               const Text(
-                'Coming soon',
+                'Jane Doe',
                 style: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFF8E8E8E),
+                  color: Color(0xFF1D2F4D),
+                  fontSize: 32,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'jane.doe@example.com',
+                style: TextStyle(
+                  color: Color(0xFF5D6778),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF4F7FC),
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(color: const Color(0xFFDDE5F2)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Account Settings',
+                      style: TextStyle(
+                        color: Color(0xFF1D2F4D),
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: const [
+                              _ProfileSettingRow(
+                                icon: Icons.person_outline_rounded,
+                                label: 'Edit Profile',
+                              ),
+                              SizedBox(height: 14),
+                              _ProfileSettingRow(
+                                icon: Icons.credit_card_outlined,
+                                label: 'Payment Methods',
+                              ),
+                              SizedBox(height: 14),
+                              _ProfileSettingRow(
+                                icon: Icons.location_on_outlined,
+                                label: 'Change Password',
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 14),
+                        SizedBox(
+                          width: 146,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Subscription Plan',
+                                style: TextStyle(
+                                  color: Color(0xFF1D2F4D),
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              const Text(
+                                'Business (\$5/month)',
+                                style: TextStyle(
+                                  color: Color(0xFF5D6778),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 14),
+                              SizedBox(
+                                width: 92,
+                                height: 34,
+                                child: ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: const Color(0xFF0B3EA8),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(17),
+                                      side: const BorderSide(color: Color(0xFFD5DDE8)),
+                                    ),
+                                    textStyle: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  child: const Text('Manage'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 22),
+              SizedBox(
+                width: 130,
+                height: 42,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute<void>(builder: (_) => const IntroPage()),
+                      (route) => false,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: const Color(0xFF0B3EA8),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  child: const Text('Log Out'),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ProfileSettingRow extends StatelessWidget {
+  const _ProfileSettingRow({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: const Color(0xFF0B3EA8)),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: Color(0xFF1D2F4D),
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
