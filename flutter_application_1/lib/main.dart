@@ -657,76 +657,56 @@ class PricingPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 32),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 280,
-                        child: _PricingCard(
-                          title: 'Starter',
-                          price: 3,
-                          features: const [
-                            '10 Search results per month',
-                            'Basic HS code matching',
-                            'Email support',
-                            'Email support',
-                          ],
-                          buttonLabel: 'Choose Starter',
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Starter plan selected')),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      SizedBox(
-                        width: 280,
-                        child: _PricingCard(
-                          title: 'Business',
-                          price: 5,
-                          isMostPopular: true,
-                          features: const [
-                            '25 Search results per month',
-                            'AI-Enhanced accuracy',
-                            'Priority search speed',
-                            'Export search history',
-                          ],
-                          buttonLabel: 'Choose Business',
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Business plan selected')),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      SizedBox(
-                        width: 280,
-                        child: _PricingCard(
-                          title: 'Enterprise',
-                          price: 9,
-                          features: const [
-                            '50 Search results per month',
-                            'Dedicated support',
-                            'Custom API Access',
-                            'Bulk classification',
-                          ],
-                          buttonLabel: 'Choose Enterprise',
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Enterprise plan selected')),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                _PricingCard(
+                  title: 'Starter',
+                  price: 3,
+                  features: const [
+                    '10 Search results per month',
+                    'Basic HS code matching',
+                    'Email support',
+                    'Email support',
+                  ],
+                  buttonLabel: 'Choose Starter',
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Starter plan selected')),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                _PricingCard(
+                  title: 'Business',
+                  price: 5,
+                  isMostPopular: true,
+                  features: const [
+                    '25 Search results per month',
+                    'AI-Enhanced accuracy',
+                    'Priority search speed',
+                    'Export search history',
+                  ],
+                  buttonLabel: 'Choose Business',
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Business plan selected')),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                _PricingCard(
+                  title: 'Enterprise',
+                  price: 9,
+                  features: const [
+                    '50 Search results per month',
+                    'Dedicated support',
+                    'Custom API Access',
+                    'Bulk classification',
+                  ],
+                  buttonLabel: 'Choose Enterprise',
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Enterprise plan selected')),
+                    );
+                  },
                 ),
                 const SizedBox(height: 8),
               ],
