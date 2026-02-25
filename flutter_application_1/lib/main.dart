@@ -368,102 +368,169 @@ class SignUpPage extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Container(
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [primaryBlue, secondaryBlue],
-              ),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(22),
             ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: Colors.white,
-                    ),
-                    tooltip: 'Back',
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-                  const SizedBox(height: 8),
-                  const _AuthTopImage(),
-                  const SizedBox(height: 26),
-                  const Text(
-                    'Username',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w700,
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  height: 220,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [secondaryBlue, primaryBlue],
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  _LoginInputField(
-                    hintText: 'Create username',
-                    obscureText: false,
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Password',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  _LoginInputField(
-                    hintText: 'Create password',
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Confirm Password',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  _LoginInputField(
-                    hintText: 'Re-enter password',
-                    obscureText: true,
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 58,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute<void>(
-                            builder: (_) => const MainHomePage(),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: -40,
+                        left: -10,
+                        child: Transform.rotate(
+                          angle: -0.5,
+                          child: Container(
+                            width: 160,
+                            height: 130,
+                            color: const Color(0x22FFFFFF),
                           ),
-                          (route) => false,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: primaryBlue,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        textStyle: const TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
-                      child: const Text('Sign up'),
+                      Positioned(
+                        top: 0,
+                        right: -30,
+                        child: Transform.rotate(
+                          angle: 0.45,
+                          child: Container(
+                            width: 130,
+                            height: 120,
+                            color: const Color(0x18FFFFFF),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 18, 24, 16),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  'CeylonHS',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 34,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Icon(
+                                  Icons.notifications_none_rounded,
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  size: 26,
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                            Icon(
+                              Icons.location_city_rounded,
+                              size: 72,
+                              color: Colors.white.withValues(alpha: 0.7),
+                            ),
+                            const SizedBox(height: 6),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(24, 30, 24, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Create Your Account',
+                          style: TextStyle(
+                            color: Color(0xFF1D2F4D),
+                            fontSize: 46,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Sign up to get instant HS codes',
+                          style: TextStyle(
+                            color: primaryBlue,
+                            fontSize: 28,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 26),
+                        const _LoginMockField(
+                          hintText: 'Full Name',
+                        ),
+                        const SizedBox(height: 14),
+                        const _LoginMockField(
+                          hintText: 'Email or Phone Number',
+                        ),
+                        const SizedBox(height: 14),
+                        const _LoginMockField(
+                          hintText: 'Password',
+                        ),
+                        const SizedBox(height: 26),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 64,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [secondaryBlue, primaryBlue],
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Color(0x290B3EA8),
+                                  blurRadius: 12,
+                                  offset: Offset(0, 6),
+                                ),
+                              ],
+                            ),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => const MainHomePage(),
+                                  ),
+                                  (route) => false,
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontSize: 46,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              child: const Text('Sign up'),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -874,22 +941,224 @@ class _MainHomePageState extends State<MainHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [primaryBlue, secondaryBlue],
-          ),
-        ),
+        color: const Color(0xFFF4F7FC),
         child: SafeArea(
-          child: Center(
-            child: Text(
-              _labels[_selectedIndex],
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 44,
-                fontWeight: FontWeight.w800,
-              ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [secondaryBlue, primaryBlue],
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            'CeylonHS',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const Spacer(),
+                          Container(
+                            width: 28,
+                            height: 28,
+                            decoration: const BoxDecoration(
+                              color: Color(0xE6FFFFFF),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.person,
+                              size: 18,
+                              color: Color(0xFF0B3EA8),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          const Icon(
+                            Icons.notifications_none_rounded,
+                            size: 22,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      Container(
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 12),
+                            const Icon(
+                              Icons.search,
+                              color: Color(0xFF9BA5B7),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0xFF1D2F4D),
+                                ),
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Search HS code or Product...',
+                                  hintStyle: TextStyle(
+                                    fontSize: 16,
+                                    color: const Color(0xFF1D2F4D)
+                                        .withValues(alpha: 0.45),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.all(4),
+                              width: 38,
+                              decoration: BoxDecoration(
+                                color: primaryBlue,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(
+                                Icons.mic_none_rounded,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: const [
+                          Expanded(
+                            child: _HomeActionCard(
+                              title: 'Favorites',
+                              icon: Icons.bookmark_border_rounded,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: _HomeActionCard(
+                              title: 'Tariff Docs',
+                              icon: Icons.description_outlined,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: _HomeActionCard(
+                              title: 'News',
+                              icon: Icons.newspaper_outlined,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Recent Searches',
+                        style: TextStyle(
+                          color: Color(0xFF2C3442),
+                          fontSize: 21,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        height: 98,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: const [
+                            _RecentSearchCard(),
+                            SizedBox(width: 10),
+                            _RecentSearchCard(),
+                            SizedBox(width: 10),
+                            _RecentSearchCard(),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'Featured Categories',
+                        style: TextStyle(
+                          color: Color(0xFF2C3442),
+                          fontSize: 21,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Row(
+                        children: [
+                          Expanded(
+                            child: _FeaturedCategoryCard(
+                              icon: Icons.camera_alt_outlined,
+                              label: 'Spices',
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: _FeaturedCategoryCard(
+                              icon: Icons.description_outlined,
+                              label: 'Apparel',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      const Row(
+                        children: [
+                          Expanded(
+                            child: _FeaturedCategoryCard(
+                              icon: Icons.bubble_chart_outlined,
+                              label: 'Apparel',
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: _FeaturedCategoryCard(
+                              icon: Icons.grain_outlined,
+                              label: 'Minerals',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      const Row(
+                        children: [
+                          Expanded(
+                            child: _FeaturedCategoryCard(
+                              icon: Icons.pets_outlined,
+                              label: 'Animal',
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: _FeaturedCategoryCard(
+                              icon: Icons.spa_outlined,
+                              label: 'Cosmetics',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -918,7 +1187,9 @@ class _MainHomePageState extends State<MainHomePage> {
                     Icon(
                       _icons[index],
                       size: 23,
-                      color: isSelected ? Colors.black : const Color(0xFF8E8E8E),
+                      color: isSelected
+                          ? const Color(0xFF0B3EA8)
+                          : const Color(0xFF8E8E8E),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -927,7 +1198,7 @@ class _MainHomePageState extends State<MainHomePage> {
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: isSelected
-                            ? Colors.black
+                            ? const Color(0xFF0B3EA8)
                             : const Color(0xFF8E8E8E),
                       ),
                     ),
@@ -937,6 +1208,130 @@ class _MainHomePageState extends State<MainHomePage> {
             );
           }),
         ),
+      ),
+    );
+  }
+}
+
+class _HomeActionCard extends StatelessWidget {
+  const _HomeActionCard({required this.title, required this.icon});
+
+  final String title;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 44,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x1A000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 18, color: const Color(0xFF6FA0D9)),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Color(0xFF2C3442),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RecentSearchCard extends StatelessWidget {
+  const _RecentSearchCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 118,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFF318DED), width: 2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Text(
+            'Ceylon Tea -',
+            style: TextStyle(
+              color: Color(0xFF2C3442),
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: 2),
+          Text(
+            '0902.10',
+            style: TextStyle(
+              color: Color(0xFF5D6778),
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Spacer(),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Icon(
+              Icons.access_time_rounded,
+              size: 16,
+              color: Color(0xFFB7BFCC),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FeaturedCategoryCard extends StatelessWidget {
+  const _FeaturedCategoryCard({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 92,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 30, color: const Color(0xFF6FA0D9)),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Color(0xFF2C3442),
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }
