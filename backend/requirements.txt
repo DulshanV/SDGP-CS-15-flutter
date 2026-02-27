@@ -1,0 +1,30 @@
+# Web framework
+fastapi==0.115.8
+uvicorn[standard]==0.34.0
+python-multipart==0.0.22
+
+# Embeddings & Vector DB
+sentence-transformers==3.2.1
+faiss-cpu==1.13.2
+torch>=2.5.0
+
+# Typo tolerance / fuzzy matching
+rapidfuzz==3.14.3
+pyspellchecker==0.8.4
+
+# Database
+sqlalchemy[asyncio]==2.0.47
+asyncpg==0.31.0
+alembic==1.18.4
+psycopg2-binary==2.9.11
+greenlet==3.3.2
+
+# Auth
+firebase-admin==7.2.0
+
+# Utilities
+pandas==3.0.1
+numpy>=2.0
+pydantic-settings==2.13.1
+python-dotenv==1.2.1
+httpx==0.28.1

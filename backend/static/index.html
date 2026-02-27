@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CeylonHS — HS Code Search Engine</title>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --text: #202124;
+      --text-secondary: #5f6368;
+      --border: #dadce0;
+      --green: #137333;
+      --tag-bg: #e8f0fe;
+      --tag-text: #1967d2;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .logo span { color: var(--text); }
+
+    /* ── Search Bar ── */
+    .search-container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 20px 20px;
+    }
+
+    .hero-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+
+    .hero-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      font-size: 15px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 28px;
+      padding: 4px 8px 4px 20px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      max-width: 680px;
+      margin: 0 auto 12px;
+    }
+
+    .search-box:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 2px 12px rgba(26, 115, 232, 0.15);
+    }
+
+    .search-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      padding: 12px 12px;
+      background: transparent;
+      color: var(--text);
+    }
+
+    .search-box input::placeholder { color: #9aa0a6; }
+
+    .clear-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      padding: 8px;
+      border-radius: 50%;
+      display: none;
+      font-size: 18px;
+    }
+
+    .clear-btn.visible { display: block; }
+    .clear-btn:hover { background: #f1f3f4; }
+
+    .search-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      padding: 10px 24px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .search-btn:hover { background: var(--primary-dark); }
+
+    .search-hint {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .example-queries {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .example-chip {
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      border: none;
+      border-radius: 16px;
+      padding: 6px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .example-chip:hover { background: #d2e3fc; }
+
+    /* ── Results Area ── */
+    .results-container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+
+    .results-count {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .correction-notice {
+      background: #fef7e0;
+      border: 1px solid #fdd663;
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      color: #3c4043;
+    }
+
+    .correction-notice strong {
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    .correction-notice strong:hover { text-decoration: underline; }
+
+    /* ── Result Card ── */
+    .result-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      cursor: default;
+    }
+
+    .result-card:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      border-color: #bdc1c6;
+    }
+
+    .result-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .hs-code {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      white-space: nowrap;
+    }
+
+    .relevance-badge {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .relevance-high { background: #e6f4ea; color: var(--green); }
+    .relevance-med { background: #fef7e0; color: #b06000; }
+    .relevance-low { background: #f1f3f4; color: var(--text-secondary); }
+
+    .result-description {
+      font-size: 15px;
+      line-height: 1.5;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .result-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .meta-tag {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 4px;
+      background: #f1f3f4;
+      color: var(--text-secondary);
+    }
+
+    .hierarchy-path {
+      border-top: 1px solid #f1f3f4;
+      padding-top: 10px;
+      margin-top: 4px;
+    }
+
+    .hierarchy-path summary {
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .hierarchy-path summary:hover { color: var(--primary); }
+
+    .hierarchy-list {
+      list-style: none;
+      padding: 8px 0 0 0;
+    }
+
+    .hierarchy-list li {
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding: 3px 0 3px 16px;
+      position: relative;
+    }
+
+    .hierarchy-list li::before {
+      content: '›';
+      position: absolute;
+      left: 4px;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* ── Loading ── */
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* ── Empty / Error States ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+    .empty-state p { font-size: 14px; }
+
+    .error-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #c5221f;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .hero-title { font-size: 22px; }
+      .search-btn span { display: none; }
+      .search-btn::after { content: '🔍'; }
+      .search-btn { padding: 10px 14px; }
+      .result-top { flex-direction: column; }
+    }
+
+    /* ── Keyboard shortcut hint ── */
+    kbd {
+      background: #f1f3f4;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 12px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Ceylon<span>HS</span></div>
+    <div style="flex:1"></div>
+    <div style="font-size:13px; color:var(--text-secondary)">
+      Press <kbd>/</kbd> to focus search
+    </div>
+  </header>
+
+  <div class="search-container">
+    <h1 class="hero-title">HS Code Search Engine</h1>
+    <p class="hero-subtitle">Search Sri Lankan Customs tariff codes by description, product name, or HS code</p>
+
+    <form class="search-box" id="searchForm" autocomplete="off">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="searchInput" placeholder="Search for products, e.g. &quot;laptop&quot;, &quot;rice&quot;, &quot;8471.30&quot;" autofocus>
+      <button type="button" class="clear-btn" id="clearBtn">&times;</button>
+      <button type="submit" class="search-btn"><span>Search</span></button>
+    </form>
+
+    <p class="search-hint">Supports typo correction — try "laoptop" or "choclate"</p>
+
+    <div class="example-queries">
+      <button class="example-chip" data-q="laptop">laptop</button>
+      <button class="example-chip" data-q="rice">rice</button>
+      <button class="example-chip" data-q="cotton fabric">cotton fabric</button>
+      <button class="example-chip" data-q="smartphone">smartphone</button>
+      <button class="example-chip" data-q="chocolate">chocolate</button>
+      <button class="example-chip" data-q="live horses">live horses</button>
+      <button class="example-chip" data-q="8517.13">8517.13</button>
+    </div>
+  </div>
+
+  <div class="results-container" id="resultsContainer"></div>
+
+  <script>
+    const API_BASE = window.location.origin;
+    const searchInput = document.getElementById('searchInput');
+    const searchForm = document.getElementById('searchForm');
+    const clearBtn = document.getElementById('clearBtn');
+    const resultsContainer = document.getElementById('resultsContainer');
+
+    // ── Focus shortcut ──
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+      }
+      if (e.key === 'Escape') searchInput.blur();
+    });
+
+    // ── Clear button ──
+    searchInput.addEventListener('input', () => {
+      clearBtn.classList.toggle('visible', searchInput.value.length > 0);
+    });
+
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      clearBtn.classList.remove('visible');
+      searchInput.focus();
+      resultsContainer.innerHTML = '';
+    });
+
+    // ── Example chips ──
+    document.querySelectorAll('.example-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        searchInput.value = chip.dataset.q;
+        clearBtn.classList.add('visible');
+        doSearch(chip.dataset.q);
+      });
+    });
+
+    // ── Search form submit ──
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = searchInput.value.trim();
+      if (q) doSearch(q);
+    });
+
+    // ── Debounced live search ──
+    let debounceTimer;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      const q = searchInput.value.trim();
+      if (q.length >= 2) {
+        debounceTimer = setTimeout(() => doSearch(q), 400);
+      } else if (q.length === 0) {
+        resultsContainer.innerHTML = '';
+      }
+    });
+
+    // ── Main search function ──
+    async function doSearch(query) {
+      resultsContainer.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <p class="loading-text">Searching for "${escapeHtml(query)}"...</p>
+        </div>`;
+
+      try {
+        const params = new URLSearchParams({ q: query, limit: 10 });
+        const resp = await fetch(`${API_BASE}/api/v1/search?${params}`);
+
+        if (!resp.ok) throw new Error(`Server error: ${resp.status}`);
+
+        const data = await resp.json();
+        renderResults(data);
+      } catch (err) {
+        resultsContainer.innerHTML = `
+          <div class="error-state">
+            <p>⚠️ ${escapeHtml(err.message)}</p>
+            <p style="font-size:13px; margin-top:8px; color:var(--text-secondary)">
+              Make sure the API server is running on ${API_BASE}
+            </p>
+          </div>`;
+      }
+    }
+
+    // ── Render results ──
+    function renderResults(data) {
+      if (!data.results || data.results.length === 0) {
+        resultsContainer.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">🔍</div>
+            <h3>No results found</h3>
+            <p>Try different keywords or check your spelling.</p>
+          </div>`;
+        return;
+      }
+
+      let html = '';
+
+      // Correction notice
+      if (data.corrected_query) {
+        html += `
+          <div class="correction-notice">
+            Showing results for <strong onclick="searchCorrected('${escapeAttr(data.corrected_query)}')">${escapeHtml(data.corrected_query)}</strong>
+            &nbsp;·&nbsp; Searched for <em>${escapeHtml(data.query)}</em>
+          </div>`;
+      }
+
+      // Results header
+      html += `
+        <div class="results-header">
+          <span class="results-count">${data.total_results} result${data.total_results !== 1 ? 's' : ''} found</span>
+        </div>`;
+
+      // Result cards
+      for (const r of data.results) {
+        const relClass = r.relevance_pct >= 50 ? 'relevance-high' : r.relevance_pct >= 30 ? 'relevance-med' : 'relevance-low';
+
+        let hierarchyHtml = '';
+        if (r.hierarchy_path && r.hierarchy_path.length > 0) {
+          const items = r.hierarchy_path.map(p => `<li>${escapeHtml(p)}</li>`).join('');
+          hierarchyHtml = `
+            <details class="hierarchy-path">
+              <summary>View classification hierarchy (${r.hierarchy_path.length} levels)</summary>
+              <ul class="hierarchy-list">${items}</ul>
+            </details>`;
+        }
+
+        html += `
+          <div class="result-card">
+            <div class="result-top">
+              <span class="hs-code">${escapeHtml(r.hscode)}</span>
+              <span class="relevance-badge ${relClass}">${r.relevance_pct}% match</span>
+            </div>
+            <p class="result-description">${escapeHtml(r.description)}</p>
+            <div class="result-meta">
+              <span class="meta-tag">${escapeHtml(r.section)}</span>
+              <span class="meta-tag">Level ${r.level}</span>
+              ${r.parent ? `<span class="meta-tag">Parent: ${escapeHtml(r.parent)}</span>` : ''}
+            </div>
+            ${hierarchyHtml}
+          </div>`;
+      }
+
+      resultsContainer.innerHTML = html;
+    }
+
+    function searchCorrected(query) {
+      searchInput.value = query;
+      doSearch(query);
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    function escapeAttr(str) {
+      return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>

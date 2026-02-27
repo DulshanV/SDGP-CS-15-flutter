@@ -1,4 +1,10 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'screens/search_page.dart';
+import 'screens/favorites_page.dart';
+import 'screens/history_page.dart';
+import 'screens/admin_dashboard.dart';
+import 'services/search_history_service.dart';
+import 'services/auth_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -153,443 +159,6 @@ class IntroPage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class HsCodeFinderPage extends StatefulWidget {
-  const HsCodeFinderPage({super.key, this.isEmbedded = false});
-
-  final bool isEmbedded;
-
-  @override
-  State<HsCodeFinderPage> createState() => _HsCodeFinderPageState();
-}
-
-class _HsCodeFinderPageState extends State<HsCodeFinderPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _itemPriceController = TextEditingController();
-  final TextEditingController _detailsController = TextEditingController();
-
-  String? _selectedOrigin;
-  String? _selectedDestination;
-  String? _selectedCurrency = 'USD - US Dollar';
-
-  static const List<String> _countries = [
-    'Sri Lanka',
-    'India',
-    'China',
-    'Singapore',
-    'United Arab Emirates',
-  ];
-
-  static const List<String> _currencies = [
-    'USD - US Dollar',
-    'LKR - Sri Lankan Rupee',
-    'EUR - Euro',
-    'INR - Indian Rupee',
-  ];
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _itemPriceController.dispose();
-    _detailsController.dispose();
-    super.dispose();
-  }
-
-  void _submitSearch() {
-    if (!(_formKey.currentState?.validate() ?? false)) {
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Searching HS code...'),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF2F4F8),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.fromLTRB(22, 14, 22, 86),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF133665), Color(0xFF3A9EEA)],
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: -42,
-                      left: -38,
-                      child: Container(
-                        width: 120,
-                        height: 120,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0x14000000),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 54,
-                      right: -24,
-                      child: Container(
-                        width: 148,
-                        height: 148,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0x12000000),
-                        ),
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(
-                              Icons.public,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            SizedBox(width: 6),
-                            Text(
-                              'CeylonHS',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 34,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        const SizedBox(height: 20),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'HS Code Finder',
-                            style: TextStyle(
-                              color: Color(0xFF0F223C),
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Fill in the details below to your harmonized system code',
-                            style: TextStyle(
-                              color: Color(0xE6FFFFFF),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Transform.translate(
-                offset: const Offset(0, -48),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(12, 14, 12, 16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF8F9FB),
-                      borderRadius: BorderRadius.circular(22),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0x16000000),
-                          blurRadius: 12,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const _SearchFieldLabel('Email'),
-                          const SizedBox(height: 6),
-                          TextFormField(
-                            controller: _emailController,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: _searchInputDecoration('Enter your email'),
-                            validator: (value) {
-                              final String input = value?.trim() ?? '';
-                              if (input.isEmpty || !input.contains('@')) {
-                                return 'Enter a valid email';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _LabeledDropdown(
-                                  label: 'Made In',
-                                  hint: 'Select Country',
-                                  value: _selectedOrigin,
-                                  items: _countries,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _selectedOrigin = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: _LabeledDropdown(
-                                  label: 'Ship To',
-                                  hint: 'Select Destination',
-                                  value: _selectedDestination,
-                                  items: _countries,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _selectedDestination = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const _SearchFieldLabel('Item Price'),
-                                    const SizedBox(height: 6),
-                                    TextFormField(
-                                      controller: _itemPriceController,
-                                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                      decoration: _searchInputDecoration('0.00'),
-                                      validator: (value) {
-                                        final String input = value?.trim() ?? '';
-                                        if (input.isEmpty) {
-                                          return 'Required';
-                                        }
-                                        final double? parsed = double.tryParse(input);
-                                        if (parsed == null || parsed < 0) {
-                                          return 'Invalid';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: _LabeledDropdown(
-                                  label: 'Currency',
-                                  hint: 'Currency',
-                                  value: _selectedCurrency,
-                                  items: _currencies,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _selectedCurrency = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          const _SearchFieldLabel('Product Details'),
-                          const SizedBox(height: 6),
-                          TextFormField(
-                            controller: _detailsController,
-                            maxLines: 2,
-                            decoration: _searchInputDecoration('Enter product details........'),
-                            validator: (value) {
-                              if ((value ?? '').trim().isEmpty) {
-                                return 'Add product details';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          Center(
-                            child: SizedBox(
-                              width: 172,
-                              height: 42,
-                              child: ElevatedButton(
-                                onPressed: _submitSearch,
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 2,
-                                  backgroundColor: const Color(0xFF0B3EA8),
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(22),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'Search HS Code',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  InputDecoration _searchInputDecoration(String hint) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: const TextStyle(
-        color: Color(0xFF8D96A6),
-        fontSize: 14,
-      ),
-      filled: true,
-      fillColor: const Color(0xFFF1F4F9),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFFD0D8E5)),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFFD0D8E5)),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFF0B3EA8), width: 1.4),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFFD9534F)),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(color: Color(0xFFD9534F), width: 1.4),
-      ),
-      isDense: true,
-    );
-  }
-}
-
-class _SearchFieldLabel extends StatelessWidget {
-  const _SearchFieldLabel(this.text);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: const TextStyle(
-        color: Color(0xFF687388),
-        fontSize: 11,
-        fontWeight: FontWeight.w700,
-      ),
-    );
-  }
-}
-
-class _LabeledDropdown extends StatelessWidget {
-  const _LabeledDropdown({
-    required this.label,
-    required this.hint,
-    required this.items,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final String label;
-  final String hint;
-  final List<String> items;
-  final String? value;
-  final ValueChanged<String?> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _SearchFieldLabel(label),
-        const SizedBox(height: 6),
-        DropdownButtonFormField<String>(
-          value: value,
-          isExpanded: true,
-          icon: const Icon(Icons.keyboard_arrow_down_rounded),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: const Color(0xFFF1F4F9),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFFD0D8E5)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFFD0D8E5)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF0B3EA8), width: 1.4),
-            ),
-            isDense: true,
-          ),
-          hint: Text(
-            hint,
-            style: const TextStyle(
-              color: Color(0xFF8D96A6),
-              fontSize: 14,
-            ),
-          ),
-          style: const TextStyle(
-            color: Color(0xFF49576D),
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          ),
-          items: items
-              .map(
-                (item) => DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(item, overflow: TextOverflow.ellipsis),
-                ),
-              )
-              .toList(),
-          onChanged: onChanged,
-        ),
-      ],
     );
   }
 }
@@ -864,11 +433,71 @@ class _PricingCard extends StatelessWidget {
   }
 }
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
+
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final TextEditingController _nameCtrl = TextEditingController();
+  final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _passCtrl = TextEditingController();
+  final AuthService _auth = AuthService();
+  bool _busy = false;
+  String? _error;
 
   static const Color primaryBlue = Color(0xFF0B3EA8);
   static const Color secondaryBlue = Color(0xFF0A2E8A);
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final name = _nameCtrl.text.trim();
+    final email = _emailCtrl.text.trim();
+    final pass = _passCtrl.text;
+
+    if (name.isEmpty || email.isEmpty || pass.isEmpty) {
+      setState(() => _error = 'All fields are required');
+      return;
+    }
+    if (!email.contains('@')) {
+      setState(() => _error = 'Enter a valid email');
+      return;
+    }
+
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+
+    final success = await _auth.signUp(
+      email: email,
+      fullName: name,
+      password: pass,
+    );
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute<void>(builder: (_) => const MainHomePage()),
+        (route) => false,
+      );
+    } else {
+      setState(() {
+        _busy = false;
+        _error = 'Sign up failed. Check your connection.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -987,17 +616,16 @@ class SignUpPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 26),
-                        const _LoginMockField(
-                          hintText: 'Full Name',
-                        ),
+                        _AuthTextField(controller: _nameCtrl, hintText: 'Full Name'),
                         const SizedBox(height: 14),
-                        const _LoginMockField(
-                          hintText: 'Email or Phone Number',
-                        ),
+                        _AuthTextField(controller: _emailCtrl, hintText: 'Email'),
                         const SizedBox(height: 14),
-                        const _LoginMockField(
-                          hintText: 'Password',
-                        ),
+                        _AuthTextField(controller: _passCtrl, hintText: 'Password', obscure: true),
+                        if (_error != null) ...[
+                          const SizedBox(height: 12),
+                          Text(_error!,
+                              style: const TextStyle(color: Colors.redAccent, fontSize: 13)),
+                        ],
                         const SizedBox(height: 26),
                         SizedBox(
                           width: double.infinity,
@@ -1019,14 +647,7 @@ class SignUpPage extends StatelessWidget {
                               ],
                             ),
                             child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => const MainHomePage(),
-                                  ),
-                                  (route) => false,
-                                );
-                              },
+                              onPressed: _busy ? null : _submit,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 shadowColor: Colors.transparent,
@@ -1040,7 +661,14 @@ class SignUpPage extends StatelessWidget {
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              child: const Text('Sign up'),
+                              child: _busy
+                                  ? const SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white, strokeWidth: 2),
+                                    )
+                                  : const Text('Sign up'),
                             ),
                           ),
                         ),
@@ -1057,11 +685,60 @@ class SignUpPage extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _passCtrl = TextEditingController();
+  final AuthService _auth = AuthService();
+  bool _busy = false;
+  String? _error;
 
   static const Color primaryBlue = Color(0xFF0B3EA8);
   static const Color secondaryBlue = Color(0xFF0A2E8A);
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final email = _emailCtrl.text.trim();
+    final pass = _passCtrl.text;
+
+    if (email.isEmpty || pass.isEmpty) {
+      setState(() => _error = 'All fields are required');
+      return;
+    }
+
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+
+    final success = await _auth.login(email: email, password: pass);
+
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute<void>(builder: (_) => const MainHomePage()),
+        (route) => false,
+      );
+    } else {
+      setState(() {
+        _busy = false;
+        _error = 'Login failed. Check your credentials or connection.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1177,14 +854,23 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 26),
-                        const _LoginMockField(
-                          hintText: 'Email or Phone Number',
+                        _AuthTextField(
+                          controller: _emailCtrl,
+                          hintText: 'Email',
                           isPrimaryBorder: true,
                         ),
                         const SizedBox(height: 14),
-                        const _LoginMockField(
+                        _AuthTextField(
+                          controller: _passCtrl,
                           hintText: 'Password',
+                          obscure: true,
                         ),
+                        if (_error != null) ...[
+                          const SizedBox(height: 8),
+                          Text(_error!,
+                              style: const TextStyle(
+                                  color: Colors.redAccent, fontSize: 13)),
+                        ],
                         const SizedBox(height: 10),
                         Align(
                           alignment: Alignment.centerRight,
@@ -1229,14 +915,7 @@ class LoginPage extends StatelessWidget {
                               ],
                             ),
                             child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => const MainHomePage(),
-                                  ),
-                                  (route) => false,
-                                );
-                              },
+                              onPressed: _busy ? null : _submit,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 shadowColor: Colors.transparent,
@@ -1250,29 +929,43 @@ class LoginPage extends StatelessWidget {
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              child: const Text('Log in'),
+                              child: _busy
+                                  ? const SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white, strokeWidth: 2),
+                                    )
+                                  : const Text('Log in'),
                             ),
                           ),
                         ),
                         const SizedBox(height: 24),
-                        RichText(
-                          text: const TextSpan(
-                            style: TextStyle(
-                              color: Color(0xFF1D2F4D),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            children: [
-                              TextSpan(text: 'Don’t have your '),
-                              TextSpan(
-                                text: 'account?',
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: primaryBlue,
-                                ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute<void>(
+                                  builder: (_) => const SignUpPage()),
+                            );
+                          },
+                          child: RichText(
+                            text: const TextSpan(
+                              style: TextStyle(
+                                color: Color(0xFF1D2F4D),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
                               ),
-                              TextSpan(text: ' *'),
-                            ],
+                              children: [
+                                TextSpan(text: "Don't have an "),
+                                TextSpan(
+                                  text: 'account?',
+                                  style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    color: primaryBlue,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -1288,18 +981,26 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class _LoginMockField extends StatelessWidget {
-  const _LoginMockField({required this.hintText, this.isPrimaryBorder = false});
+class _AuthTextField extends StatelessWidget {
+  const _AuthTextField({
+    required this.controller,
+    required this.hintText,
+    this.isPrimaryBorder = false,
+    this.obscure = false,
+  });
 
+  final TextEditingController controller;
   final String hintText;
   final bool isPrimaryBorder;
+  final bool obscure;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 58,
       child: TextField(
-        obscureText: hintText == 'Password',
+        controller: controller,
+        obscureText: obscure,
         style: const TextStyle(
           color: Color(0xFF1D2F4D),
           fontSize: 16,
@@ -1346,6 +1047,7 @@ class MainHomePage extends StatefulWidget {
 
 class _MainHomePageState extends State<MainHomePage> {
   int _selectedIndex = 0;
+  String? _searchQuery;
 
   static const List<String> _labels = [
     'Home',
@@ -1361,16 +1063,27 @@ class _MainHomePageState extends State<MainHomePage> {
     Icons.person_rounded,
   ];
 
+  void _navigateToSearch(String query) {
+    setState(() {
+      _searchQuery = query;
+      _selectedIndex = 1;
+    });
+    // Clear the query after passing it so it doesn't re-trigger
+    Future.microtask(() {
+      if (mounted) setState(() => _searchQuery = null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: const [
-          _HomeContent(),
-          HsCodeFinderPage(isEmbedded: true),
-          PricingPage(isEmbedded: true),
-          _ProfileContent(),
+        children: [
+          _HomeContent(onSearch: _navigateToSearch),
+          SearchPage(isEmbedded: true, initialQuery: _searchQuery),
+          const PricingPage(isEmbedded: true),
+          const _ProfileContent(),
         ],
       ),
       bottomNavigationBar: Container(
@@ -1423,11 +1136,47 @@ class _MainHomePageState extends State<MainHomePage> {
   }
 }
 
-class _HomeContent extends StatelessWidget {
-  const _HomeContent();
+class _HomeContent extends StatefulWidget {
+  const _HomeContent({this.onSearch});
+
+  final void Function(String query)? onSearch;
+
+  @override
+  State<_HomeContent> createState() => _HomeContentState();
+}
+
+class _HomeContentState extends State<_HomeContent> {
+  final TextEditingController _searchController = TextEditingController();
+  final SearchHistoryService _historyService = SearchHistoryService();
+  List<String> _recentSearches = [];
 
   static const Color primaryBlue = Color(0xFF0B3EA8);
   static const Color secondaryBlue = Color(0xFF0A2E8A);
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecentSearches();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadRecentSearches() async {
+    final searches = await _historyService.getRecentSearches();
+    if (mounted) setState(() => _recentSearches = searches);
+  }
+
+  void _submitSearch() {
+    final q = _searchController.text.trim();
+    if (q.isNotEmpty && widget.onSearch != null) {
+      widget.onSearch!(q);
+      _searchController.clear();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1498,6 +1247,9 @@ class _HomeContent extends StatelessWidget {
                             const SizedBox(width: 10),
                             Expanded(
                               child: TextField(
+                                controller: _searchController,
+                                textInputAction: TextInputAction.search,
+                                onSubmitted: (_) => _submitSearch(),
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color: Color(0xFF1D2F4D),
@@ -1513,16 +1265,19 @@ class _HomeContent extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Container(
-                              margin: const EdgeInsets.all(4),
-                              width: 38,
-                              decoration: BoxDecoration(
-                                color: primaryBlue,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(
-                                Icons.mic_none_rounded,
-                                color: Colors.white,
+                            GestureDetector(
+                              onTap: _submitSearch,
+                              child: Container(
+                                margin: const EdgeInsets.all(4),
+                                width: 38,
+                                decoration: BoxDecoration(
+                                  color: primaryBlue,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                           ],
@@ -1572,16 +1327,31 @@ class _HomeContent extends StatelessWidget {
                       const SizedBox(height: 12),
                       SizedBox(
                         height: 98,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: const [
-                            _RecentSearchCard(),
-                            SizedBox(width: 10),
-                            _RecentSearchCard(),
-                            SizedBox(width: 10),
-                            _RecentSearchCard(),
-                          ],
-                        ),
+                        child: _recentSearches.isEmpty
+                            ? const Center(
+                                child: Text(
+                                  'No recent searches yet',
+                                  style: TextStyle(
+                                    color: Color(0xFF9BA5B7),
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              )
+                            : ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: _recentSearches.length.clamp(0, 5),
+                                separatorBuilder: (_, __) =>
+                                    const SizedBox(width: 10),
+                                itemBuilder: (_, i) => GestureDetector(
+                                  onTap: () {
+                                    if (widget.onSearch != null) {
+                                      widget.onSearch!(_recentSearches[i]);
+                                    }
+                                  },
+                                  child: _RecentSearchCard(
+                                      label: _recentSearches[i]),
+                                ),
+                              ),
                       ),
                       const SizedBox(height: 24),
                       const Text(
@@ -1593,55 +1363,73 @@ class _HomeContent extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      const Row(
+                      Row(
                         children: [
                           Expanded(
-                            child: _FeaturedCategoryCard(
-                              icon: Icons.local_dining_outlined,
-                              label: 'Spices',
+                            child: GestureDetector(
+                              onTap: () => widget.onSearch?.call('Spices'),
+                              child: const _FeaturedCategoryCard(
+                                icon: Icons.local_dining_outlined,
+                                label: 'Spices',
+                              ),
                             ),
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Expanded(
-                            child: _FeaturedCategoryCard(
-                              icon: Icons.checkroom_outlined,
-                              label: 'Apparel',
+                            child: GestureDetector(
+                              onTap: () => widget.onSearch?.call('Apparel'),
+                              child: const _FeaturedCategoryCard(
+                                icon: Icons.checkroom_outlined,
+                                label: 'Apparel',
+                              ),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 10),
-                      const Row(
+                      Row(
                         children: [
                           Expanded(
-                            child: _FeaturedCategoryCard(
-                              icon: Icons.edit_note_outlined,
-                              label: 'Stationery',
+                            child: GestureDetector(
+                              onTap: () => widget.onSearch?.call('Stationery'),
+                              child: const _FeaturedCategoryCard(
+                                icon: Icons.edit_note_outlined,
+                                label: 'Stationery',
+                              ),
                             ),
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Expanded(
-                            child: _FeaturedCategoryCard(
-                              icon: Icons.grain_outlined,
-                              label: 'Minerals',
+                            child: GestureDetector(
+                              onTap: () => widget.onSearch?.call('Minerals'),
+                              child: const _FeaturedCategoryCard(
+                                icon: Icons.grain_outlined,
+                                label: 'Minerals',
+                              ),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 10),
-                      const Row(
+                      Row(
                         children: [
                           Expanded(
-                            child: _FeaturedCategoryCard(
-                              icon: Icons.pets_outlined,
-                              label: 'Animal',
+                            child: GestureDetector(
+                              onTap: () => widget.onSearch?.call('Animal products'),
+                              child: const _FeaturedCategoryCard(
+                                icon: Icons.pets_outlined,
+                                label: 'Animal',
+                              ),
                             ),
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Expanded(
-                            child: _FeaturedCategoryCard(
-                              icon: Icons.spa_outlined,
-                              label: 'Cosmetics',
+                            child: GestureDetector(
+                              onTap: () => widget.onSearch?.call('Cosmetics'),
+                              child: const _FeaturedCategoryCard(
+                                icon: Icons.spa_outlined,
+                                label: 'Cosmetics',
+                              ),
                             ),
                           ),
                         ],
@@ -1657,11 +1445,68 @@ class _HomeContent extends StatelessWidget {
   }
 }
 
-class _ProfileContent extends StatelessWidget {
+class _ProfileContent extends StatefulWidget {
   const _ProfileContent();
 
   @override
+  State<_ProfileContent> createState() => _ProfileContentState();
+}
+
+class _ProfileContentState extends State<_ProfileContent> {
+  static const Color primaryBlue = Color(0xFF0B3EA8);
+  final AuthService _auth = AuthService();
+
+  Future<void> _logout() async {
+    await _auth.logout();
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute<void>(builder: (_) => const IntroPage()),
+      (route) => false,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final user = _auth.user;
+    final isLoggedIn = _auth.isLoggedIn;
+
+    if (!isLoggedIn || user == null) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.person_outline_rounded,
+                  size: 64, color: primaryBlue),
+              const SizedBox(height: 16),
+              const Text('Not logged in',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1D2F4D))),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                        builder: (_) => const LoginPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryBlue,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+                child: const Text('Sign In'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -1671,12 +1516,24 @@ class _ProfileContent extends StatelessWidget {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
-                  Icon(
-                    Icons.person_outline_rounded,
-                    color: Color(0xFF0B3EA8),
-                    size: 22,
-                  ),
+                children: [
+                  if (user.isAdmin)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: primaryBlue.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text('Admin',
+                          style: TextStyle(
+                              color: primaryBlue,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700)),
+                    ),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.person_outline_rounded,
+                      color: primaryBlue, size: 22),
                 ],
               ),
               const SizedBox(height: 10),
@@ -1685,33 +1542,32 @@ class _ProfileContent extends StatelessWidget {
                 height: 108,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFF0B3EA8), width: 2),
+                  border: Border.all(color: primaryBlue, width: 2),
                 ),
-                child: const Icon(
-                  Icons.person_outline_rounded,
-                  size: 58,
-                  color: Color(0xFF0B3EA8),
-                ),
+                child: const Icon(Icons.person_outline_rounded,
+                    size: 58, color: primaryBlue),
               ),
               const SizedBox(height: 14),
-              const Text(
-                'Jane Doe',
-                style: TextStyle(
+              Text(
+                user.displayName ?? 'User',
+                style: const TextStyle(
                   color: Color(0xFF1D2F4D),
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                'jane.doe@example.com',
-                style: TextStyle(
+              Text(
+                user.email,
+                style: const TextStyle(
                   color: Color(0xFF5D6778),
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 24),
+
+              // Navigation section
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
@@ -1723,113 +1579,59 @@ class _ProfileContent extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Account Settings',
-                      style: TextStyle(
-                        color: Color(0xFF1D2F4D),
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
+                    const Text('My Activity',
+                        style: TextStyle(
+                          color: Color(0xFF1D2F4D),
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                        )),
+                    const SizedBox(height: 14),
+                    _ProfileNavRow(
+                      icon: Icons.favorite_rounded,
+                      label: 'Favorites',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                            builder: (_) => const FavoritesPage()),
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            children: const [
-                              _ProfileSettingRow(
-                                icon: Icons.person_outline_rounded,
-                                label: 'Edit Profile',
-                              ),
-                              SizedBox(height: 14),
-                              _ProfileSettingRow(
-                                icon: Icons.credit_card_outlined,
-                                label: 'Payment Methods',
-                              ),
-                              SizedBox(height: 14),
-                              _ProfileSettingRow(
-                                icon: Icons.location_on_outlined,
-                                label: 'Change Password',
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        SizedBox(
-                          width: 146,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Subscription Plan',
-                                style: TextStyle(
-                                  color: Color(0xFF1D2F4D),
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              const Text(
-                                'Business (\$5/month)',
-                                style: TextStyle(
-                                  color: Color(0xFF5D6778),
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 14),
-                              SizedBox(
-                                width: 92,
-                                height: 34,
-                                child: ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                    elevation: 0,
-                                    backgroundColor: Colors.white,
-                                    foregroundColor: const Color(0xFF0B3EA8),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(17),
-                                      side: const BorderSide(color: Color(0xFFD5DDE8)),
-                                    ),
-                                    textStyle: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  child: const Text('Manage'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    const SizedBox(height: 12),
+                    _ProfileNavRow(
+                      icon: Icons.history_rounded,
+                      label: 'Search History',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                            builder: (_) => const HistoryPage()),
+                      ),
                     ),
+                    if (user.isAdmin) ...[
+                      const SizedBox(height: 12),
+                      _ProfileNavRow(
+                        icon: Icons.dashboard_rounded,
+                        label: 'Admin Dashboard',
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                              builder: (_) => const AdminDashboardPage()),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
+
               const SizedBox(height: 22),
               SizedBox(
                 width: 130,
                 height: 42,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute<void>(builder: (_) => const IntroPage()),
-                      (route) => false,
-                    );
-                  },
+                  onPressed: _logout,
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
-                    backgroundColor: const Color(0xFF0B3EA8),
+                    backgroundColor: primaryBlue,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                        borderRadius: BorderRadius.circular(10)),
                     textStyle: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
+                        fontSize: 14, fontWeight: FontWeight.w700),
                   ),
                   child: const Text('Log Out'),
                 ),
@@ -1842,29 +1644,41 @@ class _ProfileContent extends StatelessWidget {
   }
 }
 
-class _ProfileSettingRow extends StatelessWidget {
-  const _ProfileSettingRow({required this.icon, required this.label});
+class _ProfileNavRow extends StatelessWidget {
+  const _ProfileNavRow({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
 
   final IconData icon;
   final String label;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: const Color(0xFF0B3EA8)),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            label,
-            style: const TextStyle(
-              color: Color(0xFF1D2F4D),
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: const Color(0xFF0B3EA8)),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(label,
+                  style: const TextStyle(
+                    color: Color(0xFF1D2F4D),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  )),
             ),
-          ),
+            const Icon(Icons.chevron_right_rounded,
+                size: 20, color: Color(0xFF9DA5B4)),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -1913,7 +1727,9 @@ class _HomeActionCard extends StatelessWidget {
 }
 
 class _RecentSearchCard extends StatelessWidget {
-  const _RecentSearchCard();
+  const _RecentSearchCard({this.label = 'Ceylon Tea'});
+
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -1927,26 +1743,19 @@ class _RecentSearchCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           Text(
-            'Ceylon Tea -',
-            style: TextStyle(
+            label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
               color: Color(0xFF2C3442),
               fontSize: 14,
               fontWeight: FontWeight.w700,
             ),
           ),
-          SizedBox(height: 2),
-          Text(
-            '0902.10',
-            style: TextStyle(
-              color: Color(0xFF5D6778),
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Spacer(),
-          Align(
+          const Spacer(),
+          const Align(
             alignment: Alignment.bottomRight,
             child: Icon(
               Icons.access_time_rounded,
