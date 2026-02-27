@@ -24,11 +24,11 @@ async def lifespan(app: FastAPI):
     # ── Startup ──
     logger.info("Starting HS Code Search Engine API...")
 
-    # Initialize the search service (loads ChromaDB + builds fuzzy index)
+    # Initialize the search service via factory (Typesense or FAISS fallback)
     try:
-        from app.services.search_service import search_service
-        search_service.initialize()
-        logger.info("Search service initialized successfully")
+        from app.services.search_factory import get_search_service
+        svc = get_search_service()
+        logger.info(f"Search service initialized: {type(svc).__name__}")
     except Exception as e:
         logger.warning(f"Search service initialization failed: {e}")
         logger.warning("Search endpoints will attempt lazy initialization on first request.")
@@ -79,10 +79,12 @@ app.add_middleware(
 from app.api.routes.search import router as search_router
 from app.api.routes.users import router as users_router
 from app.api.routes.admin import router as admin_router
+from app.api.routes.synonyms import router as synonyms_router
 
 app.include_router(search_router)
 app.include_router(users_router)
 app.include_router(admin_router)
+app.include_router(synonyms_router)
 
 # Serve the web search UI
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
@@ -106,10 +108,11 @@ async def api_root():
 @app.get("/health", tags=["health"])
 async def health_check():
     """Health check endpoint for monitoring."""
-    from app.services.search_service import search_service
+    from app.services.search_factory import search_service
 
+    backend_name = type(search_service).__name__ if search_service else "not initialized"
     return {
         "status": "healthy",
-        "search_initialized": search_service._initialized,
-        "search_index_size": len(search_service._hscode_index) if search_service._initialized else 0,
+        "search_backend": backend_name,
+        "search_initialized": search_service.is_initialized if search_service else False,
     }

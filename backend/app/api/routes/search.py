@@ -4,7 +4,7 @@ Public endpoints (no auth required for search).
 """
 
 from fastapi import APIRouter, Query, HTTPException
-from app.services.search_service import search_service
+from app.services.search_factory import get_search_service
 from app.models.schemas import SearchResponse, SearchResult, HSCodeDetail, CategorySummary
 
 router = APIRouter(prefix="/api/v1", tags=["search"])
@@ -23,11 +23,13 @@ async def search_hs_codes(
     - Typo tolerant: "Samung S24 Ulrta" → corrected and matched
     - Returns results ranked by relevance percentage
     """
-    result = search_service.search(query=q, top_k=limit)
+    search_svc = get_search_service()
+    result = search_svc.search(query=q, top_k=limit)
 
     return SearchResponse(
         query=result["query"],
         corrected_query=result["corrected_query"],
+        enrichment_info=result.get("enrichment_info"),
         total_results=result["total_results"],
         results=[
             SearchResult(
@@ -47,7 +49,8 @@ async def search_hs_codes(
 @router.get("/hs/{hscode}", response_model=HSCodeDetail)
 async def get_hs_code(hscode: str):
     """Get detailed info for a specific HS code, including children and hierarchy."""
-    detail = search_service.get_hs_code_detail(hscode)
+    search_svc = get_search_service()
+    detail = search_svc.get_hs_code_detail(hscode)
     if detail is None:
         raise HTTPException(status_code=404, detail=f"HS code '{hscode}' not found.")
     return detail
@@ -56,4 +59,5 @@ async def get_hs_code(hscode: str):
 @router.get("/categories", response_model=list[CategorySummary])
 async def get_categories():
     """Get all HS code sections and their chapter headings for browsing."""
-    return search_service.get_categories()
+    search_svc = get_search_service()
+    return search_svc.get_categories()

@@ -30,6 +30,25 @@ class Settings(BaseSettings):
     # Embedding
     embedding_model: str = "all-MiniLM-L6-v2"
 
+    # Search backend: "typesense" or "faiss"
+    search_backend: str = "faiss"
+
+    # Typesense
+    typesense_host: str = "localhost"
+    typesense_port: int = 8108
+    typesense_protocol: str = "http"
+    typesense_api_key: str = "xyz"  # default dev key
+    typesense_collection: str = "hs_codes"
+
+    # Enrichment — multi-provider cascade (Groq → Gemini → Cohere)
+    groq_api_key: str = ""
+    groq_model: str = "llama-3.3-70b-versatile"
+    gemini_api_key: str = ""
+    gemini_model: str = "gemini-2.0-flash"
+    cohere_api_key: str = ""
+    cohere_model: str = "command-r"
+    enrichment_confidence_threshold: float = 0.35  # trigger enrichment below this
+
     @property
     def cors_origins_list(self) -> List[str]:
         try:
