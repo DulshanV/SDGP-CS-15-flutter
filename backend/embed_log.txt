@@ -1,0 +1,73 @@
+﻿============================================================
+HS Code Dataset Embedding Script (FAISS)
+============================================================
+
+[1/4] Loading dataset from: C:\Users\rdpj1\Desktop\hs code search engine\HS code search engine\all_chapters_extracted.csv
+  Loaded 9963 rows with columns: ['section', 'hscode', 'description', 'parent', 'level', 'datetime_extracted']
+
+[2/4] Preparing documents...
+  Prepared 9963 documents (0 skipped)
+
+[3/4] Embedding 9963 documents...
+  Model: all-MiniLM-L6-v2
+  Device: cpu
+  This may take 10-20 minutes on CPU. Be patient!
+
+  [256/9963] 14.9s elapsed, ~563s remaining
+  [512/9963] 46.1s elapsed, ~851s remaining
+  [768/9963] 56.7s elapsed, ~679s remaining
+  [1024/9963] 66.0s elapsed, ~576s remaining
+  [1280/9963] 76.1s elapsed, ~516s remaining
+  [1536/9963] 86.8s elapsed, ~476s remaining
+  [1792/9963] 103.3s elapsed, ~471s remaining
+  [2048/9963] 113.8s elapsed, ~440s remaining
+  [2304/9963] 127.5s elapsed, ~424s remaining
+  [2560/9963] 137.7s elapsed, ~398s remaining
+  [2816/9963] 178.7s elapsed, ~454s remaining
+  [3072/9963] 190.9s elapsed, ~428s remaining
+  [3328/9963] 204.2s elapsed, ~407s remaining
+  [3584/9963] 224.6s elapsed, ~400s remaining
+  [3840/9963] 246.1s elapsed, ~392s remaining
+  [4096/9963] 263.8s elapsed, ~378s remaining
+  [4352/9963] 271.9s elapsed, ~351s remaining
+  [4608/9963] 279.0s elapsed, ~324s remaining
+  [4864/9963] 285.7s elapsed, ~299s remaining
+  [5120/9963] 292.5s elapsed, ~277s remaining
+  [5376/9963] 296.6s elapsed, ~253s remaining
+  [5632/9963] 302.3s elapsed, ~232s remaining
+  [5888/9963] 314.3s elapsed, ~218s remaining
+  [6144/9963] 320.0s elapsed, ~199s remaining
+  [6400/9963] 329.2s elapsed, ~183s remaining
+  [6656/9963] 336.2s elapsed, ~167s remaining
+  [6912/9963] 344.7s elapsed, ~152s remaining
+  [7168/9963] 354.5s elapsed, ~138s remaining
+  [7424/9963] 358.1s elapsed, ~122s remaining
+  [7680/9963] 363.9s elapsed, ~108s remaining
+  [7936/9963] 370.6s elapsed, ~95s remaining
+  [8192/9963] 376.2s elapsed, ~81s remaining
+  [8448/9963] 382.3s elapsed, ~69s remaining
+  [8704/9963] 388.0s elapsed, ~56s remaining
+  [8960/9963] 393.1s elapsed, ~44s remaining
+  [9216/9963] 396.5s elapsed, ~32s remaining
+  [9472/9963] 401.4s elapsed, ~21s remaining
+  [9728/9963] 404.9s elapsed, ~10s remaining
+  [9963/9963] 408.6s elapsed, ~0s remaining
+
+  Embedding complete in 408.7s (6.8 min)
+  Matrix shape: (9963, 384)
+
+[4/4] Building FAISS index and saving to disk...
+  FAISS index saved: C:\Users\rdpj1\Desktop\hs code search engine\HS code search engine\backend\data\chroma_db\hs_codes.index (9963 vectors, dim=384)
+  Metadata saved: C:\Users\rdpj1\Desktop\hs code search engine\HS code search engine\backend\data\chroma_db\hs_codes_metadata.json
+  Descriptions saved: C:\Users\rdpj1\Desktop\hs code search engine\HS code search engine\backend\data\chroma_db\hs_codes_descriptions.json
+
+============================================================
+Embedding complete!
+  Total time: 409.0s (6.8 min)
+  Vectors in index: 9963
+  Dimension: 384
+  Files saved to: C:\Users\rdpj1\Desktop\hs code search engine\HS code search engine\backend\data\chroma_db
+
+The embeddings are persisted to disk. You can now start the API server.
+Re-running this script will skip embedding if the index exists.
+============================================================
