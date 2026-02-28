@@ -1,0 +1,42 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches: [master]  # Change to match your official repo's deploy branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: root
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script_stop: true
+          command_timeout: 20m
+          script: |
+            cd ~/ceylonhs
+            git pull origin master
+            
+            echo "=> Installing Next.js dependencies..."
+            cd Nextjs/nextjs
+            npm install
+            
+            echo "=> Building Next.js production bundle..."
+            npm run build
+            
+            echo "=> Restarting PM2 Frontend..."
+            pm2 restart ceylonhs-frontend
+            
+            echo "=> Installing Python dependencies..."
+            cd ../../backend
+            source venv/bin/activate
+            pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+            deactivate
+            
+            echo "=> Restarting Backend..."
+            sudo systemctl restart ceylonhs-backend
+            
+            echo "✅ Deployment complete!"

@@ -54,8 +54,12 @@ async def verify_firebase_token(
 
     token = credentials.credentials
 
-    # Dev mode: accept "dev-token-{uid}" for local testing
+    # Dev mode: accept "dev-token-{uid}" for local testing (DISABLED in production)
     if token.startswith("dev-token-"):
+        from app.core.config import settings
+        if settings.is_production:
+            logger.warning("Dev token rejected in production mode.")
+            raise HTTPException(status_code=401, detail="Dev tokens are not accepted in production.")
         uid = token.replace("dev-token-", "")
         return {
             "uid": uid,

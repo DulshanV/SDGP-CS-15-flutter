@@ -22,15 +22,27 @@ from app.models.schemas import (
 router = APIRouter(prefix="/api/v1/users", tags=["users"])
 
 
-async def _get_or_create_user(db: AsyncSession, firebase_uid: str) -> User:
-    """Get user by Firebase UID or raise 404."""
+
+async def _get_or_create_user(db: AsyncSession, firebase_uid: str, token_data: dict | None = None) -> User:
+    """Get user by Firebase UID, auto-creating from token_data if not found."""
     result = await db.execute(
         select(User).where(User.firebase_uid == firebase_uid)
     )
     user = result.scalar_one_or_none()
     if user is None:
-        raise HTTPException(status_code=404, detail="User not found. Call /sync first.")
+        if token_data is None:
+            raise HTTPException(status_code=404, detail="User not found. Call /sync first.")
+        # Auto-create from Firebase token
+        user = User(
+            firebase_uid=firebase_uid,
+            email=token_data.get("email", f"{firebase_uid}@unknown.local"),
+            display_name=token_data.get("name") or token_data.get("display_name"),
+            photo_url=token_data.get("picture") or token_data.get("photo_url"),
+        )
+        db.add(user)
+        await db.flush()
     return user
+
 
 
 @router.post("/sync", response_model=UserResponse)
@@ -75,7 +87,7 @@ async def get_current_user(
     db: AsyncSession = Depends(get_db),
 ):
     """Get the current authenticated user's profile."""
-    return await _get_or_create_user(db, token_data["uid"])
+    return await _get_or_create_user(db, token_data["uid"], token_data)
 
 
 # ── Search History ──
@@ -89,7 +101,7 @@ async def get_search_history(
     db: AsyncSession = Depends(get_db),
 ):
     """Get paginated search history for the current user."""
-    user = await _get_or_create_user(db, token_data["uid"])
+    user = await _get_or_create_user(db, token_data["uid"], token_data)
 
     # Count total
     count_result = await db.execute(
@@ -124,7 +136,7 @@ async def add_search_history(
     db: AsyncSession = Depends(get_db),
 ):
     """Record a search in history. Called by Flutter after displaying results."""
-    user = await _get_or_create_user(db, token_data["uid"])
+    user = await _get_or_create_user(db, token_data["uid"], token_data)
 
     entry = SearchHistory(
         user_id=user.id,
@@ -145,7 +157,7 @@ async def clear_search_history(
     db: AsyncSession = Depends(get_db),
 ):
     """Clear all search history for the current user."""
-    user = await _get_or_create_user(db, token_data["uid"])
+    user = await _get_or_create_user(db, token_data["uid"], token_data)
     await db.execute(
         delete(SearchHistory).where(SearchHistory.user_id == user.id)
     )
@@ -163,7 +175,7 @@ async def get_favorites(
     db: AsyncSession = Depends(get_db),
 ):
     """Get paginated favorites for the current user."""
-    user = await _get_or_create_user(db, token_data["uid"])
+    user = await _get_or_create_user(db, token_data["uid"], token_data)
 
     count_result = await db.execute(
         select(func.count(Favorite.id)).where(Favorite.user_id == user.id)
@@ -193,7 +205,7 @@ async def add_favorite(
     db: AsyncSession = Depends(get_db),
 ):
     """Add an HS code to favorites."""
-    user = await _get_or_create_user(db, token_data["uid"])
+    user = await _get_or_create_user(db, token_data["uid"], token_data)
 
     # Check if already favorited
     existing = await db.execute(
@@ -224,7 +236,7 @@ async def remove_favorite(
     db: AsyncSession = Depends(get_db),
 ):
     """Remove an HS code from favorites."""
-    user = await _get_or_create_user(db, token_data["uid"])
+    user = await _get_or_create_user(db, token_data["uid"], token_data)
 
     result = await db.execute(
         select(Favorite).where(

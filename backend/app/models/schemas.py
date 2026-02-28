@@ -25,6 +25,7 @@ class SearchResult(BaseModel):
 class SearchResponse(BaseModel):
     query: str
     corrected_query: Optional[str] = None
+    enrichment_info: Optional[str] = None
     total_results: int
     results: List[SearchResult]
 
