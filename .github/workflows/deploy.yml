@@ -2,7 +2,7 @@ name: Deploy to DigitalOcean
 
 on:
   push:
-    branches: [master]  # Change to match your official repo's deploy branch
+    branches: [main]
 
 jobs:
   deploy:
@@ -18,7 +18,7 @@ jobs:
           command_timeout: 20m
           script: |
             cd ~/ceylonhs
-            git pull origin master
+            git pull origin main
             
             echo "=> Installing Next.js dependencies..."
             cd Nextjs/nextjs
