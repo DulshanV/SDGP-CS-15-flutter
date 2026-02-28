@@ -3,6 +3,11 @@ name: Deploy to DigitalOcean
 on:
   push:
     branches: [main]
+    paths:
+      - 'Nextjs/**'
+      - 'backend/**'
+      - 'deploy.sh'
+      - '.github/workflows/deploy.yml'
 
 jobs:
   deploy:
