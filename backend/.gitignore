@@ -13,8 +13,14 @@ venv/
 .env
 firebase-service-account.json
 
-# ChromaDB persistent data (large, embed locally)
+# ChromaDB / FAISS persistent data (large, rebuild locally)
 data/chroma_db/
+data/hscode.db
+data/hscode.db-shm
+data/hscode.db-wal
+
+# Docker
+docker-compose.override.yml
 
 # IDE
 .idea/
@@ -25,6 +31,12 @@ data/chroma_db/
 # OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+embed_*.log
+embed_*.txt
+index_log.txt
 
 # Keep the data directory structure
 !data/.gitkeep

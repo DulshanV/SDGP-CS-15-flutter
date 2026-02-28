@@ -8,11 +8,14 @@ import json
 
 
 class Settings(BaseSettings):
+    # Environment: "development" or "production"
+    env: str = "development"
+
     # Database
     database_url: str = "postgresql+asyncpg://hscode_user:hscode_pass@localhost:5432/hscode_db"
     database_url_sync: str = "postgresql+psycopg2://hscode_user:hscode_pass@localhost:5432/hscode_db"
 
-    # ChromaDB
+    # ChromaDB / FAISS data directory
     chroma_persist_dir: str = "./data/chroma_db"
 
     # Dataset
@@ -48,6 +51,14 @@ class Settings(BaseSettings):
     cohere_api_key: str = ""
     cohere_model: str = "command-r"
     enrichment_confidence_threshold: float = 0.35  # trigger enrichment below this
+
+    # Rate limiting
+    rate_limit_search: str = "30/minute"  # search endpoint
+    rate_limit_default: str = "60/minute"  # other endpoints
+
+    @property
+    def is_production(self) -> bool:
+        return self.env.lower() == "production"
 
     @property
     def cors_origins_list(self) -> List[str]:

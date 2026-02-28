@@ -20,6 +20,7 @@ from rapidfuzz import fuzz, process
 from spellchecker import SpellChecker
 from app.core.config import settings
 from app.services.search_base import BaseSearchService
+from app.services.training_collector import training_collector
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +52,7 @@ class FaissSearchService(BaseSearchService):
         self._vocabulary: List[str] = []  # unique words from descriptions for typo correction
         self._spell: Optional[SpellChecker] = None  # English dictionary spell checker
         self._enrichment_svc = None  # Gemini enrichment (lazy-loaded)
+        self._training_collector = None  # Training data feedback loop
         self._initialized = False
 
     def _build_vocabulary(self):
@@ -149,8 +151,73 @@ class FaissSearchService(BaseSearchService):
             except Exception as e:
                 logger.warning(f"Enrichment service unavailable: {e}")
 
+        # Initialize training data collector (feedback loop)
+        try:
+            training_collector.initialize()
+            self._training_collector = training_collector
+            logger.info("Training data collector initialized")
+        except Exception as e:
+            self._training_collector = None
+            logger.warning(f"Training data collector unavailable: {e}")
+
         self._initialized = True
         logger.info("SearchService initialized successfully")
+
+    def reload(self):
+        """
+        Hot-reload the FAISS index, metadata, and vocabulary from disk.
+        Called after a new dataset is embedded and saved.
+        The embedding model is kept — only data is refreshed.
+        """
+        logger.info("Hot-reloading FAISS search service...")
+
+        if not os.path.exists(INDEX_FILE) or not os.path.exists(METADATA_FILE):
+            logger.error("Cannot reload: index or metadata files missing")
+            return
+
+        # Reload index
+        new_index = faiss.read_index(INDEX_FILE)
+        logger.info(f"New index loaded: {new_index.ntotal} vectors, dim={new_index.d}")
+
+        # Reload metadata
+        with open(METADATA_FILE, "r", encoding="utf-8") as f:
+            new_metadatas = json.load(f)
+
+        # Reload descriptions
+        if os.path.exists(DESCRIPTIONS_FILE):
+            with open(DESCRIPTIONS_FILE, "r", encoding="utf-8") as f:
+                new_descriptions = json.load(f)
+        else:
+            new_descriptions = [m.get("description", "") for m in new_metadatas]
+
+        # Swap atomically
+        self._index = new_index
+        self._metadatas = new_metadatas
+        self._descriptions = new_descriptions
+
+        # Rebuild lookups
+        self._hscode_to_idx = {}
+        self._hscode_meta = {}
+        for idx, meta in enumerate(self._metadatas):
+            hscode = meta.get("hscode", "")
+            if hscode:
+                self._hscode_to_idx[hscode] = idx
+                self._hscode_meta[hscode] = meta
+
+        # Rebuild vocabulary
+        self._build_vocabulary()
+
+        # Rebuild spell checker with new vocabulary
+        self._spell = SpellChecker(distance=2)
+        DOMAIN_BOOST = 1_000_000
+        boosted_words = {}
+        for word, count in self._vocab_counts.items():
+            boosted_words[word] = count * DOMAIN_BOOST
+        self._spell.word_frequency.load_words(self._vocabulary)
+        for word, freq in boosted_words.items():
+            self._spell.word_frequency._dictionary[word] = freq
+
+        logger.info(f"Hot-reload complete: {self._index.ntotal} vectors, {len(self._hscode_meta)} HS codes")
 
     def _encode_query(self, query: str) -> np.ndarray:
         """Encode a query string into a normalized embedding vector."""
@@ -471,20 +538,33 @@ class FaissSearchService(BaseSearchService):
         #      (i.e. FAISS matched on embedding similarity but the term is foreign
         #       to the HS vocabulary — e.g. "oreo" → matched "ores" at ~37%)
         enrichment_info = None
+        enriched_query = None
         _should_enrich = False
         if self._enrichment_svc and merged:
             top_score = merged[0]["relevance_pct"]
             if top_score < 35:
                 _should_enrich = True
-            elif top_score < 55:
-                # Check if query terms actually appear in the top results
+            elif top_score < 65:
+                # Check if query terms actually appear in the top results.
+                # Use a RATIO check: if fewer than half the query words appear
+                # in the top-3 descriptions, the query likely contains brand /
+                # model names that FAISS can't resolve on its own.
+                # e.g. "rolls royce phantom 8 centurion long wheel base" —
+                #       only "wheel" matches, 1/7 = 14% → enrich.
                 q_words = {w.lower() for w in query.split() if len(w) >= 3 and not w.isdigit()}
                 top_descs = " ".join(
                     r["description"].lower() for r in merged[:3]
                 )
-                if q_words and not any(w in top_descs for w in q_words):
-                    _should_enrich = True
-                    logger.info(f"Query words {q_words} absent from top results — triggering enrichment")
+                if q_words:
+                    matched_count = sum(1 for w in q_words if w in top_descs)
+                    match_ratio = matched_count / len(q_words)
+                    if match_ratio < 0.5:
+                        _should_enrich = True
+                        logger.info(
+                            f"Only {matched_count}/{len(q_words)} query words "
+                            f"({match_ratio:.0%}) found in top results — "
+                            f"triggering enrichment"
+                        )
         if _should_enrich:
             logger.info(f"Enrichment triggered (top: {merged[0]['relevance_pct']}%) for '{query}'")
             try:
@@ -526,6 +606,19 @@ class FaissSearchService(BaseSearchService):
         effective_corrected = None
         if corrected_query and corrected_query.lower() != query.lower():
             effective_corrected = corrected_query
+
+        # ── Feedback loop: log search for training data collection ──
+        if self._training_collector and merged:
+            try:
+                self._training_collector.log_search(
+                    query=query,
+                    corrected_query=effective_corrected,
+                    enrichment_used=bool(enrichment_info),
+                    enrichment_keywords=enriched_query,
+                    results=merged,
+                )
+            except Exception as e:
+                logger.debug(f"Training data logging failed (non-critical): {e}")
 
         return {
             "query": query,

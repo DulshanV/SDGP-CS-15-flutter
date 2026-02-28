@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+:root {
+  --brand-from: #4f46e5;
+  --brand-to: #7c3aed;
+  --glass-bg: rgba(255, 255, 255, 0.07);
+  --glass-bg-light: rgba(255, 255, 255, 0.15);
+  --glass-bg-solid: rgba(255, 255, 255, 0.95);
+  --glass-bdr: rgba(255, 255, 255, 0.14);
+  --glass-bdr-light: rgba(255, 255, 255, 0.3);
+  --text: #f0f0ff;
+  --text-dark: #2d3748;
+  --text-muted: #718096;
+  --muted: rgba(240, 240, 255, 0.55);
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --input-bdr: rgba(255, 255, 255, 0.18);
+  --error-bg: rgba(239, 68, 68, 0.15);
+  --error-bdr: rgba(239, 68, 68, 0.4);
+  --error-text: #fca5a5;
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --success-bdr: rgba(16, 185, 129, 0.3);
+  --success-text: #6ee7b7;
+  --info-bg: rgba(99, 102, 241, 0.15);
+  --info-bdr: rgba(99, 102, 241, 0.35);
+  --info-text: #c7d2fe;
+
+  /* Page-level tokens (light defaults) */
+  --page-bg: #F2F4F8;
+  --page-surface: #ffffff;
+  --page-border: #e5e7eb;
+  --page-text: #111827;
+  --page-text-muted: #6b7280;
+  --page-header-bg: #ffffff;
+}
+
+/* Dark mode overrides — applied by ThemeProvider via .dark on <html> */
+html.dark {
+  color-scheme: dark;
+
+  --page-bg: #0f1117;
+  --page-surface: #1a1d27;
+  --page-border: #2d3044;
+  --page-text: #f0f2ff;
+  --page-text-muted: #8b92b0;
+  --page-header-bg: #13151f;
+
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-light: rgba(255, 255, 255, 0.07);
+  --glass-bg-solid: rgba(20, 22, 35, 0.97);
+  --glass-bdr: rgba(255, 255, 255, 0.08);
+  --glass-bdr-light: rgba(255, 255, 255, 0.12);
+  --text-dark: #e2e8f0;
+  --text-muted: #94a3b8;
+}
+
+
+@theme inline {
+  --color-brand-from: var(--brand-from);
+  --color-brand-to: var(--brand-to);
+  --color-glass-bg: var(--glass-bg);
+  --color-glass-bg-light: var(--glass-bg-light);
+  --color-glass-bg-solid: var(--glass-bg-solid);
+  --color-glass-bdr: var(--glass-bdr);
+  --color-glass-bdr-light: var(--glass-bdr-light);
+  --color-text-light: var(--text);
+  --color-text-dark: var(--text-dark);
+  --color-text-muted: var(--text-muted);
+  --color-muted: var(--muted);
+
+  --color-page: var(--page-bg);
+  --color-surface: var(--page-surface);
+  --color-border: var(--page-border);
+  --color-copy: var(--page-text);
+  --color-copy-muted: var(--page-text-muted);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+.bg-gradient-main {
+  background: linear-gradient(135deg, oklch(0.3 0.18 250) 0%, oklch(0.4 0.15 250) 50%, oklch(0.35 0.2 260) 100%);
+}
+
+.bg-auth {
+  background: #0d0b1e;
+}
+
+.glass-panel {
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-bdr-light);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid var(--glass-bdr);
+  border-radius: 24px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+.glass-form {
+  background: var(--glass-bg-solid);
+  backdrop-filter: blur(30px);
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes neonGlow {
+  0% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4), 0 0 70px rgba(255, 255, 255, 0.3), 0 0 100px rgba(255, 255, 255, 0.2);
+  }
+
+  50% {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 1), 0 0 25px rgba(255, 255, 255, 0.9), 0 0 35px rgba(255, 255, 255, 0.7), 0 0 50px rgba(255, 255, 255, 0.5), 0 0 80px rgba(255, 255, 255, 0.4), 0 0 120px rgba(255, 255, 255, 0.3);
+  }
+
+  100% {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4), 0 0 70px rgba(255, 255, 255, 0.3), 0 0 100px rgba(255, 255, 255, 0.2);
+  }
+}
+
+@keyframes rotate3d {
+  from {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+
+  to {
+    transform: rotateY(360deg) rotateX(360deg);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

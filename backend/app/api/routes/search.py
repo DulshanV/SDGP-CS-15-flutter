@@ -3,15 +3,19 @@ Search API routes.
 Public endpoints (no auth required for search).
 """
 
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Query, Request, HTTPException
 from app.services.search_factory import get_search_service
 from app.models.schemas import SearchResponse, SearchResult, HSCodeDetail, CategorySummary
+from app.core.config import settings
+from app.core.limiter import limiter
 
 router = APIRouter(prefix="/api/v1", tags=["search"])
 
 
 @router.get("/search", response_model=SearchResponse)
+@limiter.limit(settings.rate_limit_search)
 async def search_hs_codes(
+    request: Request,
     q: str = Query(..., min_length=1, max_length=500, description="Search query"),
     limit: int = Query(10, ge=1, le=50, description="Maximum results to return"),
 ):

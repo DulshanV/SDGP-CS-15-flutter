@@ -1,0 +1,66 @@
+# ══════════════════════════════════════════════════════════════════════════
+# .gitignore for CeylonHS official university repo
+# ══════════════════════════════════════════════════════════════════════════
+
+# ── Environment / Secrets ──
+.env
+.env.*
+!.env.example
+!.env.local.example
+
+# ── Python ──
+backend/venv/
+backend/__pycache__/
+backend/.pytest_cache/
+**/__pycache__/
+**/*.pyc
+*.pyo
+
+# ── Database & Vector Index (generated files — run embed_dataset.py to rebuild) ──
+backend/data/*.db
+backend/data/*.db-shm
+backend/data/*.db-wal
+backend/data/*.sqlite3
+backend/data/chroma_db/
+
+# ── Log files ──
+backend/*.log
+backend/*.txt
+!backend/README.txt
+
+# ── Typesense binary data ──
+backend/typesense-data/
+backend/typesense/
+
+# ── Firebase credentials ──
+backend/firebase-service-account.json
+
+# ── Node / Next.js ──
+Nextjs/nextjs/node_modules/
+Nextjs/nextjs/.next/
+Nextjs/nextjs/out/
+Nextjs/nextjs/build/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Flutter / Dart ──
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+*.g.dart
+*.freezed.dart
+pubspec.lock
+
+# ── IDE ──
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+Thumbs.db
+
+# ── Docker / Legacy ──
+docker-compose.yml
