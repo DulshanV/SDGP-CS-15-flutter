@@ -64,7 +64,9 @@ class TestAdminTrends:
         
         if response.status_code == status.HTTP_200_OK:
             data = response.json()
-            assert isinstance(data, list)
+            assert "period_days" in data
+            assert "trends" in data
+            assert isinstance(data["trends"], list)
 
 
 class TestAdminDatasetUpload:

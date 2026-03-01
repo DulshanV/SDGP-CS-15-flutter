@@ -11,16 +11,14 @@ describe('Hero Component', () => {
   it('should render the main heading', () => {
     render(<Hero />);
     
-    const heading = screen.getByRole('heading', { 
-      name: /Find Your HS Code in Seconds/i 
-    });
+    const heading = screen.getByText(/From Product to HS Code/i);
     expect(heading).toBeInTheDocument();
   });
 
   it('should render the subheading', () => {
     render(<Hero />);
     
-    const subheading = screen.getByText(/AI-powered search for Sri Lankan customs/i);
+    const subheading = screen.getByText(/Stop guessing customs codes/i);
     expect(subheading).toBeInTheDocument();
   });
 
@@ -35,10 +33,10 @@ describe('Hero Component', () => {
     render(<Hero />);
     
     const searchButton = screen.getByRole('link', { name: /Start Searching/i });
-    const learnButton = screen.getByRole('link', { name: /Learn More/i });
+    const howItWorksButton = screen.getByRole('link', { name: /See How It Works/i });
     
     expect(searchButton).toBeInTheDocument();
-    expect(learnButton).toBeInTheDocument();
+    expect(howItWorksButton).toBeInTheDocument();
   });
 
   it('should have correct href for search button', () => {
