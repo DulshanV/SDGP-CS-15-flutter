@@ -1,15 +1,26 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import BottomNav from '@/components/BottomNav';
 import PageTransition from '@/components/PageTransition';
 import { ThemeProvider } from '@/lib/ThemeContext';
+import BottomNav from '@/components/BottomNav';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
-  title: 'CeylonHS — AI-Powered HS Code Search',
-  description: 'Instantly classify your products with AI-powered Harmonized System matching.',
+  title: {
+    default: 'CeylonHS — AI-Powered HS Code Search & Trade Classification',
+    template: '%s | CeylonHS',
+  },
+  description:
+    'Classify products to 6-digit HS codes in seconds with AI-powered hybrid search. Smart brand recognition, 16,000+ codes, sub-second results.',
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

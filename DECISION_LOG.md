@@ -1,5 +1,182 @@
 # HS Code Search Engine — Decision Log
 
+## Decision 12: Hero Background — Shoreline Canvas with Morphing HS Code Labels
+
+**Date:** 2026-03-01  
+**Status:** Approved  
+**Context:** Decision 11 replaced the original SmoothBeach canvas with static CSS gradient + blurred orbs for performance. While fast, the result felt generic — any SaaS could have that hero. The original shoreline animation was a core part of the CeylonHS brand identity (Ceylon = Sri Lankan coastal trade). Needed to restore distinctiveness without sacrificing performance.
+
+**Options evaluated:**
+1. *Static gradient + orbs (current)* — Too generic, no brand personality.
+2. *Full SmoothBeach restoration* — The 5-layer wave system with stars/wisps/sun/moon was heavy (261 lines) and drew the entire viewport. Good for a search-only page, but overkill for a landing page where the ocean competes with content.
+3. *Product → HS code transformation animation* — Conceptually strong (matches the product value prop) but text-only animations can feel flat.
+4. *Hybrid: Minimal shoreline + morphing product→code labels* — Best of both worlds.
+
+**Decision:** Created `HeroCanvas.tsx` — a new purpose-built canvas component that combines:
+
+**Layer 1 — Minimal shoreline (bottom ~40% of viewport):**
+- 3 wave layers (reduced from 5) with sine-composite shoreline curves
+- Global surge oscillation for tide-like movement
+- Foam edges with leading-edge glow
+- Wet sand sheen effect
+- Full dark/light theme awareness (same color palette as original SmoothBeach)
+
+**Layer 2 — Floating product→HS code morphing labels:**
+- 6 concurrent labels spawning just above the waterline
+- Each shows a product name ("Dilmah Tea", "iPhone 15", "Cotton Fabric") that morphs into its HS code ("0902.30", "8517.13", "5208.21") mid-flight
+- Labels float upward with subtle horizontal drift, fading in at spawn and out at end
+- HS codes render with a blue glow effect to visually distinguish them from product names
+- 12 product→code pairs rotate through (matching real HS codes from the dataset)
+- Cross-fade transition between product name and HS code
+
+**Performance provisions:**
+- Canvas uses DPR-aware sizing (capped at 2x) for retina displays without excess overhead
+- Only 3 wave layers instead of 5 (40% fewer draw calls)
+- No stars, wisps, sun, or moon (removed sky decorations)
+- 6 labels instead of 12+ (minimal text rendering per frame)
+- `aria-hidden="true"` — invisible to screen readers and crawlers
+- Semi-transparent radial overlay over the canvas ensures text contrast
+
+**Thought Process:**
+- The shoreline is literally the brand metaphor — Ceylon's coast, trade flowing across the sea. Removing it made the page losable.
+- The morphing labels ARE the product demo — users see "Dilmah Tea → 0902.30" happening before they even scroll. It's the value prop in motion.
+- Keeping the canvas contained within the `<section>` (not `position: fixed`) means it doesn't affect other sections' performance.
+
+**Consequence:** The hero is now unmistakably CeylonHS — ocean waves with live product→code transformations. CeylonHS-specific identity restored while keeping the SEO infrastructure from Decision 8 intact.
+
+---
+
+## Decision 8: SEO-First Landing Page Architecture (Next.js)
+
+**Date:** 2026-03-01  
+**Status:** Approved  
+**Context:** The existing home page (`page.tsx`) was a `"use client"` component rendering only a search bar over a canvas-based beach animation. While visually distinctive, it had severe SEO deficiencies:
+- No structured data (JSON-LD)
+- Minimal metadata (only basic title + description)
+- No Open Graph or Twitter Card tags
+- No semantic HTML sections
+- No keyword targeting
+- The heavy canvas animation hurt LCP/FCP on mobile
+- Zero content for crawlers to index beyond the title
+
+The old landing page (`SDGP-main/index.html`) was a 2,876-line monolithic HTML file with a Three.js background, but included key sections: hero, HS finder form, team (6 members), contact form, pricing (Starter $3, Business $5, Enterprise $9), and social media links. We needed to carry forward this content structure into the Next.js app while making it SEO-first.
+
+**Decision:** Rebuild the landing page as a **Server Component** (`page.tsx` without `"use client"`) that:
+1. Exports comprehensive `Metadata` via the Next.js Metadata API (title template, description, keywords, OG, Twitter, robots, canonical)
+2. Injects JSON-LD structured data (`WebSite` with SearchAction, `SoftwareApplication` with pricing, `Organization`)
+3. Renders 10 composable section components under `src/components/landing/`
+4. Uses semantic HTML (`<header>`, `<main>`, `<section>`, `<footer>`, `<nav>`, `<article>`, `<blockquote>`)
+5. Maintains proper heading hierarchy (single `<h1>` in Hero, `<h2>` per section)
+
+**Thought Process:**
+- Server Components export metadata that Next.js renders into `<head>` at build/request time — crawlers see it without executing JS.
+- JSON-LD SearchAction tells Google about the `/search?query=` endpoint → potential sitelinks search box in SERPs.
+- Each section is a standalone client component (needs Framer Motion scroll animations) but the composition happens in a server component.
+- Replaced the heavy canvas beach background with CSS gradient + blurred orbs → much lighter, faster LCP, still visually striking.
+
+**Alternatives rejected:**
+- Keeping the SmoothBeach canvas on the landing page: Beautiful but 100KB+ JS, destroys mobile performance, crawlers render blank content.
+- Single monolithic client component: Defeats the purpose of Next.js SSR.
+- Static HTML export: Loses the interactivity and theme system already built.
+
+**Consequence:** Crawlers get fully-rendered HTML with structured data. Users get a performant, animated SaaS landing page. The search experience moved to `/search` (already existed).
+
+---
+
+## Decision 9: Component Architecture for Landing Page
+
+**Date:** 2026-03-01  
+**Status:** Approved  
+**Context:** Need to decide how to structure 10+ landing page sections.
+
+**Decision:** Created `src/components/landing/` directory with 10 self-contained components:
+| Component | Purpose | Client? |
+|---|---|---|
+| `LandingNav.tsx` | Fixed navbar with scroll-aware glass effect, mobile hamburger | Yes (scroll state) |
+| `Hero.tsx` | Full-viewport hero with gradient background, CTAs, trust badges | Yes (Framer Motion) |
+| `Features.tsx` | 4 feature cards in responsive grid with staggered reveal | Yes (Framer Motion) |
+| `HowItWorks.tsx` | 3-step flow with numbered badges and connector line | Yes (Framer Motion) |
+| `Stats.tsx` | 4 animated counters on gradient background | Yes (IntersectionObserver) |
+| `Pricing.tsx` | 3 pricing tiers with "Popular" badge (from old site: $3/$5/$9) | Yes (Framer Motion) |
+| `Testimonials.tsx` | 3 testimonial cards with star ratings | Yes (Framer Motion) |
+| `Team.tsx` | 6 team members from original site with gradient avatars | Yes (Framer Motion) |
+| `CTASection.tsx` | Full-width gradient CTA with dual buttons | Yes (Framer Motion) |
+| `Footer.tsx` | 5-column footer with social links, legal, external resources | Yes (theme) |
+
+**Thought Process:**
+- Every component uses `useTheme()` for dark/light mode awareness
+- All dynamic styling uses CSS custom properties (already mapped via `@theme inline` in globals.css) → `bg-surface`, `text-copy`, `border-border` etc. auto-switch with theme
+- SVG icons are inline (no icon library dependency) → keeps bundle lean
+- Framer Motion `whileInView` with `viewport={{ once: true }}` → elements animate once on scroll
+- Cards use Tailwind glass utility patterns already established in the codebase
+
+**Consequence:** Highly modular. Each section can be A/B tested, reordered, or removed independently. No circular dependencies.
+
+---
+
+## Decision 10: SEO Metadata Strategy
+
+**Date:** 2026-03-01  
+**Status:** Approved  
+**Context:** Need maximum SEO impact for a new SaaS product.
+
+**Decision:** Implemented three layers of SEO:
+
+**Layer 1 — Next.js Metadata API:**
+- `metadataBase`: `https://ceylonhs.com` (resolves all relative URLs)
+- Title template: `"%s | CeylonHS"` with default title
+- 12 targeted keywords (HS code search, trade classification, customs tariff lookup, etc.)
+- Open Graph: type `website`, 1200x630 image, locale, siteName
+- Twitter: `summary_large_image` card
+- Robots: index/follow with generous googleBot directives (max snippet -1, max image preview large)
+- Canonical URL to prevent duplicate content
+
+**Layer 2 — JSON-LD Structured Data (`@graph`):**
+- `WebSite` with `SearchAction` → tells Google about the search endpoint (potential sitelinks search box)
+- `SoftwareApplication` with `AggregateOffer` ($3-$9) and `AggregateRating` → rich snippets in SERPs
+- `Organization` with logo and social profiles → Knowledge Panel eligibility
+
+**Layer 3 — Semantic HTML:**
+- Proper heading hierarchy: `<h1>` only in Hero, `<h2>` per section, `<h3>` for cards
+- `<nav>` with `aria-label` for navigation
+- `<main>` wrapping all content sections
+- `<article>` for feature cards
+- `<blockquote>` for testimonials
+- `<footer>` for site footer
+- `aria-hidden` on decorative elements
+
+**Consequence:** Maximum crawlability. Rich snippets potential. Proper accessibility tree.
+
+---
+
+## Decision 11: Visual Design System for Landing Page
+
+**Date:** 2026-03-01  
+**Status:** Approved  
+**Context:** Old site used Three.js particle background with glassmorphism. Need a modern SaaS aesthetic.
+
+**Decision:** Adopted a Linear/Vercel-inspired design system:
+- **Hero background:** CSS gradient with blurred orbs (not canvas) + subtle grid pattern overlay
+- **Section backgrounds:** Alternating light/dark tones for visual rhythm
+  - Light mode: `#f8fafc` / `#ffffff` alternation
+  - Dark mode: `#0b0f1a` / `#080c16` alternation
+- **Cards:** Rounded-3xl corners, subtle borders, hover translate-y animation, gradient glow on hover
+- **Typography:** Inter font, clamp() for fluid sizing, font-black for hero, font-bold for sections
+- **Color accent:** Blue-to-cyan gradient (`from-blue-500 to-cyan-400`) for gradient text, CTAs, and badges
+- **Icons:** Inline SVG (no library dependency), 1.8 stroke-width, rounded line-cap/join
+- **Avatars:** Gradient circles with initials (from existing auth system pattern)
+- **Animations:** Framer Motion fade-up on scroll, staggered children for grids, CSS animated counters for Stats
+
+**Thought Process:**
+- Canvas backgrounds are beautiful but murder SEO (crawlers see nothing) and mobile perf
+- CSS gradients + blur are GPU-accelerated and render instantly
+- Alternating section backgrounds create visual hierarchy without dividers
+- The blue-cyan gradient connects to the ocean/Ceylon theme without being heavy-handed
+
+**Consequence:** Clean, professional SaaS aesthetic. Fast rendering. Theme-aware. No heavy runtime dependencies.
+
+---
+
 ## Decision 1: Replace aggressive spell-correction with suggest-only
 
 **Date:** 2026-02-28  

@@ -338,9 +338,9 @@ class EnrichmentService:
         row = cursor.fetchone()
         if row:
             self._cache.pop(row[0], None)
-        conn.execute("DELETE FROM synonym_cache WHERE id = ?", (synonym_id,))
+        cursor = conn.execute("DELETE FROM synonym_cache WHERE id = ?", (synonym_id,))
         conn.commit()
-        deleted = conn.total_changes > 0
+        deleted = cursor.rowcount > 0
         conn.close()
         return deleted
 

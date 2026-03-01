@@ -311,6 +311,13 @@ class FaissSearchService(BaseSearchService):
                 corrected_words.append(word)
                 continue
 
+            # Skip correction for capitalized words — these are likely brand names,
+            # product names, or proper nouns (e.g. "Dilmah", "Premio", "Samsung").
+            # Correcting them would corrupt brand queries before enrichment runs.
+            if word[0].isupper():
+                corrected_words.append(word)
+                continue
+
             correction = self._fuzzy_correct_word(word)
             if correction:
                 corrected_words.append(correction)
@@ -331,8 +338,10 @@ class FaissSearchService(BaseSearchService):
         results = []
 
         # Exact match
+        seen = set()
         if cleaned in self._hscode_meta:
             meta = self._hscode_meta[cleaned]
+            seen.add(meta["hscode"])
             results.append({
                 "hscode": meta["hscode"],
                 "description": meta["description"],
@@ -345,7 +354,8 @@ class FaissSearchService(BaseSearchService):
         # Prefix match
         for hscode, meta in self._hscode_meta.items():
             code_clean = hscode.replace(".", "")
-            if code_clean.startswith(cleaned) and hscode not in [r["hscode"] for r in results]:
+            if code_clean.startswith(cleaned) and hscode not in seen:
+                seen.add(hscode)
                 results.append({
                     "hscode": meta["hscode"],
                     "description": meta["description"],

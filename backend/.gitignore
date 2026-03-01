@@ -13,11 +13,33 @@ venv/
 .env
 firebase-service-account.json
 
+# Local dev databases (root-level, created during local setup)
+dev.db
+dev.db-shm
+dev.db-wal
+
 # ChromaDB / FAISS persistent data (large, rebuild locally)
 data/chroma_db/
 data/hscode.db
 data/hscode.db-shm
 data/hscode.db-wal
+
+# Typesense data (rebuild via index_typesense.py)
+typesense-data/
+typesense/
+
+# ML models & large binaries (downloaded at runtime by sentence-transformers)
+*.bin
+*.onnx
+*.pt
+*.pth
+*.h5
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.safetensors
+*.sst
 
 # Docker
 docker-compose.override.yml

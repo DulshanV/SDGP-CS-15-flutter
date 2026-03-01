@@ -70,6 +70,15 @@ async def lifespan(app: FastAPI):
     logger.info("Starting HS Code Search Engine API...")
     logger.info(f"Environment: {settings.env} | CORS: {settings.cors_origins}")
 
+    # Safety: warn loudly if dev mode is active on a non-localhost host
+    if not settings.is_production and settings.host != "127.0.0.1":
+        logger.warning(
+            "\u26a0\ufe0f  ENV=%s with HOST=%s — dev-token auth bypass is ACTIVE. "
+            "Set ENV=production for public deployments!",
+            settings.env,
+            settings.host,
+        )
+
     # Initialize the search service via factory (Typesense or FAISS fallback)
     try:
         from app.services.search_factory import get_search_service
