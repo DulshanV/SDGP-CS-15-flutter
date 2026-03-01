@@ -9,7 +9,7 @@ class AppConfig {
   /// For iOS simulator / desktop / web use: http://127.0.0.1:8000
   /// For physical device on same Wi-Fi: http://<your-lan-ip>:8000
   /// NOTE: If port 8000 is busy, the server may start on 8001.
-  static const String apiBaseUrl = 'http://127.0.0.1:8000';
+  static const String apiBaseUrl = 'http://10.0.2.2:8000';
 
   /// Number of search results to request per query.
   static const int defaultSearchLimit = 10;

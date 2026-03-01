@@ -4,6 +4,8 @@ import '../config.dart';
 import '../models/search_result.dart';
 import '../services/api_service.dart';
 import '../services/search_history_service.dart';
+import '../services/favorites_service.dart';
+import '../services/auth_service.dart';
 import 'hs_code_detail_page.dart';
 
 /// Full-featured search page that replaces the old HsCodeFinderPage.
@@ -26,6 +28,7 @@ class _SearchPageState extends State<SearchPage> {
   final FocusNode _searchFocus = FocusNode();
   final ApiService _api = ApiService();
   final SearchHistoryService _history = SearchHistoryService();
+  final FavoritesService _favorites = FavoritesService();
 
   SearchResponse? _searchResponse;
   bool _isLoading = false;
@@ -41,6 +44,7 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     _loadRecentSearches();
+    _favorites.addListener(_onFavoritesChanged);
     if (widget.initialQuery != null && widget.initialQuery!.isNotEmpty) {
       _searchController.text = widget.initialQuery!;
       // Execute after frame so context is available
@@ -50,11 +54,17 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  void _onFavoritesChanged() {
+    // Rebuild when favorites change (e.g., from another screen)
+    if (mounted) setState(() {});
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
     _searchFocus.dispose();
     _debounce?.cancel();
+    _favorites.removeListener(_onFavoritesChanged);
     _api.dispose();
     super.dispose();
   }
@@ -693,6 +703,37 @@ class _SearchPageState extends State<SearchPage> {
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  if (AuthService().isLoggedIn)
+                    GestureDetector(
+                      onTap: () async {
+                        try {
+                          await _favorites.toggleFavorite(
+                            hscode: result.hscode,
+                            description: result.description,
+                            section: result.section,
+                          );
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())),
+                            );
+                          }
+                        }
+                      },
+                      child: Icon(
+                        _favorites.isFavorited(result.hscode)
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: _favorites.isFavorited(result.hscode)
+                            ? Colors.redAccent
+                            : const Color(0xFF9BA5B7),
+                        size: 20,
+                      ),
+                    ),
                 ],
               ),
               // Confidence bar

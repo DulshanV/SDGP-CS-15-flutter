@@ -149,6 +149,9 @@ class AuthService extends ChangeNotifier {
     _user = null;
     _token = null;
 
+    // Note: FavoritesService cache will be cleared when app state is refreshed
+    // This happens automatically when user logs back in
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
     await prefs.remove('auth_uid');

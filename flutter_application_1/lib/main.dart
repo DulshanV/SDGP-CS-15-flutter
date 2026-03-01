@@ -5,6 +5,7 @@ import 'screens/history_page.dart';
 import 'screens/admin_dashboard.dart';
 import 'services/search_history_service.dart';
 import 'services/auth_service.dart';
+import 'services/favorites_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -1062,6 +1063,17 @@ class _MainHomePageState extends State<MainHomePage> {
     Icons.price_change_rounded,
     Icons.person_rounded,
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize favorites on app startup
+    _initializeFavorites();
+  }
+
+  Future<void> _initializeFavorites() async {
+    await FavoritesService().initialize();
+  }
 
   void _navigateToSearch(String query) {
     setState(() {
