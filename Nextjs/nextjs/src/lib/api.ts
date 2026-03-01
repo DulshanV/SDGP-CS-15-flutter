@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { auth } from './firebase';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (() => {
-    if (typeof window !== 'undefined') {
-        console.warn('[CeylonHS] NEXT_PUBLIC_API_URL is not set — falling back to localhost. This WILL break in production.');
-    }
-    return 'http://127.0.0.1:8000';
-})();
+// In production (same domain behind nginx) use '' so requests are relative.
+// In development, fall back to localhost:8000.
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? (
+    typeof window !== 'undefined' && window.location.hostname === 'localhost'
+        ? 'http://127.0.0.1:8000'
+        : '' // relative URL — nginx proxies /api/v1/* to the backend
+);
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
     const user = auth.currentUser;
