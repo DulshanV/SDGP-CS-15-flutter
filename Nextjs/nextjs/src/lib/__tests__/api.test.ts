@@ -74,7 +74,7 @@ describe('API - getHsCodeDetail', () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       expect.stringContaining('/api/v1/hs/0902.10'),
-      expect.any(Object)
+      expect.objectContaining({ timeout: expect.any(Number) })
     );
     expect(result.hscode).toEqual(mockDetail.hscode);
   });

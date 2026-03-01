@@ -109,7 +109,8 @@ def test_admin(test_db):
 def mock_firebase_auth(monkeypatch):
     """Mock Firebase Authentication for all tests."""
     def mock_verify_token(token: str, **kwargs):
-        # Simple mock: return decoded token data based on token value
+        # Accept **kwargs to match firebase_admin.auth.verify_id_token signature
+        # (accepts check_revoked, app, clock_skew_in_seconds, etc.)
         if token == "valid_user_token":
             return {"uid": "test_uid_123", "email": "test@example.com"}
         elif token == "valid_admin_token":
