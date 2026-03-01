@@ -1,0 +1,18 @@
+# CeylonHS - HS Code Search Platform
+# Allow all crawlers to index the site
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://ceylonhs.com/sitemap.xml
+
+# Disallow admin routes (optional - also protected by auth)
+Disallow: /admin/
+
+# Disallow user-specific routes
+Disallow: /history/
+Disallow: /favorites/
+
+# Crawl rate (optional - adjust if needed)
+# Crawl-delay: 1
