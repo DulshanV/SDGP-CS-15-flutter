@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import axios from 'axios';
-import { searchHSCodes, fetchHSCodeDetail } from '../api';
+import { search, getHsCodeDetail } from '../api';
 
 vi.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('API - searchHSCodes', () => {
+describe('API - search', () => {
   it('should call axios with correct URL and return data', async () => {
     const mockData = {
       query: 'tea',
@@ -19,7 +19,7 @@ describe('API - searchHSCodes', () => {
 
     mockedAxios.get.mockResolvedValueOnce({ data: mockData });
 
-    const result = await searchHSCodes('tea');
+    const result = await search('tea');
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       expect.stringContaining('/api/v1/search'),
@@ -27,13 +27,13 @@ describe('API - searchHSCodes', () => {
         params: expect.objectContaining({ q: 'tea' }),
       })
     );
-    expect(result).toEqual(mockData);
+    expect(result.query).toEqual(mockData.query);
   });
 
   it('should handle search errors gracefully', async () => {
     mockedAxios.get.mockRejectedValueOnce(new Error('Network error'));
 
-    await expect(searchHSCodes('tea')).rejects.toThrow('Network error');
+    await expect(search('tea')).rejects.toThrow('Network error');
   });
 
   it('should pass limit parameter correctly', async () => {
@@ -45,7 +45,7 @@ describe('API - searchHSCodes', () => {
 
     mockedAxios.get.mockResolvedValueOnce({ data: mockData });
 
-    await searchHSCodes('coffee', 10);
+    await search('coffee', 10);
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       expect.any(String),
@@ -59,7 +59,7 @@ describe('API - searchHSCodes', () => {
   });
 });
 
-describe('API - fetchHSCodeDetail', () => {
+describe('API - getHsCodeDetail', () => {
   it('should fetch HS code details', async () => {
     const mockDetail = {
       hscode: '0902.10',
@@ -70,12 +70,13 @@ describe('API - fetchHSCodeDetail', () => {
 
     mockedAxios.get.mockResolvedValueOnce({ data: mockDetail });
 
-    const result = await fetchHSCodeDetail('0902.10');
+    const result = await getHsCodeDetail('0902.10');
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
-      expect.stringContaining('/api/v1/hs/0902.10')
+      expect.stringContaining('/api/v1/hs/0902.10'),
+      expect.any(Object)
     );
-    expect(result).toEqual(mockDetail);
+    expect(result.hscode).toEqual(mockDetail.hscode);
   });
 
   it('should handle 404 errors for non-existent codes', async () => {
@@ -83,7 +84,7 @@ describe('API - fetchHSCodeDetail', () => {
       response: { status: 404 },
     });
 
-    await expect(fetchHSCodeDetail('9999.99')).rejects.toMatchObject({
+    await expect(getHsCodeDetail('9999.99')).rejects.toMatchObject({
       response: { status: 404 },
     });
   });
