@@ -83,3 +83,9 @@ Thumbs.db
 
 # ── Docker / Legacy ──
 docker-compose.yml
+
+backend/db_backup/
+backend/hscode_dev.db
+backend/hscode_dev.db-shm
+backend/hscode_dev.db-wal
+
