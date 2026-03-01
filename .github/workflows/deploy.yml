@@ -68,11 +68,16 @@ jobs:
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
 
             # ── 5. Restart frontend via ecosystem.config.js ──────────────────
-            #    startOrRestart: starts it if new, restarts if already running.
-            #    This guarantees the correct cwd and port are always used.
+            #    Stop + delete first to avoid port conflicts or stale process
+            #    config from before ecosystem.config.js was introduced.
             echo "=> Restarting PM2 Frontend..."
-            pm2 startOrRestart /root/ceylonhs/Nextjs/nextjs/ecosystem.config.js --update-env
+            pm2 stop ceylonhs-frontend 2>/dev/null || true
+            pm2 delete ceylonhs-frontend 2>/dev/null || true
+            pm2 start /root/ceylonhs/Nextjs/nextjs/ecosystem.config.js
             pm2 save
+            # Give Next.js 5 s to bind before nginx tries to connect
+            sleep 5
+            pm2 status ceylonhs-frontend
 
             # ── 6. Backend ───────────────────────────────────────────────────
             echo "=> Installing Python dependencies..."

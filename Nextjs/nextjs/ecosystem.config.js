@@ -4,12 +4,13 @@ module.exports = {
   apps: [
     {
       name: 'ceylonhs-frontend',
-      script: 'node_modules/.bin/next',
-      args: 'start -p 3000',
+      script: 'npm',
+      args: 'run start',
       cwd: '/root/ceylonhs/Nextjs/nextjs',
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
+        HOSTNAME: '0.0.0.0',
       },
       watch: false,
       autorestart: true,
