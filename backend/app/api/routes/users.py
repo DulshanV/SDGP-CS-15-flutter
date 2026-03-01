@@ -56,6 +56,13 @@ async def sync_user(
     Creates a new user or updates existing.
     Called by the Flutter app after Firebase authentication.
     """
+    # Prevent UID impersonation: body UID MUST match the authenticated token UID
+    if data.firebase_uid != token_data["uid"]:
+        raise HTTPException(
+            status_code=403,
+            detail="Cannot sync a different user. firebase_uid must match your token.",
+        )
+
     result = await db.execute(
         select(User).where(User.firebase_uid == data.firebase_uid)
     )

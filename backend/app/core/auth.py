@@ -91,7 +91,18 @@ async def require_auth(
 async def require_admin(
     token_data: dict = Depends(require_auth),
 ) -> dict:
-    """Dependency that requires admin role. Check is done against our DB."""
-    # Admin check will be done at the route level by querying the user's role
-    # from PostgreSQL. For now, pass through the token data.
+    """Dependency that requires admin role. Queries the DB to verify."""
+    from app.core.database import AsyncSessionLocal
+    from app.models.user import User, UserRole
+    from sqlalchemy import select
+
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(User).where(User.firebase_uid == token_data["uid"])
+        )
+        user = result.scalar_one_or_none()
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found.")
+        if user.role != UserRole.admin.value:
+            raise HTTPException(status_code=403, detail="Admin access required.")
     return token_data

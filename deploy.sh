@@ -26,9 +26,23 @@ if [ ! -f "backend/firebase-service-account.json" ]; then
     exit 1
 fi
 
-# --- 2. Git Pull ---
+# --- 2. Protect production database before git pull ---
+# hscode.db was removed from git tracking. git pull would delete it without this guard.
+echo "=> Protecting production database..."
+if [ -f "backend/data/hscode.db" ]; then
+    cp backend/data/hscode.db backend/data/hscode.db.bak
+    echo "   Backed up hscode.db → hscode.db.bak"
+fi
+
+# --- 3. Git Pull ---
 echo "=> Pulling latest code from GitHub..."
 git pull origin master
+
+# Restore DB if git pull deleted it
+if [ ! -f "backend/data/hscode.db" ] && [ -f "backend/data/hscode.db.bak" ]; then
+    cp backend/data/hscode.db.bak backend/data/hscode.db
+    echo "   Restored hscode.db from backup"
+fi
 
 
 # --- 3. Manage Next.js Frontend ---

@@ -22,7 +22,19 @@ jobs:
           command_timeout: 20m
           script: |
             cd ~/ceylonhs
+            
+            # Guard: hscode.db was removed from git tracking — protect it before pull
+            if [ -f "backend/data/hscode.db" ]; then
+              cp backend/data/hscode.db backend/data/hscode.db.bak
+            fi
+            
             git pull origin main
+            
+            # Restore DB if git pull deleted it
+            if [ ! -f "backend/data/hscode.db" ] && [ -f "backend/data/hscode.db.bak" ]; then
+              cp backend/data/hscode.db.bak backend/data/hscode.db
+              echo "Restored hscode.db from backup"
+            fi
             
             echo "=> Installing Next.js dependencies..."
             cd Nextjs/nextjs

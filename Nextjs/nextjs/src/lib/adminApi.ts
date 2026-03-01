@@ -1,7 +1,12 @@
 import axios from 'axios';
 import { auth } from './firebase';
 
-const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const BASE = process.env.NEXT_PUBLIC_API_URL || (() => {
+    if (typeof window !== 'undefined') {
+        console.warn('[CeylonHS] NEXT_PUBLIC_API_URL is not set — falling back to localhost. This WILL break in production.');
+    }
+    return 'http://127.0.0.1:8000';
+})();
 
 async function authHeaders() {
     const user = auth.currentUser;
@@ -219,7 +224,7 @@ export async function uploadDataset(file: File, name: string) {
     form.append('file', file);
     form.append('name', name);
     const r = await axios.post(`${BASE}/api/v1/admin/datasets`, form, {
-        headers: { ...h, 'Content-Type': 'multipart/form-data' },
+        headers: h,
         timeout: 60000,
     });
     return r.data;

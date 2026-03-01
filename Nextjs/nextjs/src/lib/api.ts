@@ -1,7 +1,12 @@
 import axios from 'axios';
 import { auth } from './firebase';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || (() => {
+    if (typeof window !== 'undefined') {
+        console.warn('[CeylonHS] NEXT_PUBLIC_API_URL is not set — falling back to localhost. This WILL break in production.');
+    }
+    return 'http://127.0.0.1:8000';
+})();
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
     const user = auth.currentUser;

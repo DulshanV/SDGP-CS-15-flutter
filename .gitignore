@@ -32,6 +32,22 @@ backend/*.txt
 backend/typesense-data/
 backend/typesense/
 
+# ── ML Models & large binaries (sentence-transformers, FAISS, ONNX, etc.) ──
+*.bin
+*.onnx
+*.pt
+*.pth
+*.h5
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.safetensors
+*.sst
+**/.cache/
+**/sentence-transformers/
+**/huggingface/
+
 # ── Firebase credentials ──
 backend/firebase-service-account.json
 

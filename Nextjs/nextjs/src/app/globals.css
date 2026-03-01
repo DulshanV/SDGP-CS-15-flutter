@@ -74,11 +74,20 @@ html.dark {
   --color-copy-muted: var(--page-text-muted);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
   position: relative;
   min-height: 100vh;
+}
+
+/* Offset for fixed navbar when scrolling to anchors */
+[id] {
+  scroll-margin-top: 5rem;
 }
 
 .bg-gradient-main {
