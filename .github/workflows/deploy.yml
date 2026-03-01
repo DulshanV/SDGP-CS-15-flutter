@@ -23,37 +23,65 @@ jobs:
           script_stop: true
           script: |
             cd ~/ceylonhs
-            
-            # Guard: hscode.db was removed from git tracking — protect it before pull
+
+            # ── 1. Guard DB before any git operation ──────────────────────────
             if [ -f "backend/data/hscode.db" ]; then
               cp backend/data/hscode.db backend/data/hscode.db.bak
+              echo "Backed up hscode.db"
             fi
-            
-            git pull origin main
-            
-            # Restore DB if git pull deleted it
+
+            # ── 2. Hard-reset to origin/main (avoids merge conflicts from
+            #       previously-tracked large files that were removed from git) ──
+            git fetch origin
+            git reset --hard origin/main
+            git clean -fd --exclude=backend/data/hscode.db --exclude=backend/data/hscode.db.bak
+
+            # Restore DB if the reset deleted it
             if [ ! -f "backend/data/hscode.db" ] && [ -f "backend/data/hscode.db.bak" ]; then
               cp backend/data/hscode.db.bak backend/data/hscode.db
               echo "Restored hscode.db from backup"
             fi
-            
-            echo "=> Installing Next.js dependencies..."
+
+            # ── 3. Write .env.local so NEXT_PUBLIC_* vars are baked into build ─
             cd Nextjs/nextjs
+            cat > .env.local << 'ENVEOF'
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_FIREBASE_API_KEY=${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+            NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+            NEXT_PUBLIC_FIREBASE_PROJECT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+            NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
+            NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+            NEXT_PUBLIC_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
+            NEXT_PUBLIC_EMAILJS_SERVICE_ID=${{ secrets.NEXT_PUBLIC_EMAILJS_SERVICE_ID }}
+            NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=${{ secrets.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID }}
+            NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=${{ secrets.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY }}
+            ENVEOF
+            # Strip leading whitespace that heredoc indentation adds
+            sed -i 's/^ *//' .env.local
+            echo ".env.local written ($(wc -l < .env.local) lines)"
+
+            # ── 4. Install deps and build ────────────────────────────────────
+            echo "=> Installing Next.js dependencies..."
             npm install
-            
+
             echo "=> Building Next.js production bundle..."
             NODE_OPTIONS="--max-old-space-size=1024" npm run build
-            
+
+            # ── 5. Restart frontend via ecosystem.config.js ──────────────────
+            #    startOrRestart: starts it if new, restarts if already running.
+            #    This guarantees the correct cwd and port are always used.
             echo "=> Restarting PM2 Frontend..."
-            pm2 restart ceylonhs-frontend
-            
+            pm2 startOrRestart /root/ceylonhs/Nextjs/nextjs/ecosystem.config.js --update-env
+            pm2 save
+
+            # ── 6. Backend ───────────────────────────────────────────────────
             echo "=> Installing Python dependencies..."
-            cd ../../backend
+            cd /root/ceylonhs/backend
             source venv/bin/activate
-            pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+            pip install -q --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
             deactivate
-            
+
             echo "=> Restarting Backend..."
             sudo systemctl restart ceylonhs-backend
-            
+
             echo "✅ Deployment complete!"
