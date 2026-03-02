@@ -231,18 +231,17 @@ class _RecentsPageState extends State<RecentsPage> {
                     ),
                   ),
                   const Spacer(),
-                  if (_Auth().isLoggedIn)
-                    TextButton.icon(
-                      onPressed: _clearAllRecents,
-                      icon: const Icon(Icons.delete_outline, size: 16),
-                      label: const Text('Clear'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: Colors.redAccent,
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size.zero,
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      ),
+                  TextButton.icon(
+                    onPressed: _clearAllRecents,
+                    icon: const Icon(Icons.delete_outline, size: 16),
+                    label: const Text('Clear'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.redAccent,
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
+                  ),
                 ],
               ),
             ),
@@ -333,10 +332,18 @@ class _RecentsPageState extends State<RecentsPage> {
           ElevatedButton.icon(
             onPressed: () {
               // Navigate to search
-              if (!widget.isEmbedded) {
+              if (widget.isEmbedded) {
+                // When embedded in bottom nav, navigate to search page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (ctx) => const SearchPage(),
+                  ),
+                );
+              } else {
+                // When used as standalone page, go back
                 Navigator.pop(context);
               }
-              // Could navigate to search tab here
             },
             icon: const Icon(Icons.search),
             label: const Text('Start Searching'),
@@ -482,9 +489,4 @@ class _RecentsPageState extends State<RecentsPage> {
       ),
     );
   }
-}
-
-// Fix the typo in the code
-class _Auth {
-  bool get isLoggedIn => AuthService().isLoggedIn;
 }
