@@ -2,6 +2,7 @@
 import 'screens/search_page.dart';
 import 'screens/favorites_page.dart';
 import 'screens/history_page.dart';
+import 'screens/recents_page.dart';
 import 'screens/admin_dashboard.dart';
 import 'services/search_history_service.dart';
 import 'services/auth_service.dart';
@@ -1053,6 +1054,7 @@ class _MainHomePageState extends State<MainHomePage> {
   static const List<String> _labels = [
     'Home',
     'Search',
+    'Recents',
     'Pricing',
     'Profile',
   ];
@@ -1060,6 +1062,7 @@ class _MainHomePageState extends State<MainHomePage> {
   static const List<IconData> _icons = [
     Icons.home_rounded,
     Icons.search_rounded,
+    Icons.history_rounded,
     Icons.price_change_rounded,
     Icons.person_rounded,
   ];
@@ -1094,6 +1097,7 @@ class _MainHomePageState extends State<MainHomePage> {
         children: [
           _HomeContent(onSearch: _navigateToSearch),
           SearchPage(isEmbedded: true, initialQuery: _searchQuery),
+          const RecentsPage(isEmbedded: true),
           const PricingPage(isEmbedded: true),
           const _ProfileContent(),
         ],
