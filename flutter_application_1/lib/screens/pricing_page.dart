@@ -36,13 +36,12 @@ class _PricingPageState extends State<PricingPage> {
   }
 
   void _loadSubscription() {
-    _authService.getCurrentUser().then((user) {
-      if (user != null) {
-        _subscriptionFuture =
-            _pricingService.getUserSubscription(user.id).then((sub) => sub);
-        setState(() {});
-      }
-    });
+    final user = _authService.user;
+    if (user != null) {
+      _subscriptionFuture =
+          _pricingService.getUserSubscription(user.id).then((sub) => sub);
+      setState(() {});
+    }
   }
 
   @override

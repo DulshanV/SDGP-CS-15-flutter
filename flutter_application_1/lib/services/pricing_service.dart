@@ -45,7 +45,7 @@ class PricingService {
 
   /// Get user's current subscription.
   Future<UserSubscription> getUserSubscription(String userId) async {
-    final token = await _authService.getToken();
+    final token = _authService.token;
     if (token == null) {
       throw Exception('Not authenticated');
     }
@@ -85,7 +85,7 @@ class PricingService {
     String userId,
     PricingTier tier,
   ) async {
-    final token = await _authService.getToken();
+    final token = _authService.token;
     if (token == null) {
       throw Exception('Not authenticated');
     }
