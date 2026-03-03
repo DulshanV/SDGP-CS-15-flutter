@@ -4,9 +4,12 @@ import 'screens/favorites_page.dart';
 import 'screens/history_page.dart';
 import 'screens/recents_page.dart';
 import 'screens/admin_dashboard.dart';
+import 'screens/pricing_page.dart' as new_pricing;
 import 'services/search_history_service.dart';
 import 'services/auth_service.dart';
 import 'services/favorites_service.dart';
+import 'services/pricing_service.dart';
+import 'models/pricing_model.dart';
 
 void main() {
   runApp(const MyApp());

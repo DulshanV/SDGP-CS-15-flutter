@@ -4,10 +4,9 @@ import '../services/pricing_service.dart';
 import '../services/auth_service.dart';
 
 class PricingPage extends StatefulWidget {
-  const PricingPage({super.key});
+  const PricingPage({super.key, this.isEmbedded = false});
 
-  @override
-  State<PricingPage> createState() => _PricingPageState();
+  final bool isEmbedded;
 }
 
 class _PricingPageState extends State<PricingPage> {
