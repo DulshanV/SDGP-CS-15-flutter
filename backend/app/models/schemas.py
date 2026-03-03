@@ -168,3 +168,39 @@ class SubscriptionUpgradeResponse(BaseModel):
     message: str
 
     model_config = {"from_attributes": True}
+
+
+# ── Category Schemas ──
+
+
+class FeaturedCategoryResponse(BaseModel):
+    id: str
+    name: str
+    description: Optional[str] = None
+    icon_code_point: str
+    order: int
+    is_active: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class FeaturedCategoriesListResponse(BaseModel):
+    categories: List[FeaturedCategoryResponse]
+    total: int
+
+
+class FeaturedCategoryCreateRequest(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    description: Optional[str] = Field(None, max_length=255)
+    icon_code_point: str = Field(default='0xe3f2fd')
+    order: int = Field(default=0, ge=0)
+    is_active: bool = Field(default=True)
+
+
+class FeaturedCategoryUpdateRequest(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    description: Optional[str] = Field(None, max_length=255)
+    icon_code_point: Optional[str] = None
+    order: Optional[int] = Field(None, ge=0)
+    is_active: Optional[bool] = None
