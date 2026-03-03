@@ -7,6 +7,9 @@ class PricingPage extends StatefulWidget {
   const PricingPage({super.key, this.isEmbedded = false});
 
   final bool isEmbedded;
+
+  @override
+  State<PricingPage> createState() => _PricingPageState();
 }
 
 class _PricingPageState extends State<PricingPage> {
@@ -45,11 +48,13 @@ class _PricingPageState extends State<PricingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pricing Plans'),
-        backgroundColor: primaryBlue,
-        elevation: 0,
-      ),
+      appBar: widget.isEmbedded
+          ? null
+          : AppBar(
+              title: const Text('Pricing Plans'),
+              backgroundColor: primaryBlue,
+              elevation: 0,
+            ),
       body: SingleChildScrollView(
         child: Container(
           decoration: const BoxDecoration(
