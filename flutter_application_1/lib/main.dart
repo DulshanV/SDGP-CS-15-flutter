@@ -9,7 +9,9 @@ import 'services/search_history_service.dart';
 import 'services/auth_service.dart';
 import 'services/favorites_service.dart';
 import 'services/pricing_service.dart';
+import 'services/categories_service.dart';
 import 'models/pricing_model.dart';
+import 'models/category_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -899,7 +901,9 @@ class _HomeContent extends StatefulWidget {
 class _HomeContentState extends State<_HomeContent> {
   final TextEditingController _searchController = TextEditingController();
   final SearchHistoryService _historyService = SearchHistoryService();
+  final CategoriesService _categoriesService = CategoriesService();
   List<String> _recentSearches = [];
+  List<FeaturedCategory> _featuredCategories = [];
 
   static const Color primaryBlue = Color(0xFF0B3EA8);
   static const Color secondaryBlue = Color(0xFF0A2E8A);
@@ -908,6 +912,7 @@ class _HomeContentState extends State<_HomeContent> {
   void initState() {
     super.initState();
     _loadRecentSearches();
+    _loadFeaturedCategories();
   }
 
   @override
@@ -919,6 +924,21 @@ class _HomeContentState extends State<_HomeContent> {
   Future<void> _loadRecentSearches() async {
     final searches = await _historyService.getRecentSearches();
     if (mounted) setState(() => _recentSearches = searches);
+  }
+
+  Future<void> _loadFeaturedCategories() async {
+    try {
+      final categories = await _categoriesService.getFeaturedCategories();
+      if (mounted) setState(() => _featuredCategories = categories);
+    } catch (e) {
+      // Gracefully fallback to default categories
+      if (mounted) {
+        setState(() {
+          _featuredCategories = defaultFeaturedCategories.values.toList()
+            ..sort((a, b) => a.order.compareTo(b.order));
+        });
+      }
+    }
   }
 
   void _submitSearch() {
@@ -1114,77 +1134,40 @@ class _HomeContentState extends State<_HomeContent> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Spices'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.local_dining_outlined,
-                                label: 'Spices',
+                      _featuredCategories.isEmpty
+                          ? const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(20.0),
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    primaryBlue,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Apparel'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.checkroom_outlined,
-                                label: 'Apparel',
+                            )
+                          : GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                childAspectRatio: 1.5,
                               ),
+                              itemCount: _featuredCategories.length,
+                              itemBuilder: (context, index) {
+                                final category = _featuredCategories[index];
+                                return GestureDetector(
+                                  onTap: () =>
+                                      widget.onSearch?.call(category.name),
+                                  child: _FeaturedCategoryCard(
+                                    icon: category.getIconData(),
+                                    label: category.name,
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Stationery'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.edit_note_outlined,
-                                label: 'Stationery',
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Minerals'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.grain_outlined,
-                                label: 'Minerals',
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Animal products'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.pets_outlined,
-                                label: 'Animal',
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Cosmetics'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.spa_outlined,
-                                label: 'Cosmetics',
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
