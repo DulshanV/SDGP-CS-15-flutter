@@ -62,6 +62,10 @@ class UserResponse(BaseModel):
     display_name: Optional[str] = None
     photo_url: Optional[str] = None
     role: str
+    subscription_tier: str = "starter"
+    subscription_start_date: Optional[datetime] = None
+    subscription_end_date: Optional[datetime] = None
+    is_subscription_active: bool = True
     created_at: datetime
 
     model_config = {"from_attributes": True}
@@ -122,3 +126,45 @@ class TrendItem(BaseModel):
 class TrendResponse(BaseModel):
     period_days: int
     trends: List[TrendItem]
+
+# ── Pricing Schemas ──
+
+
+class PricingPlanResponse(BaseModel):
+    tier: str
+    display_name: str
+    price: float
+    description: str
+    features: List[str]
+    is_popular: bool = False
+
+    model_config = {"from_attributes": True}
+
+
+class PricingPlansListResponse(BaseModel):
+    plans: List[PricingPlanResponse]
+
+
+class UserSubscriptionResponse(BaseModel):
+    user_id: str
+    current_tier: str
+    subscription_start_date: Optional[datetime] = None
+    subscription_end_date: Optional[datetime] = None
+    is_active: bool
+
+    model_config = {"from_attributes": True}
+
+
+class SubscriptionUpgradeRequest(BaseModel):
+    tier: str = Field(..., description="Target subscription tier: starter, business, or enterprise")
+
+
+class SubscriptionUpgradeResponse(BaseModel):
+    user_id: str
+    previous_tier: str
+    new_tier: str
+    subscription_start_date: datetime
+    subscription_end_date: Optional[datetime] = None
+    message: str
+
+    model_config = {"from_attributes": True}

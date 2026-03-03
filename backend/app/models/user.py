@@ -4,7 +4,7 @@ SQLAlchemy models for users, search history, and favorites.
 
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import String, DateTime, ForeignKey, Text, Index
+from sqlalchemy import String, DateTime, ForeignKey, Text, Index, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 import enum
@@ -13,6 +13,12 @@ import enum
 class UserRole(str, enum.Enum):
     user = "user"
     admin = "admin"
+
+
+class SubscriptionTier(str, enum.Enum):
+    starter = "starter"
+    business = "business"
+    enterprise = "enterprise"
 
 
 class User(Base):
@@ -29,6 +35,18 @@ class User(Base):
     photo_url: Mapped[str] = mapped_column(String(512), nullable=True)
     role: Mapped[str] = mapped_column(
         String(20), default=UserRole.user.value, nullable=False
+    )
+    subscription_tier: Mapped[str] = mapped_column(
+        String(20), default=SubscriptionTier.starter.value, nullable=False
+    )
+    subscription_start_date: Mapped[datetime] = mapped_column(
+        DateTime, nullable=True
+    )
+    subscription_end_date: Mapped[datetime] = mapped_column(
+        DateTime, nullable=True
+    )
+    is_subscription_active: Mapped[bool] = mapped_column(
+        Boolean, default=True, nullable=False
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(timezone.utc)
