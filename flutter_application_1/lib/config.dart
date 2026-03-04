@@ -4,6 +4,16 @@ import 'package:flutter/foundation.dart';
 class AppConfig {
   AppConfig._();
 
+  static const String _remoteApiBaseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'https://ceylonhs.com',
+  );
+
+  static const bool _useLocalApi = bool.fromEnvironment(
+    'USE_LOCAL_API',
+    defaultValue: false,
+  );
+
   /// Base URL for the HS Code Search API.
   ///
   /// Resolves automatically per platform:
@@ -11,14 +21,22 @@ class AppConfig {
   ///   - Web / Desktop     → 127.0.0.1:8000
   ///   - Physical device   → set PHYSICAL_DEVICE_IP build arg, or hardcode LAN IP below
   ///
-  /// For a deployed backend, set the env/build var NEXT_PUBLIC_API_URL or
-  /// change this to your server's public address.
+  /// Defaults to the deployed API at https://ceylonhs.com.
+  ///
+  /// Override at run/build time:
+  ///   --dart-define=API_BASE_URL=https://your-api-domain
+  ///   --dart-define=USE_LOCAL_API=true
   static String get apiBaseUrl {
+    if (!_useLocalApi) {
+      return _remoteApiBaseUrl;
+    }
+
     if (defaultTargetPlatform == TargetPlatform.android && !kIsWeb) {
       // Android emulator: host machine is reachable at 10.0.2.2
       return 'http://10.0.2.2:8000';
     }
-    // Web, iOS simulator, desktop, physical device on localhost tunnel, etc.
+
+    // Web / desktop local backend
     return 'http://127.0.0.1:8000';
   }
 
