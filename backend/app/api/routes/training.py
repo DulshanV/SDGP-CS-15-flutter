@@ -124,50 +124,55 @@ async def list_training_pairs(
     admin: User = Depends(_require_admin),
 ):
     """List training pairs with optional filters."""
-    conn = _get_db_conn()
-    try:
-        conditions = ["quality_score >= ?"]
-        params: list = [min_quality]
+    import asyncio
+    
+    def _fetch_pairs():
+        conn = _get_db_conn()
+        try:
+            conditions = ["quality_score >= ?"]
+            params: list = [min_quality]
 
-        if approved_only:
-            conditions.append("approved = 1")
-        if source:
-            conditions.append("source = ?")
-            params.append(source)
-        if search:
-            conditions.append("(LOWER(query) LIKE ? OR LOWER(positive_description) LIKE ?)")
-            term = f"%{search.lower()}%"
-            params.extend([term, term])
+            if approved_only:
+                conditions.append("approved = 1")
+            if source:
+                conditions.append("source = ?")
+                params.append(source)
+            if search:
+                conditions.append("(LOWER(query) LIKE ? OR LOWER(positive_description) LIKE ?)")
+                term = f"%{search.lower()}%"
+                params.extend([term, term])
 
-        where = " AND ".join(conditions)
-        params.append(limit)
-        cursor = conn.execute(
-            f"""
-            SELECT id, query, positive_description, positive_hscode,
-                   source, quality_score, approved, created_at
-            FROM training_pairs
-            WHERE {where}
-            ORDER BY created_at DESC
-            LIMIT ?
-            """,
-            params,
-        )
-        rows = cursor.fetchall()
-        return [
-            TrainingPairOut(
-                id=r[0],
-                query=r[1],
-                positive_description=r[2],
-                positive_hscode=r[3],
-                source=r[4],
-                quality_score=r[5],
-                approved=bool(r[6]),
-                created_at=r[7],
+            where = " AND ".join(conditions)
+            params.append(limit)
+            cursor = conn.execute(
+                f"""
+                SELECT id, query, positive_description, positive_hscode,
+                       source, quality_score, approved, created_at
+                FROM training_pairs
+                WHERE {where}
+                ORDER BY created_at DESC
+                LIMIT ?
+                """,
+                params,
             )
-            for r in rows
-        ]
-    finally:
-        conn.close()
+            rows = cursor.fetchall()
+            return [
+                TrainingPairOut(
+                    id=r[0],
+                    query=r[1],
+                    positive_description=r[2],
+                    positive_hscode=r[3],
+                    source=r[4],
+                    quality_score=r[5],
+                    approved=bool(r[6]),
+                    created_at=r[7],
+                )
+                for r in rows
+            ]
+        finally:
+            conn.close()
+
+    return await asyncio.to_thread(_fetch_pairs)
 
 
 @router.post("/pairs", response_model=dict)

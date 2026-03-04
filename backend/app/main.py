@@ -91,7 +91,8 @@ async def lifespan(app: FastAPI):
     # Create database tables if they don't exist
     try:
         from app.core.database import engine, Base
-        from app.models.user import User, SearchHistory, Favorite  # noqa: ensure models are imported
+        from app.models.user import User, SearchHistory, Favorite, SubscriptionTier  # noqa: ensure models are imported
+        from app.models.categories import FeaturedCategory  # noqa: ensure category model is imported
 
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
@@ -142,6 +143,8 @@ from app.api.routes.admin import router as admin_router
 from app.api.routes.synonyms import router as synonyms_router
 from app.api.routes.training import router as training_router
 from app.api.routes.datasets import router as datasets_router
+from app.api.routes.pricing import router as pricing_router
+from app.api.routes.categories import router as categories_router
 
 app.include_router(search_router)
 app.include_router(users_router)
@@ -149,6 +152,8 @@ app.include_router(admin_router)
 app.include_router(synonyms_router)
 app.include_router(training_router)
 app.include_router(datasets_router)
+app.include_router(pricing_router)
+app.include_router(categories_router)
 
 # Serve the web search UI
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")

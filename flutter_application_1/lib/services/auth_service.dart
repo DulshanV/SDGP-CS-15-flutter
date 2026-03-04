@@ -40,17 +40,29 @@ class AuthService extends ChangeNotifier {
       // Dev mode: generate a uid from the email
       final uid = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
       _token = 'dev-token-$uid';
+      
+      final url = '${AppConfig.apiBaseUrl}/api/v1/users/sync';
+      final body = {
+        'firebase_uid': uid,
+        'email': email,
+        'display_name': fullName,
+      };
+      
+      debugPrint('🔐 SignUp DEBUG:');
+      debugPrint('  URL: $url');
+      debugPrint('  Token: $_token');
+      debugPrint('  Body: ${jsonEncode(body)}');
+      debugPrint('  Headers: $authHeaders');
 
       // Sync user to backend
       final response = await http.post(
-        Uri.parse('${AppConfig.apiBaseUrl}/api/v1/users/sync'),
+        Uri.parse(url),
         headers: authHeaders,
-        body: jsonEncode({
-          'firebase_uid': uid,
-          'email': email,
-          'display_name': fullName,
-        }),
+        body: jsonEncode(body),
       );
+
+      debugPrint('  Response Status: ${response.statusCode}');
+      debugPrint('  Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         _user = UserProfile.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
@@ -65,7 +77,7 @@ class AuthService extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      debugPrint('SignUp error: $e');
+      debugPrint('❌ SignUp error: $e');
       _token = null;
       _isLoading = false;
       notifyListeners();
@@ -84,16 +96,28 @@ class AuthService extends ChangeNotifier {
     try {
       final uid = email.split('@').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
       _token = 'dev-token-$uid';
+      
+      final url = '${AppConfig.apiBaseUrl}/api/v1/users/sync';
+      final body = {
+        'firebase_uid': uid,
+        'email': email,
+      };
+      
+      debugPrint('🔐 Login DEBUG:');
+      debugPrint('  URL: $url');
+      debugPrint('  Token: $_token');
+      debugPrint('  Body: ${jsonEncode(body)}');
+      debugPrint('  Headers: $authHeaders');
 
       // Sync to backend (creates user if needed)
       final response = await http.post(
-        Uri.parse('${AppConfig.apiBaseUrl}/api/v1/users/sync'),
+        Uri.parse(url),
         headers: authHeaders,
-        body: jsonEncode({
-          'firebase_uid': uid,
-          'email': email,
-        }),
+        body: jsonEncode(body),
       );
+
+      debugPrint('  Response Status: ${response.statusCode}');
+      debugPrint('  Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         _user = UserProfile.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
@@ -108,7 +132,7 @@ class AuthService extends ChangeNotifier {
         return false;
       }
     } catch (e) {
-      debugPrint('Login error: $e');
+      debugPrint('❌ Login error: $e');
       _token = null;
       _isLoading = false;
       notifyListeners();
@@ -148,6 +172,9 @@ class AuthService extends ChangeNotifier {
   Future<void> logout() async {
     _user = null;
     _token = null;
+
+    // Note: FavoritesService cache will be cleared when app state is refreshed
+    // This happens automatically when user logs back in
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');

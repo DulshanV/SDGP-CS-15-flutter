@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,4 +13,30 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
-export { signInWithPopup };
+
+let popupInFlight = false;
+
+export async function signInWithGoogle() {
+  if (popupInFlight) {
+    return null;
+  }
+
+  popupInFlight = true;
+  try {
+    return await signInWithPopup(auth, googleProvider);
+  } catch (err: any) {
+    const message = String(err?.message || '');
+    const shouldFallbackToRedirect =
+      err?.code === 'auth/internal-error' ||
+      message.includes('Pending promise was never set');
+
+    if (shouldFallbackToRedirect) {
+      await signInWithRedirect(auth, googleProvider);
+      return null;
+    }
+
+    throw err;
+  } finally {
+    popupInFlight = false;
+  }
+}

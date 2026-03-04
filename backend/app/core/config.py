@@ -9,11 +9,11 @@ import json
 
 class Settings(BaseSettings):
     # Environment: "development" or "production"
-    env: str = "development"
+    env: str = "production"
 
-    # Database
-    database_url: str = "postgresql+asyncpg://hscode_user:hscode_pass@localhost:5432/hscode_db"
-    database_url_sync: str = "postgresql+psycopg2://hscode_user:hscode_pass@localhost:5432/hscode_db"
+    # Database (use SQLite for development, PostgreSQL for production)
+    database_url: str = "sqlite+aiosqlite:///./hscode_dev.db"
+    database_url_sync: str = "sqlite:///./hscode_dev.db"
 
     # ChromaDB / FAISS data directory
     chroma_persist_dir: str = "./data/chroma_db"
@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     firebase_credentials_path: str = "./firebase-service-account.json"
 
     # Server
-    host: str = "0.0.0.0"
+    host: str = "127.0.0.1"
     port: int = 8000
     cors_origins: str = '["*"]'
 
