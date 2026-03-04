@@ -90,12 +90,13 @@ async def lifespan(app: FastAPI):
 
     # Create database tables if they don't exist
     try:
-        from app.core.database import engine, Base
+        from app.core.database import engine, Base, ensure_schema_compatibility
         from app.models.user import User, SearchHistory, Favorite, SubscriptionTier  # noqa: ensure models are imported
         from app.models.categories import FeaturedCategory  # noqa: ensure category model is imported
 
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
+            await conn.run_sync(ensure_schema_compatibility)
         logger.info("Database tables ensured")
     except Exception as e:
         logger.warning(f"Database initialization failed: {e}")
