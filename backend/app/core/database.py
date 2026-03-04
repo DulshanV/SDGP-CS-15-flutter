@@ -5,7 +5,7 @@ Supports both PostgreSQL (production) and SQLite (local dev).
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import event
+from sqlalchemy import event, inspect, text
 from app.core.config import settings
 
 _is_sqlite = settings.database_url.startswith("sqlite")
@@ -44,6 +44,35 @@ AsyncSessionLocal = async_sessionmaker(
 
 class Base(DeclarativeBase):
     pass
+
+
+def ensure_schema_compatibility(sync_conn) -> None:
+    """Backfill required columns for older databases without migrations."""
+    inspector = inspect(sync_conn)
+    if "users" not in inspector.get_table_names():
+        return
+
+    existing_columns = {col["name"] for col in inspector.get_columns("users")}
+
+    dialect = sync_conn.dialect.name
+    if dialect == "postgresql":
+        alter_statements = {
+            "subscription_tier": "ALTER TABLE users ADD COLUMN subscription_tier VARCHAR(20) NOT NULL DEFAULT 'starter'",
+            "subscription_start_date": "ALTER TABLE users ADD COLUMN subscription_start_date TIMESTAMP NULL",
+            "subscription_end_date": "ALTER TABLE users ADD COLUMN subscription_end_date TIMESTAMP NULL",
+            "is_subscription_active": "ALTER TABLE users ADD COLUMN is_subscription_active BOOLEAN NOT NULL DEFAULT TRUE",
+        }
+    else:
+        alter_statements = {
+            "subscription_tier": "ALTER TABLE users ADD COLUMN subscription_tier TEXT NOT NULL DEFAULT 'starter'",
+            "subscription_start_date": "ALTER TABLE users ADD COLUMN subscription_start_date DATETIME",
+            "subscription_end_date": "ALTER TABLE users ADD COLUMN subscription_end_date DATETIME",
+            "is_subscription_active": "ALTER TABLE users ADD COLUMN is_subscription_active INTEGER NOT NULL DEFAULT 1",
+        }
+
+    for column_name, ddl in alter_statements.items():
+        if column_name not in existing_columns:
+            sync_conn.execute(text(ddl))
 
 
 async def get_db() -> AsyncSession:
