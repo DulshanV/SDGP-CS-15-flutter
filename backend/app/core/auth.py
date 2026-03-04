@@ -106,3 +106,23 @@ async def require_admin(
         if user.role != UserRole.admin.value:
             raise HTTPException(status_code=403, detail="Admin access required.")
     return token_data
+
+async def get_current_user(
+    token_data: dict = Depends(require_auth),
+):
+    """Dependency that returns the authenticated User ORM object."""
+    from app.core.database import AsyncSessionLocal
+    from app.models.user import User
+    from sqlalchemy import select
+    from sqlalchemy.orm import make_transient
+
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(User).where(User.firebase_uid == token_data["uid"])
+        )
+        user = result.scalar_one_or_none()
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found.")
+        # Detach from the session so the object remains usable after close
+        session.expunge(user)
+    return user

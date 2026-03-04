@@ -903,7 +903,9 @@ class _HomeContentState extends State<_HomeContent> {
   final SearchHistoryService _historyService = SearchHistoryService();
   final CategoriesService _categoriesService = CategoriesService();
   List<String> _recentSearches = [];
-  List<FeaturedCategory> _featuredCategories = [];
+  List<FeaturedCategory> _featuredCategories =
+      defaultFeaturedCategories.values.toList()
+        ..sort((a, b) => a.order.compareTo(b.order));
 
   static const Color primaryBlue = Color(0xFF0B3EA8);
   static const Color secondaryBlue = Color(0xFF0A2E8A);
@@ -913,6 +915,12 @@ class _HomeContentState extends State<_HomeContent> {
     super.initState();
     _loadRecentSearches();
     _loadFeaturedCategories();
+  }
+
+  @override
+  void didUpdateWidget(covariant _HomeContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _loadRecentSearches();
   }
 
   @override
@@ -929,7 +937,14 @@ class _HomeContentState extends State<_HomeContent> {
   Future<void> _loadFeaturedCategories() async {
     try {
       final categories = await _categoriesService.getFeaturedCategories();
-      if (mounted) setState(() => _featuredCategories = categories);
+      if (mounted) {
+        setState(() {
+          _featuredCategories = categories.isNotEmpty
+              ? categories
+              : (defaultFeaturedCategories.values.toList()
+                ..sort((a, b) => a.order.compareTo(b.order)));
+        });
+      }
     } catch (e) {
       // Gracefully fallback to default categories
       if (mounted) {

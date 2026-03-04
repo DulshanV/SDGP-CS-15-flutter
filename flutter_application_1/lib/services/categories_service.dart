@@ -12,6 +12,11 @@ class CategoriesService {
       : baseUrl = baseUrl ?? AppConfig.apiBaseUrl,
         _client = client ?? http.Client();
 
+  List<FeaturedCategory> _defaultCategories() {
+    return defaultFeaturedCategories.values.toList()
+      ..sort((a, b) => a.order.compareTo(b.order));
+  }
+
   /// Get all featured categories.
   Future<List<FeaturedCategory>> getFeaturedCategories() async {
     final uri = Uri.parse('$baseUrl/api/v1/categories/featured');
@@ -22,18 +27,23 @@ class CategoriesService {
       );
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body) as Map<String, dynamic>;
-        final responseData = FeaturedCategoriesResponse.fromJson(json);
-        return responseData.categories;
+        final decoded = jsonDecode(response.body);
+
+        if (decoded is Map<String, dynamic>) {
+          final responseData = FeaturedCategoriesResponse.fromJson(decoded);
+          if (responseData.categories.isNotEmpty) {
+            return responseData.categories;
+          }
+        }
+
+        return _defaultCategories();
       } else {
         // Fallback to default categories if API fails
-        return defaultFeaturedCategories.values.toList()
-          ..sort((a, b) => a.order.compareTo(b.order));
+        return _defaultCategories();
       }
     } catch (e) {
       // Return default categories on error
-      return defaultFeaturedCategories.values.toList()
-        ..sort((a, b) => a.order.compareTo(b.order));
+      return _defaultCategories();
     }
   }
 
@@ -58,23 +68,7 @@ class CategoriesService {
 
   /// Search for HS codes in a specific category.
   Future<int> getCategoryCount(String categoryName) async {
-    final uri = Uri.parse(
-      '$baseUrl/api/v1/categories/search',
-      // We could add query params like ?category=$categoryName
-    );
-
-    try {
-      final response = await _client.get(uri).timeout(
-        const Duration(seconds: 10),
-      );
-
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body) as Map<String, dynamic>;
-        return json['total'] as int? ?? 0;
-      }
-      return 0;
-    } catch (e) {
-      return 0;
-    }
+    // No specific count endpoint implemented yet, returning 0
+    return 0;
   }
 }

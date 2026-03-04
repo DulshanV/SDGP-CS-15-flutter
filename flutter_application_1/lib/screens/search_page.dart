@@ -45,13 +45,25 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
     _loadRecentSearches();
     _favorites.addListener(_onFavoritesChanged);
-    if (widget.initialQuery != null && widget.initialQuery!.isNotEmpty) {
-      _searchController.text = widget.initialQuery!;
-      // Execute after frame so context is available
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _performSearch(widget.initialQuery!);
-      });
+    _applyInitialQuery(widget.initialQuery);
+  }
+
+  @override
+  void didUpdateWidget(covariant SearchPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialQuery != widget.initialQuery) {
+      _applyInitialQuery(widget.initialQuery);
     }
+  }
+
+  void _applyInitialQuery(String? query) {
+    if (query == null || query.trim().isEmpty) return;
+    final normalized = query.trim();
+    _searchController.text = normalized;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _performSearch(normalized);
+    });
   }
 
   void _onFavoritesChanged() {

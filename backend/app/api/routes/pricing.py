@@ -88,10 +88,13 @@ async def get_pricing_plans():
 @router.get("/subscription/{user_id}", response_model=UserSubscriptionResponse)
 async def get_user_subscription(
     user_id: str,
-    _: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """Get current user's subscription details."""
+    if current_user.id != user_id and current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to view this subscription.")
+
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalars().first()
 
@@ -114,10 +117,13 @@ async def get_user_subscription(
 async def upgrade_subscription(
     user_id: str,
     request: SubscriptionUpgradeRequest,
-    _: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """Upgrade user's subscription tier."""
+    if current_user.id != user_id and current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to modify this subscription.")
+
     # Validate tier
     if request.tier.lower() not in PRICING_TIERS:
         raise HTTPException(
@@ -146,8 +152,7 @@ async def upgrade_subscription(
     user.is_subscription_active = True
     user.updated_at = now
 
-    await db.commit()
-    await db.refresh(user)
+    await db.flush()
 
     return SubscriptionUpgradeResponse(
         user_id=user.id,
@@ -163,10 +168,13 @@ async def upgrade_subscription(
 async def downgrade_subscription(
     user_id: str,
     request: SubscriptionUpgradeRequest,
-    _: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """Downgrade user's subscription tier."""
+    if current_user.id != user_id and current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to modify this subscription.")
+
     # Validate tier
     if request.tier.lower() not in PRICING_TIERS:
         raise HTTPException(
@@ -195,8 +203,7 @@ async def downgrade_subscription(
     user.is_subscription_active = True
     user.updated_at = now
 
-    await db.commit()
-    await db.refresh(user)
+    await db.flush()
 
     return SubscriptionUpgradeResponse(
         user_id=user.id,

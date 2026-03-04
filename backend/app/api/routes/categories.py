@@ -130,8 +130,7 @@ async def create_category(
     )
 
     db.add(category)
-    await db.commit()
-    await db.refresh(category)
+    await db.flush()
 
     return FeaturedCategoryResponse.model_validate(category)
 
@@ -187,8 +186,7 @@ async def update_category(
     if request.is_active is not None:
         category.is_active = request.is_active
 
-    await db.commit()
-    await db.refresh(category)
+    await db.flush()
 
     return FeaturedCategoryResponse.model_validate(category)
 
@@ -219,4 +217,4 @@ async def delete_category(
         )
 
     await db.delete(category)
-    await db.commit()
+    await db.flush()

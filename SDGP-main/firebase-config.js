@@ -12,12 +12,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
-    apiKey: "PASTE_YOUR_API_KEY_HERE",
-    authDomain: "PASTE_YOUR_AUTH_DOMAIN_HERE",
-    projectId: "PASTE_YOUR_PROJECT_ID_HERE",
-    storageBucket: "PASTE_YOUR_STORAGE_BUCKET_HERE",
-    messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID_HERE",
-    appId: "PASTE_YOUR_APP_ID_HERE"
+    apiKey: "AIzaSyA4CfVHQdOBCxexYnBBv0ryb3A_lai38Rk",
+    authDomain: "ceylon-hs.firebaseapp.com",
+    projectId: "ceylon-hs",
+    storageBucket: "ceylon-hs.firebasestorage.app",
+    messagingSenderId: "1087856269110",
+    appId: "1:1087856269110:web:669a4fb469208428abc597",
+    measurementId: "G-26MXDJK1GQ"
 };
 
 const app = initializeApp(firebaseConfig);

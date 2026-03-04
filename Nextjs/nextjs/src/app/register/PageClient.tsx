@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { auth, googleProvider, signInWithPopup } from '@/lib/firebase';
+import { auth, signInWithGoogle } from '@/lib/firebase';
 import { createUserWithEmailAndPassword, updateProfile, onAuthStateChanged } from 'firebase/auth';
 import emailjs from '@emailjs/browser';
 import { syncUser } from '@/lib/api';
@@ -81,6 +81,19 @@ export default function Register() {
     const [errorMsg, setErrorMsg] = useState('');
     const [mounted, setMounted] = useState(false);
 
+    const authErrorMessage = (err: any, fallback: string) => {
+        const code = err?.code as string | undefined;
+        if (code === 'auth/network-request-failed') {
+            const isLocal = typeof window !== 'undefined' &&
+                (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+            if (isLocal) {
+                return 'Firebase connection failed on localhost. Check Firebase Authorized domains (add localhost/127.0.0.1) and API key referrer restrictions.';
+            }
+            return 'Network error while contacting Firebase. Check your internet/firewall and retry.';
+        }
+        return fallback;
+    };
+
     useEffect(() => {
         const ejsKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
         if (ejsKey) emailjs.init({ publicKey: ejsKey });
@@ -90,8 +103,13 @@ export default function Register() {
     }, [router]);
 
     const handleGoogle = async () => {
-        try { await signInWithPopup(auth, googleProvider); await syncUser(); router.push('/search'); }
-        catch (err: any) { setErrorMsg(err.message || 'Google sign-in failed.'); }
+        try {
+            const cred = await signInWithGoogle();
+            if (!cred) return;
+            await syncUser();
+            router.push('/search');
+        }
+        catch (err: any) { setErrorMsg(authErrorMessage(err, err.message || 'Google sign-in failed.')); }
     };
 
     const handleRegister = async (e: React.FormEvent) => {
@@ -111,7 +129,7 @@ export default function Register() {
             } catch { }
             await syncUser();
             router.push('/search');
-        } catch (err: any) { setErrorMsg(err.message); }
+        } catch (err: any) { setErrorMsg(authErrorMessage(err, err.message)); }
         finally { setLoading(false); }
     };
 
