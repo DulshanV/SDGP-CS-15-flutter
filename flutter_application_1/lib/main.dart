@@ -186,6 +186,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final AuthService _auth = AuthService();
   bool _busy = false;
   String? _error;
+  String? _success;
 
   static const Color primaryBlue = Color(0xFF0B3EA8);
   static const Color secondaryBlue = Color(0xFF0A2E8A);
@@ -215,6 +216,7 @@ class _SignUpPageState extends State<SignUpPage> {
     setState(() {
       _busy = true;
       _error = null;
+      _success = null;
     });
 
     final success = await _auth.signUp(
@@ -233,7 +235,30 @@ class _SignUpPageState extends State<SignUpPage> {
     } else {
       setState(() {
         _busy = false;
-        _error = 'Sign up failed. Check your connection.';
+        _error = _auth.lastErrorMessage ?? 'Sign up failed. Please try again.';
+      });
+    }
+  }
+
+  Future<void> _submitGoogle() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+      _success = null;
+    });
+
+    final success = await _auth.signInWithGoogle();
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute<void>(builder: (_) => const MainHomePage()),
+        (route) => false,
+      );
+    } else {
+      setState(() {
+        _busy = false;
+        _error = _auth.lastErrorMessage ?? 'Google sign-in failed.';
       });
     }
   }
@@ -355,6 +380,19 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         ),
                         const SizedBox(height: 26),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: OutlinedButton.icon(
+                            onPressed: _busy ? null : _submitGoogle,
+                            icon: const Icon(Icons.g_mobiledata, size: 24),
+                            label: const Text(
+                              'Continue with Google',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
                         _AuthTextField(controller: _nameCtrl, hintText: 'Full Name'),
                         const SizedBox(height: 14),
                         _AuthTextField(controller: _emailCtrl, hintText: 'Email'),
@@ -364,6 +402,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           const SizedBox(height: 12),
                           Text(_error!,
                               style: const TextStyle(color: Colors.redAccent, fontSize: 13)),
+                        ],
+                        if (_success != null) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            _success!,
+                            style: const TextStyle(color: Colors.green, fontSize: 13),
+                          ),
                         ],
                         const SizedBox(height: 26),
                         SizedBox(
@@ -437,6 +482,7 @@ class _LoginPageState extends State<LoginPage> {
   final AuthService _auth = AuthService();
   bool _busy = false;
   String? _error;
+  String? _success;
 
   static const Color primaryBlue = Color(0xFF0B3EA8);
   static const Color secondaryBlue = Color(0xFF0A2E8A);
@@ -460,6 +506,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _busy = true;
       _error = null;
+      _success = null;
     });
 
     final success = await _auth.login(email: email, password: pass);
@@ -474,9 +521,57 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       setState(() {
         _busy = false;
-        _error = 'Login failed. Check your credentials or connection.';
+        _error = _auth.lastErrorMessage ??
+            'Login failed. Check your credentials and try again.';
       });
     }
+  }
+
+  Future<void> _submitGoogle() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+      _success = null;
+    });
+
+    final success = await _auth.signInWithGoogle();
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute<void>(builder: (_) => const MainHomePage()),
+        (route) => false,
+      );
+    } else {
+      setState(() {
+        _busy = false;
+        _error = _auth.lastErrorMessage ?? 'Google sign-in failed.';
+      });
+    }
+  }
+
+  Future<void> _forgotPassword() async {
+    final email = _emailCtrl.text.trim();
+    if (email.isEmpty) {
+      setState(() => _error = 'Enter your email first.');
+      return;
+    }
+
+    setState(() {
+      _error = null;
+      _success = null;
+    });
+
+    final ok = await _auth.sendPasswordReset(email);
+    if (!mounted) return;
+
+    setState(() {
+      if (ok) {
+        _success = 'Password reset email sent to $email';
+      } else {
+        _error = _auth.lastErrorMessage ?? 'Could not send reset email.';
+      }
+    });
   }
 
   @override
@@ -593,6 +688,19 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         const SizedBox(height: 26),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: OutlinedButton.icon(
+                            onPressed: _busy ? null : _submitGoogle,
+                            icon: const Icon(Icons.g_mobiledata, size: 24),
+                            label: const Text(
+                              'Continue with Google',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
                         _AuthTextField(
                           controller: _emailCtrl,
                           hintText: 'Email',
@@ -610,11 +718,18 @@ class _LoginPageState extends State<LoginPage> {
                               style: const TextStyle(
                                   color: Colors.redAccent, fontSize: 13)),
                         ],
+                        if (_success != null) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            _success!,
+                            style: const TextStyle(color: Colors.green, fontSize: 13),
+                          ),
+                        ],
                         const SizedBox(height: 10),
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: _forgotPassword,
                             style: TextButton.styleFrom(
                               foregroundColor: primaryBlue,
                               padding: const EdgeInsets.symmetric(
