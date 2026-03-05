@@ -123,21 +123,33 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> _firebaseSignInWithGoogle({
-    required String idToken,
-    required String accessToken,
+    String? idToken,
+    String? accessToken,
   }) async {
     final uri = Uri.parse(
       'https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=$_firebaseWebApiKey',
     );
+
+    final hasIdToken = idToken != null && idToken.trim().isNotEmpty;
+    final hasAccessToken = accessToken != null && accessToken.trim().isNotEmpty;
+
+    if (!hasIdToken && !hasAccessToken) {
+      throw _FirebaseAuthException('GOOGLE_TOKEN_MISSING');
+    }
+
+    final parts = <String>[];
+    if (hasIdToken) parts.add('id_token=$idToken');
+    if (hasAccessToken) parts.add('access_token=$accessToken');
+    parts.add('providerId=google.com');
+    final encodedPostBody = parts.join('&');
 
     final response = await http
         .post(
           uri,
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
-            'postBody':
-                'id_token=$idToken&access_token=$accessToken&providerId=google.com',
-            'requestUri': 'http://localhost',
+            'postBody': encodedPostBody,
+            'requestUri': kIsWeb ? Uri.base.origin : 'http://localhost',
             'returnSecureToken': true,
             'returnIdpCredential': true,
           }),
@@ -153,6 +165,12 @@ class AuthService extends ChangeNotifier {
 
   void _setError(String message) {
     _lastErrorMessage = message;
+  }
+
+  String _redactToken(String? token) {
+    if (token == null || token.isEmpty) return '<none>';
+    if (token.length <= 16) return '<redacted>';
+    return '${token.substring(0, 8)}...${token.substring(token.length - 6)}';
   }
 
   Future<UserProfile?> _syncUser({
@@ -173,9 +191,9 @@ class AuthService extends ChangeNotifier {
 
     debugPrint('🔐 Auth DEBUG:');
     debugPrint('  URL: $url');
-    debugPrint('  Token: $_token');
+    debugPrint('  Token: ${_redactToken(_token)}');
     debugPrint('  Body: ${jsonEncode(body)}');
-    debugPrint('  Headers: $authHeaders');
+    debugPrint('  Headers: {Authorization: Bearer <redacted>, Content-Type: application/json}');
 
     final response = await http
         .post(
@@ -342,6 +360,15 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
 
     try {
+      if (kIsWeb && _googleWebClientId.trim().isEmpty) {
+        _setError(
+          'GOOGLE_WEB_CLIENT_ID is missing for web build. Run with --dart-define=GOOGLE_WEB_CLIENT_ID=<web-client-id>.apps.googleusercontent.com',
+        );
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+
       final googleSignIn = GoogleSignIn(
         scopes: const ['email', 'profile'],
         clientId: kIsWeb && _googleWebClientId.isNotEmpty
@@ -349,7 +376,8 @@ class AuthService extends ChangeNotifier {
             : null,
       );
 
-      final account = await googleSignIn.signIn();
+      GoogleSignInAccount? account = await googleSignIn.signInSilently();
+      account ??= await googleSignIn.signIn();
       if (account == null) {
         _setError('Google sign-in was cancelled.');
         _isLoading = false;
@@ -373,13 +401,17 @@ class AuthService extends ChangeNotifier {
             ) ??
             _fallbackProfile(uid: uid, email: email, displayName: displayName);
       } else {
-        if (auth.idToken == null || auth.accessToken == null) {
+        final idToken = auth.idToken?.trim();
+        final accessToken = auth.accessToken?.trim();
+
+        if ((idToken == null || idToken.isEmpty) &&
+            (accessToken == null || accessToken.isEmpty)) {
           throw _FirebaseAuthException('GOOGLE_TOKEN_MISSING');
         }
 
         final firebase = await _firebaseSignInWithGoogle(
-          idToken: auth.idToken!,
-          accessToken: auth.accessToken!,
+          idToken: idToken,
+          accessToken: accessToken,
         );
 
         _token = (firebase['idToken'] as String?)?.trim();
@@ -418,12 +450,48 @@ class AuthService extends ChangeNotifier {
       return false;
     } catch (e) {
       debugPrint('❌ Google sign-in error: $e');
-      _setError('Google sign-in failed. Check popup settings and try again.');
+      _setError(_mapGoogleSignInError(e));
       _token = null;
       _isLoading = false;
       notifyListeners();
       return false;
     }
+  }
+
+  String _mapGoogleSignInError(Object error) {
+    final raw = error.toString();
+    final lower = raw.toLowerCase();
+
+    if (lower.contains('popup_closed_by_user') ||
+        lower.contains('popup_closed')) {
+      return 'Google sign-in popup was closed before completing login.';
+    }
+    if (lower.contains('clientid not set') ||
+        lower.contains('google-signin-client_id') ||
+        lower.contains('appid != null')) {
+      return 'Google Web Client ID is missing. Run with --dart-define=GOOGLE_WEB_CLIENT_ID=<web-client-id>.apps.googleusercontent.com';
+    }
+    if (lower.contains('popup_blocked_by_browser') ||
+        lower.contains('popup blocked')) {
+      return 'Browser blocked the Google popup. Allow popups for this site and try again.';
+    }
+    if (lower.contains('idpiframe_initialization_failed') ||
+        lower.contains('third-party cookies')) {
+      return 'Google sign-in requires third-party cookies for this site. Enable them and try again.';
+    }
+    if (lower.contains('origin_mismatch') ||
+        lower.contains('unauthorized_client') ||
+        lower.contains('invalid_client')) {
+      return 'Google OAuth client mismatch. Verify GOOGLE_WEB_CLIENT_ID and authorized JavaScript origins.';
+    }
+    if (lower.contains('access_blocked') || lower.contains('disallowed_useragent')) {
+      return 'Google sign-in is blocked by browser or OAuth policy. Try a normal Chrome window and check OAuth settings.';
+    }
+    if (lower.contains('network')) {
+      return 'Network issue during Google sign-in. Check connection and try again.';
+    }
+
+    return 'Google sign-in failed. Please try again.';
   }
 
   /// Try to restore session from local storage.
@@ -514,6 +582,11 @@ class _FirebaseAuthException implements Exception {
         return 'This account is disabled.';
       case 'GOOGLE_TOKEN_MISSING':
         return 'Google sign-in token missing. Set GOOGLE_WEB_CLIENT_ID for web builds.';
+      case 'OPERATION_NOT_ALLOWED':
+        return 'Google sign-in is not enabled in Firebase Authentication.';
+      case 'INVALID_IDP_RESPONSE':
+      case 'INVALID_ID_TOKEN':
+        return 'Google sign-in was rejected by Firebase. Check OAuth client and authorized domains.';
       default:
         return 'Authentication failed. Please try again.';
     }
