@@ -146,6 +146,7 @@ from app.api.routes.training import router as training_router
 from app.api.routes.datasets import router as datasets_router
 from app.api.routes.pricing import router as pricing_router
 from app.api.routes.categories import router as categories_router
+from app.api.routes.chat import router as chat_router
 
 app.include_router(search_router)
 app.include_router(users_router)
@@ -155,6 +156,7 @@ app.include_router(training_router)
 app.include_router(datasets_router)
 app.include_router(pricing_router)
 app.include_router(categories_router)
+app.include_router(chat_router)
 
 # Serve the web search UI
 STATIC_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")

@@ -4,6 +4,7 @@ import './globals.css';
 import PageTransition from '@/components/PageTransition';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import BottomNav from '@/components/BottomNav';
+import Chatbot from '@/components/Chatbot';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -36,6 +37,7 @@ export default function RootLayout({
             {children}
           </PageTransition>
           <BottomNav />
+          <Chatbot />
         </ThemeProvider>
       </body>
     </html>
