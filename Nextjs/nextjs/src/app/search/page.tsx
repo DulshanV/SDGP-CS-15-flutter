@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: 'Search HS Codes',
   description: 'Classify your products to find accurate 6-digit HS codes using AI.',
+  keywords: 'hs codes, search hs code, trade classification, customs code, AI hs code generator',
   openGraph: {
     title: 'Search HS Codes | CeylonHS',
     description: 'Find the accurate HS code for your product instantly.',
