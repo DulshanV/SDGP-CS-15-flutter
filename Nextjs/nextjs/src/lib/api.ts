@@ -213,3 +213,33 @@ export async function clearSearchHistory() {
     const headers = await getAuthHeaders();
     await axios.delete(`${BASE_URL}/api/v1/users/me/history`, { headers, timeout: 10000 });
 }
+
+// ── Chat ──
+
+export interface ChatResult {
+    hscode: string;
+    description: string;
+    relevance_pct: number;
+}
+
+export interface ChatApiResponse {
+    reply: string;
+    results: ChatResult[];
+}
+
+export async function chatMessage(message: string): Promise<ChatApiResponse> {
+    const res = await axios.post(
+        `${BASE_URL}/api/v1/chat`,
+        { message },
+        { timeout: 30000 }
+    );
+    return {
+        reply: res.data.reply ?? '',
+        results: (res.data.results ?? []).map((r: any) => ({
+            hscode: r.hscode ?? '',
+            description: r.description ?? '',
+            relevance_pct: r.relevance_pct ?? 0,
+        })),
+    };
+}
+

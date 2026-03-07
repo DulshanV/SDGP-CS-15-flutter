@@ -8,6 +8,7 @@ on:
       - 'backend/**'
       - 'deploy.sh'
       - '.github/workflows/deploy.yml'
+  workflow_dispatch:  # Allow manual trigger from GitHub Actions UI
 
 jobs:
   deploy:

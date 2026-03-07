@@ -2,9 +2,16 @@
 import 'screens/search_page.dart';
 import 'screens/favorites_page.dart';
 import 'screens/history_page.dart';
+import 'screens/recents_page.dart';
 import 'screens/admin_dashboard.dart';
+import 'screens/pricing_page.dart';
 import 'services/search_history_service.dart';
 import 'services/auth_service.dart';
+import 'services/favorites_service.dart';
+import 'services/pricing_service.dart';
+import 'services/categories_service.dart';
+import 'models/pricing_model.dart';
+import 'models/category_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -163,275 +170,7 @@ class IntroPage extends StatelessWidget {
   }
 }
 
-class PricingPage extends StatelessWidget {
-  const PricingPage({super.key, this.isEmbedded = false});
-
-  final bool isEmbedded;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FA),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            if (!isEmbedded)
-              Positioned(
-                top: 12,
-                left: 18,
-                child: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(
-                    Icons.arrow_back_rounded,
-                    color: Color(0xFF0B3EA8),
-                    size: 26,
-                  ),
-                ),
-              ),
-            if (!isEmbedded)
-              Positioned(
-                top: 12,
-                right: 18,
-                child: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.person_outline_rounded,
-                    color: Color(0xFF0B3EA8),
-                    size: 26,
-                  ),
-                ),
-              ),
-            ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(20, isEmbedded ? 20 : 68, 20, 24),
-              children: [
-                const Text(
-                  'Simple, transparent pricing.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF1D2F4D),
-                    fontSize: 32,
-                    fontWeight: FontWeight.w800,
-                    height: 1.15,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Choose the plan that best fits your search volume and business needs.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF5D6778),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                _PricingCard(
-                  title: 'Starter',
-                  price: 3,
-                  features: const [
-                    '10 Search results per month',
-                    'Basic HS code matching',
-                    'Email support',
-                    'Email support',
-                  ],
-                  buttonLabel: 'Choose Starter',
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Starter plan selected')),
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                _PricingCard(
-                  title: 'Business',
-                  price: 5,
-                  isMostPopular: true,
-                  features: const [
-                    '25 Search results per month',
-                    'AI-Enhanced accuracy',
-                    'Priority search speed',
-                    'Export search history',
-                  ],
-                  buttonLabel: 'Choose Business',
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Business plan selected')),
-                    );
-                  },
-                ),
-                const SizedBox(height: 16),
-                _PricingCard(
-                  title: 'Enterprise',
-                  price: 9,
-                  features: const [
-                    '50 Search results per month',
-                    'Dedicated support',
-                    'Custom API Access',
-                    'Bulk classification',
-                  ],
-                  buttonLabel: 'Choose Enterprise',
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Enterprise plan selected')),
-                    );
-                  },
-                ),
-                const SizedBox(height: 8),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _PricingCard extends StatelessWidget {
-  const _PricingCard({
-    required this.title,
-    required this.price,
-    required this.features,
-    required this.buttonLabel,
-    required this.onPressed,
-    this.isMostPopular = false,
-  });
-
-  final String title;
-  final int price;
-  final List<String> features;
-  final String buttonLabel;
-  final VoidCallback onPressed;
-  final bool isMostPopular;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isMostPopular ? const Color(0xFF0B3EA8) : const Color(0xFFD0D8E5),
-          width: isMostPopular ? 2 : 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0x0F000000),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          if (isMostPopular) ...[
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0xFF3D8BFF),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text(
-                'MOST POPULAR',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ),
-            const SizedBox(height: 14),
-          ],
-          Text(
-            title,
-            style: const TextStyle(
-              color: Color(0xFF1D2F4D),
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 4),
-                child: Text(
-                  r'$',
-                  style: TextStyle(
-                    color: Color(0xFF0B3EA8),
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
-              Text(
-                '$price',
-                style: const TextStyle(
-                  color: Color(0xFF0B3EA8),
-                  fontSize: 56,
-                  fontWeight: FontWeight.w800,
-                  height: 1,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 18),
-          ...features.map((feature) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.check_circle,
-                      color: Color(0xFF4A90E2),
-                      size: 18,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        feature,
-                        style: const TextStyle(
-                          color: Color(0xFF5D6778),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            height: 44,
-            child: ElevatedButton(
-              onPressed: onPressed,
-              style: ElevatedButton.styleFrom(
-                elevation: 2,
-                backgroundColor: const Color(0xFF0B3EA8),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22),
-                ),
-              ),
-              child: Text(
-                buttonLabel,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// PricingPage is now imported from screens/pricing_page.dart
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -447,6 +186,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final AuthService _auth = AuthService();
   bool _busy = false;
   String? _error;
+  String? _success;
 
   static const Color primaryBlue = Color(0xFF0B3EA8);
   static const Color secondaryBlue = Color(0xFF0A2E8A);
@@ -476,6 +216,7 @@ class _SignUpPageState extends State<SignUpPage> {
     setState(() {
       _busy = true;
       _error = null;
+      _success = null;
     });
 
     final success = await _auth.signUp(
@@ -494,7 +235,30 @@ class _SignUpPageState extends State<SignUpPage> {
     } else {
       setState(() {
         _busy = false;
-        _error = 'Sign up failed. Check your connection.';
+        _error = _auth.lastErrorMessage ?? 'Sign up failed. Please try again.';
+      });
+    }
+  }
+
+  Future<void> _submitGoogle() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+      _success = null;
+    });
+
+    final success = await _auth.signInWithGoogle();
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute<void>(builder: (_) => const MainHomePage()),
+        (route) => false,
+      );
+    } else {
+      setState(() {
+        _busy = false;
+        _error = _auth.lastErrorMessage ?? 'Google sign-in failed.';
       });
     }
   }
@@ -616,6 +380,19 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         ),
                         const SizedBox(height: 26),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: OutlinedButton.icon(
+                            onPressed: _busy ? null : _submitGoogle,
+                            icon: const Icon(Icons.g_mobiledata, size: 24),
+                            label: const Text(
+                              'Continue with Google',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
                         _AuthTextField(controller: _nameCtrl, hintText: 'Full Name'),
                         const SizedBox(height: 14),
                         _AuthTextField(controller: _emailCtrl, hintText: 'Email'),
@@ -625,6 +402,13 @@ class _SignUpPageState extends State<SignUpPage> {
                           const SizedBox(height: 12),
                           Text(_error!,
                               style: const TextStyle(color: Colors.redAccent, fontSize: 13)),
+                        ],
+                        if (_success != null) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            _success!,
+                            style: const TextStyle(color: Colors.green, fontSize: 13),
+                          ),
                         ],
                         const SizedBox(height: 26),
                         SizedBox(
@@ -698,6 +482,7 @@ class _LoginPageState extends State<LoginPage> {
   final AuthService _auth = AuthService();
   bool _busy = false;
   String? _error;
+  String? _success;
 
   static const Color primaryBlue = Color(0xFF0B3EA8);
   static const Color secondaryBlue = Color(0xFF0A2E8A);
@@ -721,6 +506,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _busy = true;
       _error = null;
+      _success = null;
     });
 
     final success = await _auth.login(email: email, password: pass);
@@ -735,9 +521,57 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       setState(() {
         _busy = false;
-        _error = 'Login failed. Check your credentials or connection.';
+        _error = _auth.lastErrorMessage ??
+            'Login failed. Check your credentials and try again.';
       });
     }
+  }
+
+  Future<void> _submitGoogle() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+      _success = null;
+    });
+
+    final success = await _auth.signInWithGoogle();
+    if (!mounted) return;
+
+    if (success) {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute<void>(builder: (_) => const MainHomePage()),
+        (route) => false,
+      );
+    } else {
+      setState(() {
+        _busy = false;
+        _error = _auth.lastErrorMessage ?? 'Google sign-in failed.';
+      });
+    }
+  }
+
+  Future<void> _forgotPassword() async {
+    final email = _emailCtrl.text.trim();
+    if (email.isEmpty) {
+      setState(() => _error = 'Enter your email first.');
+      return;
+    }
+
+    setState(() {
+      _error = null;
+      _success = null;
+    });
+
+    final ok = await _auth.sendPasswordReset(email);
+    if (!mounted) return;
+
+    setState(() {
+      if (ok) {
+        _success = 'Password reset email sent to $email';
+      } else {
+        _error = _auth.lastErrorMessage ?? 'Could not send reset email.';
+      }
+    });
   }
 
   @override
@@ -854,6 +688,19 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         const SizedBox(height: 26),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: OutlinedButton.icon(
+                            onPressed: _busy ? null : _submitGoogle,
+                            icon: const Icon(Icons.g_mobiledata, size: 24),
+                            label: const Text(
+                              'Continue with Google',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
                         _AuthTextField(
                           controller: _emailCtrl,
                           hintText: 'Email',
@@ -871,11 +718,18 @@ class _LoginPageState extends State<LoginPage> {
                               style: const TextStyle(
                                   color: Colors.redAccent, fontSize: 13)),
                         ],
+                        if (_success != null) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            _success!,
+                            style: const TextStyle(color: Colors.green, fontSize: 13),
+                          ),
+                        ],
                         const SizedBox(height: 10),
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: _forgotPassword,
                             style: TextButton.styleFrom(
                               foregroundColor: primaryBlue,
                               padding: const EdgeInsets.symmetric(
@@ -1052,6 +906,7 @@ class _MainHomePageState extends State<MainHomePage> {
   static const List<String> _labels = [
     'Home',
     'Search',
+    'Recents',
     'Pricing',
     'Profile',
   ];
@@ -1059,9 +914,21 @@ class _MainHomePageState extends State<MainHomePage> {
   static const List<IconData> _icons = [
     Icons.home_rounded,
     Icons.search_rounded,
+    Icons.history_rounded,
     Icons.price_change_rounded,
     Icons.person_rounded,
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize favorites on app startup
+    _initializeFavorites();
+  }
+
+  Future<void> _initializeFavorites() async {
+    await FavoritesService().initialize();
+  }
 
   void _navigateToSearch(String query) {
     setState(() {
@@ -1082,6 +949,7 @@ class _MainHomePageState extends State<MainHomePage> {
         children: [
           _HomeContent(onSearch: _navigateToSearch),
           SearchPage(isEmbedded: true, initialQuery: _searchQuery),
+          const RecentsPage(isEmbedded: true),
           const PricingPage(isEmbedded: true),
           const _ProfileContent(),
         ],
@@ -1148,7 +1016,11 @@ class _HomeContent extends StatefulWidget {
 class _HomeContentState extends State<_HomeContent> {
   final TextEditingController _searchController = TextEditingController();
   final SearchHistoryService _historyService = SearchHistoryService();
+  final CategoriesService _categoriesService = CategoriesService();
   List<String> _recentSearches = [];
+  List<FeaturedCategory> _featuredCategories =
+      defaultFeaturedCategories.values.toList()
+        ..sort((a, b) => a.order.compareTo(b.order));
 
   static const Color primaryBlue = Color(0xFF0B3EA8);
   static const Color secondaryBlue = Color(0xFF0A2E8A);
@@ -1156,6 +1028,13 @@ class _HomeContentState extends State<_HomeContent> {
   @override
   void initState() {
     super.initState();
+    _loadRecentSearches();
+    _loadFeaturedCategories();
+  }
+
+  @override
+  void didUpdateWidget(covariant _HomeContent oldWidget) {
+    super.didUpdateWidget(oldWidget);
     _loadRecentSearches();
   }
 
@@ -1168,6 +1047,28 @@ class _HomeContentState extends State<_HomeContent> {
   Future<void> _loadRecentSearches() async {
     final searches = await _historyService.getRecentSearches();
     if (mounted) setState(() => _recentSearches = searches);
+  }
+
+  Future<void> _loadFeaturedCategories() async {
+    try {
+      final categories = await _categoriesService.getFeaturedCategories();
+      if (mounted) {
+        setState(() {
+          _featuredCategories = categories.isNotEmpty
+              ? categories
+              : (defaultFeaturedCategories.values.toList()
+                ..sort((a, b) => a.order.compareTo(b.order)));
+        });
+      }
+    } catch (e) {
+      // Gracefully fallback to default categories
+      if (mounted) {
+        setState(() {
+          _featuredCategories = defaultFeaturedCategories.values.toList()
+            ..sort((a, b) => a.order.compareTo(b.order));
+        });
+      }
+    }
   }
 
   void _submitSearch() {
@@ -1363,77 +1264,40 @@ class _HomeContentState extends State<_HomeContent> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Spices'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.local_dining_outlined,
-                                label: 'Spices',
+                      _featuredCategories.isEmpty
+                          ? const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(20.0),
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    primaryBlue,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Apparel'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.checkroom_outlined,
-                                label: 'Apparel',
+                            )
+                          : GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                childAspectRatio: 1.5,
                               ),
+                              itemCount: _featuredCategories.length,
+                              itemBuilder: (context, index) {
+                                final category = _featuredCategories[index];
+                                return GestureDetector(
+                                  onTap: () =>
+                                      widget.onSearch?.call(category.name),
+                                  child: _FeaturedCategoryCard(
+                                    icon: category.getIconData(),
+                                    label: category.name,
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Stationery'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.edit_note_outlined,
-                                label: 'Stationery',
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Minerals'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.grain_outlined,
-                                label: 'Minerals',
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Animal products'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.pets_outlined,
-                                label: 'Animal',
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => widget.onSearch?.call('Cosmetics'),
-                              child: const _FeaturedCategoryCard(
-                                icon: Icons.spa_outlined,
-                                label: 'Cosmetics',
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),

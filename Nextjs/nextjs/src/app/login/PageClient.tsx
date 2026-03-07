@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { auth, googleProvider, signInWithPopup } from '@/lib/firebase';
+import { auth, signInWithGoogle } from '@/lib/firebase';
 import { signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
 import { syncUser } from '@/lib/api';
 
@@ -135,6 +135,19 @@ export default function Login() {
     const [successMsg, setSuccessMsg] = useState('');
     const [mounted, setMounted] = useState(false);
 
+    const authErrorMessage = (err: any, fallback: string) => {
+        const code = err?.code as string | undefined;
+        if (code === 'auth/network-request-failed') {
+            const isLocal = typeof window !== 'undefined' &&
+                (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+            if (isLocal) {
+                return 'Firebase connection failed on localhost. Check Firebase Authorized domains (add localhost/127.0.0.1) and API key referrer restrictions.';
+            }
+            return 'Network error while contacting Firebase. Check your internet/firewall and retry.';
+        }
+        return fallback;
+    };
+
     // Dive-in animation on mount
     useEffect(() => {
         const t = setTimeout(() => setMounted(true), 60);
@@ -144,8 +157,13 @@ export default function Login() {
 
     const handleGoogle = async () => {
         setErrorMsg('');
-        try { await signInWithPopup(auth, googleProvider); await syncUser(); router.push('/search'); }
-        catch (err: any) { setErrorMsg(err.message || 'Google sign-in failed.'); }
+        try {
+            const cred = await signInWithGoogle();
+            if (!cred) return;
+            await syncUser();
+            router.push('/search');
+        }
+        catch (err: any) { setErrorMsg(authErrorMessage(err, err.message || 'Google sign-in failed.')); }
     };
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -165,14 +183,14 @@ export default function Login() {
                 'auth/too-many-requests': 'Too many attempts. Try again later.',
                 'auth/user-disabled': 'Account has been disabled.',
             };
-            setErrorMsg(map[err.code] || err.message);
+            setErrorMsg(authErrorMessage(err, map[err.code] || err.message));
         } finally { setLoading(false); }
     };
 
     const handleForgot = async () => {
         if (!email) { setErrorMsg('Enter your email first.'); return; }
         try { await sendPasswordResetEmail(auth, email); setSuccessMsg(`Reset link sent to ${email}`); }
-        catch { setErrorMsg('Could not send reset email.'); }
+        catch (err: any) { setErrorMsg(authErrorMessage(err, 'Could not send reset email.')); }
     };
 
     return (
