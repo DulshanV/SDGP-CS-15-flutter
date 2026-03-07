@@ -1,0 +1,16 @@
+{
+  "name": "CeylonHS — AI-Powered HS Code Search",
+  "short_name": "CeylonHS",
+  "description": "Classify products to 6-digit HS codes in seconds with AI-powered hybrid search.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
