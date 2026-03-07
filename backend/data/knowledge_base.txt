@@ -29,3 +29,8 @@ Q: Why was this project built?
 
 
 A: To solve the problem of time-consuming manual searches and reduce duty calculation errors in Sri Lanka’s trade infrastructure.
+
+Q: Who is the supervisor of this project?
+
+
+A: The supervisor of this project is Ms. Vishmi Embuldeniya.
