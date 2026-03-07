@@ -41,3 +41,9 @@ typesense==2.0.0
 google-generativeai==0.8.6
 groq==1.0.0
 cohere==5.14.0
+
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.24.0
+pytest-cov==6.0.0
+httpx==0.28.1  # Already listed above, used by TestClient
