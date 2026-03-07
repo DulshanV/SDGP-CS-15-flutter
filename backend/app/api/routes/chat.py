@@ -32,6 +32,7 @@ class ChatResponse(BaseModel):
 _KNOWLEDGE_BASE = ""
 _kb_paths = [
     os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "knowledge_base.txt"),
+    os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "data", "knowledge_base.txt"),
     os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), "knowledge_base.txt"),
 ]
 

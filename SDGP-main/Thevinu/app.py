@@ -45,8 +45,16 @@ def chat():
     if not user_message:
         return jsonify({"response": "Error: No message received"}), 400
 
+    # Load Knowledge Base
+    kb_content = ""
+    # Look for knowledge_base.txt in the backend folder
+    kb_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "backend", "data", "knowledge_base.txt")
+    if os.path.exists(kb_path):
+        with open(kb_path, "r", encoding="utf-8") as f:
+            kb_content = f.read()
+
     # --- THE BRAIN: Strictly configured as a Help Desk Guide ---
-    system_instruction = """
+    system_instruction = f"""
     You are the 'CeylonHS Website Support Guide'. 
     Your ONLY job is to help users understand how to use the CeylonHS website.
     
@@ -62,6 +70,9 @@ def chat():
     - History: Past searches are saved in the 'History' tab on the user dashboard.
     - Accounts: Login requires a registered student or agent ID.
     - Tech Support: Email support@ceylonhs.lk.
+    
+    KNOWLEDGE BASE (use this to answer questions about CeylonHS):
+    {kb_content}
     
     STYLE:
     - Keep answers very short and helpful (1-2 sentences maximum).
