@@ -21,7 +21,7 @@ class TestAdminStats:
     def test_admin_stats_non_admin_user(self, client, test_user):
         """Test that regular users cannot access admin stats."""
         # Mock authorization header with user token
-        headers = {"Authorization": "Bearer valid_user_token"}
+        headers = {"Authorization": "Bearer dev-token-test_uid_123"}
         response = client.get("/api/v1/admin/stats", headers=headers)
         
         # Should return 403 Forbidden for non-admin
@@ -30,7 +30,7 @@ class TestAdminStats:
     def test_admin_stats_authorized(self, client, test_admin):
         """Test that admin users can access stats."""
         # Mock authorization header with admin token
-        headers = {"Authorization": "Bearer valid_admin_token"}
+        headers = {"Authorization": "Bearer dev-token-admin_uid_456"}
         response = client.get("/api/v1/admin/stats", headers=headers)
         
         if response.status_code == status.HTTP_200_OK:
@@ -59,12 +59,13 @@ class TestAdminTrends:
     
     def test_admin_trends_with_days_param(self, client, test_admin):
         """Test trends endpoint with days parameter."""
-        headers = {"Authorization": "Bearer valid_admin_token"}
+        headers = {"Authorization": "Bearer dev-token-admin_uid_456"}
         response = client.get("/api/v1/admin/trends?days=7", headers=headers)
         
-        if response.status_code == status.HTTP_200_OK:
-            data = response.json()
-            assert isinstance(data, list)
+        assert response.status_code == status.HTTP_200_OK, response.text
+        data = response.json()
+        assert "trends" in data
+        assert isinstance(data["trends"], list)
 
 
 class TestAdminDatasetUpload:
@@ -82,7 +83,7 @@ class TestAdminDatasetUpload:
     
     def test_dataset_upload_no_file(self, client, test_admin):
         """Test dataset upload without file."""
-        headers = {"Authorization": "Bearer valid_admin_token"}
+        headers = {"Authorization": "Bearer dev-token-admin_uid_456"}
         response = client.post("/api/v1/admin/dataset/upload", headers=headers)
         
         # Should return 422 for missing file
@@ -90,7 +91,7 @@ class TestAdminDatasetUpload:
     
     def test_dataset_upload_invalid_file_type(self, client, test_admin):
         """Test dataset upload with invalid file type."""
-        headers = {"Authorization": "Bearer valid_admin_token"}
+        headers = {"Authorization": "Bearer dev-token-admin_uid_456"}
         files = {"file": ("test.txt", b"invalid content", "text/plain")}
         response = client.post(
             "/api/v1/admin/dataset/upload",

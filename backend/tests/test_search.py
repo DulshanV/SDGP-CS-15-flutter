@@ -51,17 +51,15 @@ class TestSearchEndpoint:
     def test_search_rate_limit(self, client):
         """Test rate limiting on search endpoint."""
         # Make requests up to the rate limit
-        # Note: SlowAPI default is 30/minute for search
-        for i in range(32):  # Slightly over limit
-            response = client.get(f"/api/v1/search?q=test_{i}")
-            if i < 30:
-                # First 30 should succeed
-                assert response.status_code == status.HTTP_200_OK
+        hit_limit = False
+        for i in range(40):  # Guaranteed to hit the limit of 30 if previous tests ran
+            response = client.get(f"/api/v1/search?q=test_rl_{i}")
+            if response.status_code == status.HTTP_429_TOO_MANY_REQUESTS:
+                hit_limit = True
+                break
+            assert response.status_code == status.HTTP_200_OK
         
-        # Next request should be rate limited
-        # Note: This may not work in test environment if rate limiter
-        # uses request.client.host which may be None in test client
-        # Keeping this as a placeholder for integration tests
+        assert hit_limit, "Rate limit was never reached"
 
 
 class TestHSCodeDetail:

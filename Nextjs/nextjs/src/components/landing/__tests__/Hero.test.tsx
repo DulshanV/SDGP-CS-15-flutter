@@ -10,41 +10,41 @@ vi.mock('../HeroCanvas', () => ({
 describe('Hero Component', () => {
   it('should render the main heading', () => {
     render(<Hero />);
-    
-    const heading = screen.getByRole('heading', { 
-      name: /Find Your HS Code in Seconds/i 
+
+    const heading = screen.getByRole('heading', {
+      name: /From Product to HS.Code/i
     });
     expect(heading).toBeInTheDocument();
   });
 
   it('should render the subheading', () => {
     render(<Hero />);
-    
-    const subheading = screen.getByText(/AI-powered search for Sri Lankan customs/i);
+
+    const subheading = screen.getByText(/hybrid AI search and real‑time brand recognition/i);
     expect(subheading).toBeInTheDocument();
   });
 
   it('should render the HeroCanvas component', () => {
     render(<Hero />);
-    
+
     const canvas = screen.getByTestId('hero-canvas');
     expect(canvas).toBeInTheDocument();
   });
 
   it('should render CTA buttons', () => {
     render(<Hero />);
-    
-    const searchButton = screen.getByRole('link', { name: /Start Searching/i });
-    const learnButton = screen.getByRole('link', { name: /Learn More/i });
-    
+
+    const searchButton = screen.getByRole('link', { name: /Start Searching Free/i });
+    const learnButton = screen.getByRole('link', { name: /See How It Works/i });
+
     expect(searchButton).toBeInTheDocument();
     expect(learnButton).toBeInTheDocument();
   });
 
   it('should have correct href for search button', () => {
     render(<Hero />);
-    
-    const searchButton = screen.getByRole('link', { name: /Start Searching/i });
+
+    const searchButton = screen.getByRole('link', { name: /Start Searching Free/i });
     expect(searchButton).toHaveAttribute('href', '/search');
   });
 });
