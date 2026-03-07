@@ -1,23 +1,30 @@
+import type { Metadata } from 'next';
 export const dynamic = "force-dynamic";
 
-import type { Metadata } from "next";
-import Login from "./PageClient";
-
 export const metadata: Metadata = {
-  title: "Sign In",
-  description:
-    "Sign in to your CeylonHS account to access saved HS codes, search history, and personalised trade classification tools.",
-  openGraph: {
-    title: "Sign In | CeylonHS",
-    description:
-      "Access your CeylonHS account for saved codes, search history, and more.",
-    url: "https://ceylonhs.com/login",
-  },
-  alternates: {
-    canonical: "https://ceylonhs.com/login",
-  },
+  title: 'Log In',
+  description: 'Log in to your CeylonHS account to save your favorite HS codes and access your search history.',
+  keywords: 'login, account, sign in, CeylonHS, HS codes, trade classification',
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://ceylonhs.com/' },
+    { '@type': 'ListItem', 'position': 2, 'name': 'Log In', 'item': 'https://ceylonhs.com/login' }
+  ]
+};
+
+import Login from "./PageClient";
 export default function Page() {
-  return <Login />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Login />
+    </>
+  );
 }

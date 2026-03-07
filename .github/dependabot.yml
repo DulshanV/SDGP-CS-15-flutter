@@ -1,0 +1,73 @@
+# Dependabot Configuration
+# Automatically creates PRs to update dependencies
+# See: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+
+version: 2
+updates:
+  # Frontend (Next.js) dependencies
+  - package-ecosystem: "npm"
+    directory: "/Nextjs/nextjs"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "frontend"
+    reviewers:
+      - "ceylonhs-team"
+    assignees:
+      - "ceylonhs-team"
+    # Group minor/patch updates together
+    groups:
+      frontend-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Backend (FastAPI) dependencies
+  - package-ecosystem: "pip"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "backend"
+    reviewers:
+      - "ceylonhs-team"
+    assignees:
+      - "ceylonhs-team"
+    # Group minor updates for cleaner PR list
+    groups:
+      backend-updates:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "fastapi"  # Keep FastAPI separate (major changes)
+          - "sqlalchemy"  # Keep SQLAlchemy separate
+        update-types:
+          - "minor"
+          - "patch"
+
+  # GitHub Actions workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "ci"

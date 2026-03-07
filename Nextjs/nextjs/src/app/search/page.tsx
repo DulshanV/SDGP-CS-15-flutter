@@ -1,23 +1,35 @@
+import type { Metadata } from 'next';
 export const dynamic = "force-dynamic";
 
-import type { Metadata } from "next";
-import SearchPage from "./PageClient";
-
 export const metadata: Metadata = {
-  title: "Search HS Codes",
-  description:
-    "Find the right Harmonized System code for any product. AI-powered semantic search across 16,000+ HS codes with instant results and confidence scoring.",
+  title: 'Search HS Codes',
+  description: 'Classify your products to find accurate 6-digit HS codes using AI.',
+  keywords: 'hs codes, search hs code, trade classification, customs code, AI hs code generator',
   openGraph: {
-    title: "Search HS Codes | CeylonHS",
-    description:
-      "AI-powered HS code search across 16,000+ codes. Get instant, accurate trade classification results.",
-    url: "https://ceylonhs.com/search",
-  },
-  alternates: {
-    canonical: "https://ceylonhs.com/search",
-  },
+    title: 'Search HS Codes | CeylonHS',
+    description: 'Find the accurate HS code for your product instantly.',
+    images: [{ url: '/og-search.png', width: 1200, height: 630 }],
+  }
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://ceylonhs.com/' },
+    { '@type': 'ListItem', 'position': 2, 'name': 'Search', 'item': 'https://ceylonhs.com/search' }
+  ]
+};
+
+import SearchPage from "./PageClient";
 export default function Page() {
-  return <SearchPage />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <SearchPage />
+    </>
+  );
 }

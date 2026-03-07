@@ -36,10 +36,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
 
-      - name: Compile-check all Python files
+      - name: Run tests
+        env:
+          ENV: development
+          DATABASE_URL: sqlite+aiosqlite:///./ci_test.db
+          DATABASE_URL_SYNC: sqlite:///./ci_test.db
+          # Dummy Firebase credentials for tests
+          FIREBASE_CREDENTIALS: '{"type":"service_account","project_id":"test"}'
         run: |
-          find app scripts -name "*.py" | xargs python -m py_compile
-          echo "✅ All Python files compiled successfully"
+          pytest tests/ -v --cov=app --cov-report=term-missing
+          echo "✅ All tests passed"
 
       - name: Import check (app startup)
         env:
@@ -81,3 +87,8 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: "1:000000000000:web:0000000000000000"
           NEXT_PUBLIC_API_URL: http://127.0.0.1:8000
         run: npm run build
+
+      - name: Run tests
+        run: |
+          npm test
+          echo "✅ All frontend tests passed"
