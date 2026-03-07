@@ -1,6 +1,6 @@
 # Web framework
 fastapi==0.115.8
-uvicorn[standard]==0.34.0
+uvicorn[standard]==0.41.0
 gunicorn==25.1.0
 python-multipart==0.0.22
 
@@ -17,7 +17,7 @@ rapidfuzz==3.14.3
 pyspellchecker==0.8.4
 
 # Database
-sqlalchemy[asyncio]==2.0.47
+sqlalchemy[asyncio]==2.0.48
 aiosqlite==0.22.1
 asyncpg==0.31.0
 alembic==1.18.4
@@ -31,7 +31,7 @@ firebase-admin==7.2.0
 pandas==3.0.1
 numpy==2.4.2
 pydantic-settings==2.13.1
-python-dotenv==1.2.1
+python-dotenv==1.2.2
 httpx==0.28.1
 
 # Typesense search backend (optional)
@@ -40,7 +40,7 @@ typesense==2.0.0
 # LLM enrichment providers
 google-generativeai==0.8.6
 groq==1.0.0
-cohere==5.14.0
+cohere==5.20.7
 
 # Testing
 pytest==8.3.4
