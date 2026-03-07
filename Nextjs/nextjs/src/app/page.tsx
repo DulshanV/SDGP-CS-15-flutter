@@ -119,7 +119,11 @@ const jsonLd = {
       name: "CeylonHS",
       url: "https://ceylonhs.com",
       logo: "https://ceylonhs.com/logo.png",
-      // sameAs: [] — add verified social profile URLs here when they exist
+      sameAs: [
+        "https://twitter.com/ceylonhs",
+        "https://www.linkedin.com/company/ceylonhs",
+        "https://www.facebook.com/ceylonhs"
+      ],
       contactPoint: {
         "@type": "ContactPoint",
         email: "hello@ceylonhs.com",
