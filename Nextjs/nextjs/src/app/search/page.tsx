@@ -12,6 +12,14 @@ export const metadata: Metadata = {
     description:
       "AI-powered HS code search across 16,000+ codes. Get instant, accurate trade classification results.",
     url: "https://ceylonhs.com/search",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "CeylonHS — Search HS Codes",
+      },
+    ],
   },
   alternates: {
     canonical: "https://ceylonhs.com/search",
