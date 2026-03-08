@@ -1871,7 +1871,7 @@ export default function CeylonHSAcademy() {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            with CeylonHS AI
+            with CeylonHS 
           </span>
         </h1>
         <p
