@@ -1,13 +1,5 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import {
-  Play,
-  Award,
-  ChevronDown,
-  ChevronRight,
-  BookOpen,
-  Search,
-} from 'lucide-react';
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const MODULES = [
@@ -500,7 +492,151 @@ const QUIZ_BANK = {
   ],
 };
 
+const MODULE_KEYWORDS = {
+  1: [
+    'HS Code',
+    'Harmonized System',
+    'WCO',
+    'Chapter',
+    'Heading',
+    'Subheading',
+    'Section',
+    'Tariff',
+    'Customs',
+    'Classification',
+    '6-Digit',
+    'Trade',
+    'Sri Lanka',
+    'AHTN',
+    'Nomenclature',
+    'Duty',
+  ],
+  2: [
+    'Search',
+    'Typesense',
+    'Natural Language',
+    'Autocomplete',
+    'Results',
+    'Filter',
+    'Query',
+    'Keyword',
+    'Semantic',
+    'Confidence',
+    '100ms',
+    'Hierarchy',
+    'Brand',
+    'Instant',
+    'Precision',
+  ],
+  3: [
+    'AI Pipeline',
+    'Gemini Flash',
+    'Embedding',
+    'Semantic AI',
+    'Brand Recognition',
+    'Hybrid',
+    'Accuracy',
+    '99%',
+    'Classification',
+    'Edge Case',
+    'GRI',
+    'Enrichment',
+    'Intelligence',
+    'Model',
+  ],
+  4: [
+    'Favourites',
+    'Star',
+    'Collections',
+    'History',
+    'Export',
+    'CSV',
+    'Excel',
+    'Audit Trail',
+    'Tags',
+    'Library',
+    'Shipment',
+    'Recurring',
+    'Compliance',
+    'Save',
+    'Organize',
+  ],
+  5: [
+    'Chatbot',
+    'Assistant',
+    'AI',
+    'GRI Rules',
+    'Duty Rate',
+    'FTA',
+    'ISFTA',
+    'Trade Agreement',
+    'Compliance',
+    'Query',
+    'Context',
+    'Customs Broker',
+    'Classification',
+    '24/7',
+    'Eligibility',
+  ],
+};
+
 // ── COMPONENTS ────────────────────────────────────────────────────────────────
+
+function FloatingKeywords({ moduleId }) {
+  const words = MODULE_KEYWORDS[moduleId] || [];
+  const items = [];
+  for (let i = 0; i < 18; i++) {
+    const word = words[i % words.length];
+    const left = 3 + ((i * 37 + i * i * 13) % 91);
+    const delay = (i * 1.7) % 18;
+    const duration = 18 + ((i * 3) % 16);
+    const size = 10 + ((i * 7) % 8);
+    items.push({ word, left, delay, duration, size, key: i });
+  }
+  return (
+    <>
+      <style>{`
+        @keyframes floatWord {
+          0%   { opacity: 0;    transform: translateY(0px); }
+          15%  { opacity: 0.22; }
+          75%  { opacity: 0.15; }
+          100% { opacity: 0;    transform: translateY(-420px); }
+        }
+      `}</style>
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          pointerEvents: 'none',
+          zIndex: 1,
+          overflow: 'hidden',
+        }}
+      >
+        {items.map(({ word, left, delay, duration, size, key }) => (
+          <span
+            key={key}
+            style={{
+              position: 'absolute',
+              bottom: '-40px',
+              left: `${left}%`,
+              fontSize: size + 4,
+              fontFamily: "'DM Sans', sans-serif",
+              fontWeight: 700,
+              color: '#60A5FA',
+              opacity: 0,
+              whiteSpace: 'nowrap',
+              letterSpacing: '0.06em',
+              animation: `floatWord ${duration}s ${delay}s ease-in-out infinite`,
+              userSelect: 'none',
+            }}
+          >
+            {word}
+          </span>
+        ))}
+      </div>
+    </>
+  );
+}
 
 function ProgressRing({ percent, size = 60, stroke = 5, color = '#2563EB' }) {
   const r = (size - stroke * 2) / 2;
@@ -590,45 +726,6 @@ function LessonViewer({ topic, onComplete, onBack }) {
         fontFamily: "'DM Sans', sans-serif",
       }}
     >
-      {/* Floating HS Code Background Elements */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          overflow: 'hidden',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      >
-        {[
-          'HS 8471.30',
-          'CHAPTER 09',
-          'HEADING 1513',
-          'SECTION XI',
-          '6109.10',
-          'SRI LANKA CUSTOMS',
-          '16,000+ CODES',
-          'AHTN 2022',
-        ].map((text, i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              top: `${(i * 17) % 100}%`,
-              left: `${(i * 23) % 100}%`,
-              fontSize: 16,
-              fontWeight: 800,
-              color: '#2563EB',
-              opacity: 0.15 /* Lower opacity, but absolutely no blur */,
-              animation:
-                'floatDot 15s ease-in-out infinite' /* 15 seconds for a smooth, visible float */,
-              animationDelay: `${i * 1.5}s`,
-            }}
-          >
-            {text}
-          </div>
-        ))}
-      </div>
       {/* Header */}
       <div
         style={{
@@ -1148,8 +1245,10 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack }) {
         background: '#0A0F1E',
         color: '#F1F5F9',
         fontFamily: "'DM Sans', sans-serif",
+        position: 'relative',
       }}
     >
+      <FloatingKeywords moduleId={module.id} />
       {/* Hero */}
       <div
         style={{
