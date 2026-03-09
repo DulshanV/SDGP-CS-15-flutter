@@ -625,6 +625,8 @@ export default function CeylonHSAcademy() {
   const [nameInput, setNameInput] = useState("");
   const [showNameModal, setShowNameModal] = useState(false);
   const [hovered, setHovered] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
 
   const th = dark ? DARK : LIGHT;
 
@@ -632,6 +634,20 @@ export default function CeylonHSAcademy() {
   const totalCompleted = completed.size;
   const overallPct = Math.round((totalCompleted / totalTopics) * 100);
   const allDone = MODULES.every(m => m.topics.every(t => completed.has(t.id)));
+
+  const filteredModules = searchQuery.trim() === ""
+    ? MODULES
+    : MODULES.filter(m => {
+        const q = searchQuery.toLowerCase();
+        return (
+          m.title.toLowerCase().includes(q) ||
+          m.subtitle.toLowerCase().includes(q) ||
+          m.category.toLowerCase().includes(q) ||
+          m.code.toLowerCase().includes(q) ||
+          m.topics.some(t => t.title.toLowerCase().includes(q)) ||
+          (MODULE_KEYWORDS[m.id] || []).some(k => k.toLowerCase().includes(q))
+        );
+      });
 
   const handleTopicComplete = (id) => setCompleted(prev => new Set([...prev, id]));
 
@@ -814,14 +830,123 @@ export default function CeylonHSAcademy() {
         </div>
       )}
 
-      {/* ── MODULES GRID ── */}
+      {/* ── MODULES SEARCH + GRID ── */}
       <div style={{ padding: "0 40px 80px", maxWidth: 1080, margin: "0 auto" }}>
-        <div style={{ fontSize: 11, letterSpacing: "0.12em", color: "#2563EB", fontWeight: 700, marginBottom: 16 }}>COURSE MODULES</div>
+
+        {/* Search heading */}
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div style={{ fontSize: 11, letterSpacing: "0.12em", color: "#2563EB", fontWeight: 700, marginBottom: 10 }}>COURSE MODULES</div>
+          <h2 style={{ fontSize: 26, fontWeight: 800, color: th.text, marginBottom: 6 }}>What do you want to learn?</h2>
+          <p style={{ fontSize: 14, color: th.text3 }}>Search by topic, keyword, or module name</p>
+        </div>
+
+        {/* Search bar */}
+        <div style={{
+          position: "relative", maxWidth: 540, margin: "0 auto 40px",
+        }}>
+          {/* Search icon */}
+          <span style={{
+            position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)",
+            fontSize: 17, pointerEvents: "none", opacity: 0.5,
+          }}>🔍</span>
+
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            placeholder="e.g. AI classification, chatbot, favourites..."
+            style={{
+              width: "100%",
+              background: th.bg2,
+              border: `2px solid ${searchFocused ? "#2563EB" : th.border}`,
+              borderRadius: 14,
+              padding: "14px 44px 14px 46px",
+              fontSize: 15,
+              color: th.text,
+              fontFamily: "'DM Sans', sans-serif",
+              outline: "none",
+              transition: "border-color 0.2s, box-shadow 0.2s",
+              boxShadow: searchFocused ? "0 0 0 4px #2563EB22" : "none",
+            }}
+          />
+
+          {/* Clear button */}
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              style={{
+                position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
+                background: th.bg4, border: "none", color: th.text3,
+                width: 26, height: 26, borderRadius: "50%", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 14, fontWeight: 700, lineHeight: 1,
+              }}
+            >×</button>
+          )}
+        </div>
+
+        {/* Quick filter chips */}
+        <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginBottom: 36 }}>
+          {[
+            { label: "All", value: "" },
+            { label: "🌐 Foundation", value: "foundation" },
+            { label: "🔍 Search & AI", value: "core skills" },
+            { label: "⭐ Productivity", value: "productivity" },
+            { label: "💬 Advanced", value: "advanced" },
+          ].map(chip => {
+            const active = searchQuery.toLowerCase() === chip.value;
+            return (
+              <button
+                key={chip.label}
+                onClick={() => setSearchQuery(chip.value)}
+                style={{
+                  background: active ? "#2563EB" : th.bg2,
+                  border: `1px solid ${active ? "#2563EB" : th.border}`,
+                  color: active ? "#fff" : th.text2,
+                  borderRadius: 20, padding: "6px 16px",
+                  fontSize: 12, fontWeight: active ? 700 : 500,
+                  cursor: "pointer", fontFamily: "inherit",
+                  transition: "all 0.18s",
+                }}
+              >{chip.label}</button>
+            );
+          })}
+        </div>
+
+        {/* Results count */}
+        {searchQuery.trim() !== "" && (
+          <div style={{ fontSize: 13, color: th.text3, marginBottom: 20, textAlign: "center" }}>
+            {filteredModules.length === 0
+              ? "No modules found — try a different keyword"
+              : `${filteredModules.length} module${filteredModules.length > 1 ? "s" : ""} found for "${searchQuery}"`}
+          </div>
+        )}
+
+        {/* Modules grid */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20 }}>
-          {MODULES.map((mod, i) => {
+          {filteredModules.map((mod, i) => {
             const modCompleted = mod.topics.filter(t => completed.has(t.id)).length;
             const modPct = Math.round((modCompleted / mod.topics.length) * 100);
             const isHov = hovered === mod.id;
+
+            // Highlight matching text in title
+            const highlightText = (text) => {
+              if (!searchQuery.trim()) return text;
+              const idx = text.toLowerCase().indexOf(searchQuery.toLowerCase());
+              if (idx === -1) return text;
+              return (
+                <>
+                  {text.slice(0, idx)}
+                  <mark style={{ background: "#2563EB33", color: "#60A5FA", borderRadius: 3, padding: "0 2px" }}>
+                    {text.slice(idx, idx + searchQuery.length)}
+                  </mark>
+                  {text.slice(idx + searchQuery.length)}
+                </>
+              );
+            };
+
             return (
               <div
                 key={mod.id}
@@ -853,8 +978,8 @@ export default function CeylonHSAcademy() {
                 <div style={{ marginBottom: 6 }}>
                   <Badge color={mod.color}>{mod.category}</Badge>
                 </div>
-                <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6, color: th.text }}>{mod.title}</h3>
-                <p style={{ fontSize: 13, color: th.text3, marginBottom: 20, lineHeight: 1.5 }}>{mod.subtitle}</p>
+                <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6, color: th.text }}>{highlightText(mod.title)}</h3>
+                <p style={{ fontSize: 13, color: th.text3, marginBottom: 20, lineHeight: 1.5 }}>{highlightText(mod.subtitle)}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ height: 4, background: th.bg4, borderRadius: 2 }}>
@@ -873,21 +998,42 @@ export default function CeylonHSAcademy() {
             );
           })}
 
-          {/* Coming Soon card */}
-          <div style={{
-            background: th.bg3, border: `1px dashed ${th.cardBorder}`, borderRadius: 16, padding: 28,
-            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            textAlign: "center", minHeight: 240, transition: "background 0.3s",
-          }}>
-            <div style={{ fontSize: 32, marginBottom: 12, animation: "floatDot 3s ease infinite" }}>🚀</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: th.text3, marginBottom: 6 }}>More Modules Coming</div>
-            <div style={{ fontSize: 12, color: th.text3, lineHeight: 1.6, maxWidth: 200 }}>
-              Advanced duty calculation, FTA eligibility, and API integration modules in development.
+          {/* Empty state */}
+          {filteredModules.length === 0 && (
+            <div style={{
+              gridColumn: "1 / -1", textAlign: "center", padding: "60px 20px",
+              background: th.bg3, borderRadius: 16, border: `1px dashed ${th.cardBorder}`,
+            }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: th.text, marginBottom: 8 }}>No modules found</div>
+              <div style={{ fontSize: 14, color: th.text3, marginBottom: 24 }}>
+                Try searching for "AI", "chatbot", "search", "favourites", or "HS code"
+              </div>
+              <button onClick={() => setSearchQuery("")} style={{
+                background: "#2563EB", color: "#fff", border: "none",
+                padding: "10px 24px", borderRadius: 8, fontFamily: "inherit",
+                fontSize: 14, fontWeight: 700, cursor: "pointer",
+              }}>Clear Search</button>
             </div>
-            <div style={{ marginTop: 16 }}>
-              <Badge color={th.text3}>Coming Soon</Badge>
+          )}
+
+          {/* Coming Soon card — only show when not searching */}
+          {searchQuery.trim() === "" && (
+            <div style={{
+              background: th.bg3, border: `1px dashed ${th.cardBorder}`, borderRadius: 16, padding: 28,
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+              textAlign: "center", minHeight: 240, transition: "background 0.3s",
+            }}>
+              <div style={{ fontSize: 32, marginBottom: 12, animation: "floatDot 3s ease infinite" }}>🚀</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: th.text3, marginBottom: 6 }}>More Modules Coming</div>
+              <div style={{ fontSize: 12, color: th.text3, lineHeight: 1.6, maxWidth: 200 }}>
+                Advanced duty calculation, FTA eligibility, and API integration modules in development.
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <Badge color={th.text3}>Coming Soon</Badge>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
