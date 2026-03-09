@@ -5,6 +5,975 @@
 'use client';
 import { useState, useEffect, useRef } from "react";
 
+// ── CONSTANTS ─────────────────────────────────────────────────────────────────
+import { MODULES }         from "../constants/modules";
+import { QUIZ_BANK }       from "../constants/quizzes";
+import { MODULE_KEYWORDS } from "../constants/keywords";
+
+// ── THEME TOKENS ──────────────────────────────────────────────────────────────
+const DARK = {
+  bg: "#0A0F1E",
+  bg2: "#111827",
+  bg3: "#0D1424",
+  bg4: "#1E293B",
+  border: "#1E293B",
+  text: "#F1F5F9",
+  text2: "#CBD5E1",
+  text3: "#64748B",
+  nav: "#0A0F1Eee",
+  navBorder: "#1E293B",
+  cardBg: "#111827",
+  cardBorder: "#1E293B",
+  inputBg: "#0A0F1E",
+  highlight: "linear-gradient(135deg,#1E3A8A22,#2563EB22)",
+  highlightBorder: "#2563EB44",
+  highlightText: "#93C5FD",
+  notesBg: "#111827",
+  notesBorder: "#1E293B",
+  notesText: "#FCD34D",
+  subtext: "#94A3B8",
+};
+const LIGHT = {
+  bg: "#F0F4FF",
+  bg2: "#FFFFFF",
+  bg3: "#EEF2FF",
+  bg4: "#E2E8F0",
+  border: "#CBD5E1",
+  text: "#0F172A",
+  text2: "#334155",
+  text3: "#64748B",
+  nav: "#FFFFFFee",
+  navBorder: "#E2E8F0",
+  cardBg: "#FFFFFF",
+  cardBorder: "#E2E8F0",
+  inputBg: "#F8FAFF",
+  highlight: "linear-gradient(135deg,#EFF6FF,#DBEAFE)",
+  highlightBorder: "#BFDBFE",
+  highlightText: "#1D4ED8",
+  notesBg: "#FFFBEB",
+  notesBorder: "#FDE68A",
+  notesText: "#92400E",
+  subtext: "#475569",
+};
+
+// ── DARK / LIGHT TOGGLE BUTTON ────────────────────────────────────────────────
+function ThemeToggle({ dark, onToggle }) {
+  return (
+    <button
+      onClick={onToggle}
+      title={dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      style={{
+        width: 56, height: 30, borderRadius: 15, border: "2px solid",
+        borderColor: dark ? "#2563EB" : "#CBD5E1",
+        cursor: "pointer", background: dark ? "#1E3A8A" : "#E2E8F0",
+        position: "relative", transition: "all 0.3s", flexShrink: 0, outline: "none",
+      }}
+    >
+      {/* Moon icon — visible in dark mode */}
+      <span style={{
+        position: "absolute", left: 6, top: "50%", transform: "translateY(-50%)",
+        fontSize: 13, opacity: dark ? 1 : 0, transition: "opacity 0.25s", lineHeight: 1,
+      }}>🌙</span>
+      {/* Sun icon — visible in light mode */}
+      <span style={{
+        position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)",
+        fontSize: 13, opacity: dark ? 0 : 1, transition: "opacity 0.25s", lineHeight: 1,
+      }}>☀️</span>
+      {/* Sliding knob */}
+      <span style={{
+        position: "absolute", top: 2,
+        left: dark ? 28 : 2,
+        width: 22, height: 22, borderRadius: "50%",
+        background: dark ? "#60A5FA" : "#FFFFFF",
+        transition: "left 0.3s cubic-bezier(.4,0,.2,1)",
+        boxShadow: "0 1px 5px rgba(0,0,0,0.25)",
+        display: "block",
+      }} />
+    </button>
+  );
+}
+
+// ── SCROLL TO TOP BUTTON ───────────────────────────────────────────────────────
+function ScrollToTopButton({ dark }) {
+  const [visible, setVisible] = useState(false);
+  const [hov, setHov] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 320);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      title="Scroll to top"
+      style={{
+        position: "fixed", bottom: 36, right: 36, zIndex: 300,
+        width: 50, height: 50, borderRadius: "50%", border: "none",
+        background: hov
+          ? "linear-gradient(135deg,#1D4ED8,#6D28D9)"
+          : "linear-gradient(135deg,#2563EB,#7C3AED)",
+        color: "#fff", cursor: "pointer",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 20, fontWeight: 900,
+        boxShadow: hov ? "0 8px 28px #2563EB88" : "0 4px 16px #2563EB55",
+        opacity: visible ? 1 : 0,
+        transform: visible
+          ? (hov ? "translateY(-4px) scale(1.12)" : "translateY(0) scale(1)")
+          : "translateY(20px) scale(0.7)",
+        transition: "all 0.35s cubic-bezier(.4,0,.2,1)",
+        pointerEvents: visible ? "auto" : "none",
+      }}
+    >
+      ↑
+    </button>
+  );
+}
+
+// ── FLOATING KEYWORDS BACKGROUND ─────────────────────────────────────────────
+function FloatingKeywords({ moduleId, dark }) {
+  const words = MODULE_KEYWORDS[moduleId] || [];
+  const items = [];
+  for (let i = 0; i < 18; i++) {
+    const word = words[i % words.length];
+    const left = 3 + (i * 37 + i * i * 13) % 91;
+    const delay = (i * 1.7) % 18;
+    const duration = 18 + (i * 3) % 16;
+    const size = 14 + (i * 7) % 8;
+    items.push({ word, left, delay, duration, size, key: i });
+  }
+  return (
+    <>
+      <style>{`
+        @keyframes floatWord {
+          0%   { opacity: 0;    transform: translateY(0px); }
+          15%  { opacity: 0.22; }
+          75%  { opacity: 0.15; }
+          100% { opacity: 0;    transform: translateY(-420px); }
+        }
+      `}</style>
+      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 1, overflow: "hidden" }}>
+        {items.map(({ word, left, delay, duration, size, key }) => (
+          <span key={key} style={{
+            position: "absolute", bottom: "-40px", left: `${left}%`,
+            fontSize: size, fontFamily: "'DM Sans', sans-serif", fontWeight: 700,
+            color: dark ? "#60A5FA" : "#2563EB",
+            opacity: 0, whiteSpace: "nowrap", letterSpacing: "0.06em",
+            animation: `floatWord ${duration}s ${delay}s ease-in-out infinite`,
+            userSelect: "none",
+          }}>
+            {word}
+          </span>
+        ))}
+      </div>
+    </>
+  );
+}
+
+// ── PROGRESS RING ─────────────────────────────────────────────────────────────
+function ProgressRing({ percent, size = 60, stroke = 5, color = "#2563EB" }) {
+  const r = (size - stroke * 2) / 2;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (percent / 100) * circ;
+  return (
+    <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+        strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
+        style={{ transition: "stroke-dashoffset 0.6s cubic-bezier(.4,0,.2,1)" }} />
+    </svg>
+  );
+}
+
+// ── BADGE ─────────────────────────────────────────────────────────────────────
+function Badge({ children, color = "#2563EB" }) {
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 4,
+      padding: "3px 10px", borderRadius: 20,
+      fontSize: 11, fontWeight: 700, letterSpacing: "0.05em",
+      background: color + "18", color,
+    }}>{children}</span>
+  );
+}
+
+// ── LESSON VIEWER ─────────────────────────────────────────────────────────────
+// LessonViewer props: { topic, onComplete, onBack, dark }
+function LessonViewer({ topic, onComplete, onBack, dark }) {
+  const th = dark ? DARK : LIGHT;
+  const [tab, setTab] = useState("learn");
+  const [quizAnswers, setQuizAnswers] = useState({});
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [readProgress, setReadProgress] = useState(0);
+  const contentRef = useRef();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setReadProgress(0);
+    const timer = setInterval(() => {
+      setReadProgress(p => { if (p >= 100) { clearInterval(timer); return 100; } return p + 2; });
+    }, 120);
+    return () => clearInterval(timer);
+  }, [topic.id]);
+
+  const moduleId = parseInt(topic.id[0]);
+  const quizzes = QUIZ_BANK[moduleId] || [];
+  const score = quizSubmitted ? quizzes.filter((q, i) => quizAnswers[i] === q.answer).length : 0;
+
+  // Helper: quiz result emoji
+  const getQuizEmoji = (s, total) => {
+    if (s === total) return "🏆";
+    if (s >= 2) return "🎉";
+    return "📚";
+  };
+
+  return (
+    <div style={{ minHeight: "100vh", background: th.bg, color: th.text, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s, color 0.3s" }}>
+      {/* Header */}
+      <div style={{ background: th.bg2, borderBottom: `1px solid ${th.border}`, padding: "16px 32px", display: "flex", alignItems: "center", gap: 16, transition: "background 0.3s", position: "sticky", top: 0, zIndex: 10 }}>
+        <button title="Go back" onClick={onBack} style={{ background: th.bg4, border: "none", color: th.text2, borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>← Back</button>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 11, color: th.text3, marginBottom: 2 }}>CeylonHS Academy</div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: th.text }}>{topic.title}</div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ fontSize: 12, color: th.text3 }}>{readProgress < 100 ? "Reading..." : "✓ Read"}</div>
+          <div style={{ width: 80, height: 4, background: th.bg4, borderRadius: 2 }}>
+            <div style={{ width: `${readProgress}%`, height: "100%", background: "#2563EB", borderRadius: 2, transition: "width 0.3s" }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ borderBottom: `1px solid ${th.border}`, display: "flex", paddingLeft: 32, background: th.bg2, transition: "background 0.3s" }}>
+        {["learn", "notes", "quiz"].map(t => (
+          <button key={t} onClick={() => setTab(t)} style={{
+            background: "none", border: "none",
+            color: tab === t ? "#2563EB" : th.text3,
+            borderBottom: tab === t ? "2px solid #2563EB" : "2px solid transparent",
+            padding: "14px 20px", cursor: "pointer", fontFamily: "inherit", fontSize: 13,
+            fontWeight: tab === t ? 700 : 400, textTransform: "capitalize", transition: "all 0.2s",
+          }}>{t === "learn" ? "📖 Learn" : t === "notes" ? "📝 Key Notes" : "🧠 Quiz"}</button>
+        ))}
+      </div>
+
+      <div style={{ maxWidth: 780, margin: "0 auto", padding: "40px 32px" }} ref={contentRef}>
+
+        {/* ── LEARN TAB ── */}
+        {tab === "learn" && (
+          <div style={{ animation: "fadeIn 0.4s ease" }}>
+            <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8, color: th.text, lineHeight: 1.2 }}>{topic.content.heading}</h1>
+            <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
+              <Badge color="#2563EB">⏱ {topic.duration}</Badge>
+              <Badge color="#059669">📖 Reading</Badge>
+            </div>
+
+            {/* Key Takeaway */}
+            <div style={{ background: th.highlight, border: `1px solid ${th.highlightBorder}`, borderRadius: 12, padding: "20px 24px", marginBottom: 32 }}>
+              <div style={{ fontSize: 12, color: "#60A5FA", fontWeight: 700, letterSpacing: "0.08em", marginBottom: 8 }}>KEY TAKEAWAY</div>
+              <div style={{ fontSize: 16, color: th.highlightText, fontWeight: 500, lineHeight: 1.6 }}>💡 {topic.content.highlight}</div>
+            </div>
+
+            <p style={{ fontSize: 16, lineHeight: 1.8, color: th.text2, marginBottom: 32 }}>{topic.content.body}</p>
+
+            {/* Points */}
+            <div style={{ display: "grid", gap: 12 }}>
+              {topic.content.points.map((point, i) => (
+                <div key={i} style={{
+                  background: th.bg2, border: `1px solid ${th.border}`, borderRadius: 10,
+                  padding: "14px 20px", display: "flex", alignItems: "flex-start", gap: 12,
+                  animation: `slideUp 0.3s ease ${i * 0.08}s both`,
+                  transition: "background 0.3s",
+                }}>
+                  <div style={{ width: 24, height: 24, background: "#2563EB22", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#60A5FA", fontWeight: 700, flexShrink: 0, marginTop: 1 }}>{i + 1}</div>
+                  <span style={{ fontSize: 14, color: th.text2, lineHeight: 1.5 }}>{point}</span>
+                </div>
+              ))}
+            </div>
+
+            {readProgress === 100 && (
+              <div style={{ marginTop: 40, textAlign: "center", animation: "fadeIn 0.5s ease" }}>
+                <div style={{ fontSize: 14, color: th.text3, marginBottom: 16 }}>You have finished this lesson</div>
+                <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+                  <button onClick={() => setTab("quiz")} style={{ background: "linear-gradient(135deg,#2563EB,#7C3AED)", color: "#fff", border: "none", padding: "14px 32px", borderRadius: 10, fontFamily: "inherit", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Take the Quiz 🧠</button>
+                  <button onClick={onComplete} style={{ background: th.bg4, color: th.text2, border: "none", padding: "14px 32px", borderRadius: 10, fontFamily: "inherit", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>Mark Complete ✓</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── NOTES TAB ── */}
+        {tab === "notes" && (
+          <div style={{ animation: "fadeIn 0.4s ease" }}>
+            <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24, color: th.text }}>Key Points to Remember</h2>
+            <div style={{ display: "grid", gap: 16 }}>
+              {topic.content.points.map((point, i) => (
+                <div key={i} style={{ background: th.bg2, borderLeft: "3px solid #2563EB", borderRadius: "0 10px 10px 0", padding: "16px 20px", transition: "background 0.3s" }}>
+                  <div style={{ fontSize: 12, color: "#60A5FA", fontWeight: 700, marginBottom: 4 }}>POINT {i + 1}</div>
+                  <div style={{ fontSize: 15, color: th.text2 }}>{point}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 32, background: th.notesBg, border: `1px solid ${th.notesBorder}`, borderRadius: 12, padding: 20, transition: "background 0.3s" }}>
+              <div style={{ fontSize: 12, color: "#F59E0B", fontWeight: 700, marginBottom: 8 }}>⚡ HIGHLIGHT</div>
+              <div style={{ fontSize: 15, color: th.notesText }}>{topic.content.highlight}</div>
+            </div>
+          </div>
+        )}
+
+        {/* ── QUIZ TAB ── */}
+        {tab === "quiz" && (
+          <div style={{ animation: "fadeIn 0.4s ease" }}>
+            <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8, color: th.text }}>Module Quiz</h2>
+            <p style={{ fontSize: 14, color: th.text3, marginBottom: 32 }}>Test your knowledge — {quizzes.length} questions</p>
+
+            {quizSubmitted ? (
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 64, marginBottom: 16 }}>{getQuizEmoji(score, quizzes.length)}</div>
+                <div style={{ fontSize: 40, fontWeight: 800, color: score === quizzes.length ? "#10B981" : score >= 2 ? "#F59E0B" : "#EF4444", marginBottom: 8 }}>
+                  {score}/{quizzes.length}
+                </div>
+                <div style={{ fontSize: 16, color: th.subtext, marginBottom: 32 }}>
+                  {score === quizzes.length ? "Perfect score! You are ready to move on." : score >= 2 ? "Good work! Review missed questions." : "Review the lesson and try again."}
+                </div>
+                <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+                  <button onClick={() => { setQuizAnswers({}); setQuizSubmitted(false); }} style={{ background: th.bg4, color: th.text2, border: "none", padding: "12px 24px", borderRadius: 8, fontFamily: "inherit", cursor: "pointer" }}>Retry</button>
+                  <button onClick={onComplete} style={{ background: "linear-gradient(135deg,#059669,#10B981)", color: "#fff", border: "none", padding: "12px 24px", borderRadius: 8, fontFamily: "inherit", fontWeight: 700, cursor: "pointer" }}>Complete Lesson ✓</button>
+                </div>
+              </div>
+            ) : (
+              <div>
+                {quizzes.map((q, qi) => (
+                  <div key={qi} style={{ marginBottom: 32 }}>
+                    <div style={{ fontSize: 16, fontWeight: 600, color: th.text, marginBottom: 16 }}>
+                      <span style={{ color: "#60A5FA", marginRight: 8 }}>Q{qi + 1}.</span>{q.q}
+                    </div>
+                    <div style={{ display: "grid", gap: 10 }}>
+                      {q.options.map((opt, oi) => (
+                        <button key={oi} onClick={() => setQuizAnswers(a => ({ ...a, [qi]: oi }))} style={{
+                          background: quizAnswers[qi] === oi ? (dark ? "#1E3A8A" : "#DBEAFE") : th.bg2,
+                          border: `1px solid ${quizAnswers[qi] === oi ? "#2563EB" : th.border}`,
+                          color: quizAnswers[qi] === oi ? (dark ? "#93C5FD" : "#1D4ED8") : th.text2,
+                          borderRadius: 8, padding: "12px 20px", textAlign: "left",
+                          fontFamily: "inherit", fontSize: 14, cursor: "pointer", transition: "all 0.15s",
+                        }}>
+                          <span style={{ marginRight: 10, opacity: 0.5 }}>{["A", "B", "C", "D"][oi]}.</span>{opt}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+                <button
+                  onClick={() => setQuizSubmitted(true)}
+                  disabled={Object.keys(quizAnswers).length < quizzes.length}
+                  style={{
+                    background: Object.keys(quizAnswers).length < quizzes.length ? th.bg4 : "linear-gradient(135deg,#2563EB,#7C3AED)",
+                    color: Object.keys(quizAnswers).length < quizzes.length ? th.text3 : "#fff",
+                    border: "none", padding: "14px 36px", borderRadius: 10,
+                    fontFamily: "inherit", fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "all 0.2s",
+                  }}
+                >Submit Answers</button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── MODULE DETAIL ─────────────────────────────────────────────────────────────
+function ModuleDetail({ module, completed, onTopicComplete, onBack, dark }) {
+  const th = dark ? DARK : LIGHT;
+  const [activeTopic, setActiveTopic] = useState(null);
+
+  // Scroll to top when module opens
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
+  const completedCount = module.topics.filter(t => completed.has(t.id)).length;
+  const pct = Math.round((completedCount / module.topics.length) * 100);
+
+  if (activeTopic) {
+    return (
+      <LessonViewer
+        topic={activeTopic}
+        dark={dark}
+        onComplete={() => { onTopicComplete(activeTopic.id); setActiveTopic(null); }}
+        onBack={() => setActiveTopic(null)}
+      />
+    );
+  }
+
+  return (
+    <div style={{ minHeight: "100vh", background: th.bg, color: th.text, fontFamily: "'DM Sans', sans-serif", position: "relative", transition: "background 0.3s, color 0.3s" }}>
+      <FloatingKeywords moduleId={module.id} dark={dark} />
+
+      {/* Hero */}
+      <div style={{
+        background: dark
+          ? `linear-gradient(135deg, ${th.bg} 0%, ${module.color}22 100%)`
+          : `linear-gradient(135deg, ${th.bg} 0%, ${module.color}11 100%)`,
+        borderBottom: `1px solid ${th.border}`, padding: "48px 48px 40px", position: "relative", zIndex: 2,
+      }}>
+        <button title="Go back" onClick={onBack} style={{ background: th.bg4, border: "none", color: th.text2, borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, marginBottom: 24 }}>← All Modules</button>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 24 }}>
+          <div style={{ fontSize: 56 }}>{module.icon}</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+              <Badge color={module.color}>{module.code}</Badge>
+              <Badge color={module.color}>{module.category}</Badge>
+              <Badge color={th.text3}>⏱ {module.duration}</Badge>
+            </div>
+            <h1 style={{ fontSize: 36, fontWeight: 800, marginBottom: 8, lineHeight: 1.2, color: th.text }}>{module.title}</h1>
+            <p style={{ fontSize: 16, color: th.text3, marginBottom: 20 }}>{module.subtitle}</p>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ flex: 1, maxWidth: 220 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: th.text3, marginBottom: 4 }}>
+                  <span>Progress</span><span>{completedCount}/{module.topics.length} lessons</span>
+                </div>
+                <div style={{ height: 6, background: th.bg4, borderRadius: 3 }}>
+                  <div style={{ width: `${pct}%`, height: "100%", background: module.color, borderRadius: 3, transition: "width 0.5s" }} />
+                </div>
+              </div>
+              {pct === 100 && <Badge color="#10B981">✓ Completed</Badge>}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Lessons List */}
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px", position: "relative", zIndex: 2 }}>
+        <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 24, color: th.text3, letterSpacing: "0.1em" }}>LESSONS IN THIS MODULE</h2>
+        <div style={{ display: "grid", gap: 12 }}>
+          {module.topics.map((topic, i) => {
+            const done = completed.has(topic.id);
+            return (
+              <button key={topic.id} onClick={() => setActiveTopic(topic)}
+                style={{
+                  background: th.bg2, border: `1px solid ${done ? module.color + "55" : th.border}`,
+                  borderTop: `3px solid ${done ? module.color : th.border}`,
+                  borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "center", gap: 16,
+                  cursor: "pointer", textAlign: "left", transition: "all 0.2s", width: "100%",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = module.color + "88"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = done ? module.color + "55" : th.border; e.currentTarget.style.transform = "translateY(0)"; }}
+              >
+                <div style={{
+                  width: 44, height: 44, borderRadius: 10,
+                  background: done ? module.color + "22" : th.bg4,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 18, flexShrink: 0, transition: "background 0.3s",
+                }}>
+                  {done
+                    ? <span style={{ color: module.color, fontWeight: 700, fontSize: 18 }}>✓</span>
+                    : <span style={{ color: th.text3, fontSize: 14, fontWeight: 700 }}>{i + 1}</span>}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: done ? th.text3 : th.text, marginBottom: 4, fontFamily: "inherit" }}>{topic.title}</div>
+                  <div style={{ fontSize: 12, color: th.text3, fontFamily: "inherit" }}>⏱ {topic.duration}</div>
+                </div>
+                <div style={{ color: th.text3, fontSize: 20 }}>›</div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── CERTIFICATE ───────────────────────────────────────────────────────────────
+function Certificate({ name, date, dark }) {
+  const th = dark ? DARK : LIGHT;
+  return (
+    <div style={{ minHeight: "100vh", background: th.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 32, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
+      <div style={{
+        width: "100%", maxWidth: 720,
+        background: dark ? "linear-gradient(135deg,#0F172A,#1E1B4B)" : "linear-gradient(135deg,#EFF6FF,#F0F4FF)",
+        border: `2px solid ${dark ? "#2563EB44" : "#BFDBFE"}`,
+        borderRadius: 20, padding: 56, textAlign: "center", position: "relative", overflow: "hidden",
+        boxShadow: dark ? "0 24px 60px #2563EB22" : "0 24px 60px #2563EB11",
+      }}>
+        <div style={{ fontSize: 52, marginBottom: 16 }}>🏆</div>
+        <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#60A5FA", fontWeight: 700, marginBottom: 16 }}>CEYLONHS ACADEMY</div>
+        <div style={{ fontSize: 13, color: th.text3, marginBottom: 8 }}>This certifies that</div>
+        <div style={{ fontSize: 36, fontWeight: 800, color: th.text, marginBottom: 8 }}>{name || "Trade Professional"}</div>
+        <div style={{ fontSize: 14, color: th.text3, marginBottom: 32 }}>has successfully completed</div>
+        <div style={{ fontSize: 22, fontWeight: 700, color: "#2563EB", marginBottom: 8 }}>CeylonHS Trade Classification Fundamentals</div>
+        <div style={{ fontSize: 13, color: th.text3, marginBottom: 40 }}>All 5 modules · 18 lessons · 5 quizzes passed</div>
+        <div style={{ display: "flex", justifyContent: "center", gap: 48, marginBottom: 40, flexWrap: "wrap" }}>
+          {[["16,000+", "HS Codes Learned"], ["5", "Modules Completed"], ["2026", "Certification Year"]].map(([val, lbl]) => (
+            <div key={lbl} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 24, fontWeight: 800, color: "#2563EB" }}>{val}</div>
+              <div style={{ fontSize: 11, color: th.text3 }}>{lbl}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+          <div style={{ height: 1, width: 60, background: th.border }} />
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 11, color: "#2563EB", fontWeight: 700 }}>CEYLONHS.COM</div>
+            <div style={{ fontSize: 10, color: th.text3 }}>Issued {date}</div>
+            <div style={{ fontSize: 10, color: th.text3, marginTop: 2 }}>Verified by CeylonHS Academy · ceylonhs.com</div>
+          </div>
+          <div style={{ height: 1, width: 60, background: th.border }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── MAIN APP ──────────────────────────────────────────────────────────────────
+export default function CeylonHSAcademy() {
+  const [dark, setDark] = useState(true);
+  const [view, setView] = useState("home");
+  const [activeModule, setActiveModule] = useState(null);
+  const [completed, setCompleted] = useState(new Set());
+  const [userName, setUserName] = useState("Trade Professional");
+  const [nameInput, setNameInput] = useState("");
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [hovered, setHovered] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+
+  const th = dark ? DARK : LIGHT;
+
+  const totalTopics = MODULES.reduce((a, m) => a + m.topics.length, 0);
+  const totalCompleted = completed.size;
+  const overallPct = Math.round((totalCompleted / totalTopics) * 100);
+  const allDone = MODULES.every(m => m.topics.every(t => completed.has(t.id)));
+
+  const filteredModules = searchQuery.trim() === ""
+    ? MODULES
+    : MODULES.filter(m => {
+        const q = searchQuery.toLowerCase();
+        return (
+          m.title.toLowerCase().includes(q) ||
+          m.subtitle.toLowerCase().includes(q) ||
+          m.category.toLowerCase().includes(q) ||
+          m.code.toLowerCase().includes(q) ||
+          m.topics.some(t => t.title.toLowerCase().includes(q)) ||
+          (MODULE_KEYWORDS[m.id] || []).some(k => k.toLowerCase().includes(q))
+        );
+      });
+
+  const handleTopicComplete = (id) => setCompleted(prev => new Set([...prev, id]));
+
+  if (view === "module" && activeModule) {
+    return (
+      <>
+        <ModuleDetail
+          module={activeModule}
+          completed={completed}
+          onTopicComplete={handleTopicComplete}
+          onBack={() => setView("home")}
+          dark={dark}
+        />
+        <ScrollToTopButton dark={dark} />
+      </>
+    );
+  }
+
+  if (view === "cert") {
+    return (
+      <div style={{ background: th.bg, minHeight: "100vh", transition: "background 0.3s" }}>
+        <div style={{ background: th.bg2, padding: "16px 32px", display: "flex", alignItems: "center", gap: 16, fontFamily: "'DM Sans', sans-serif", borderBottom: `1px solid ${th.border}`, transition: "background 0.3s" }}>
+          <button title="Go back" onClick={() => setView("home")} style={{ background: th.bg4, border: "none", color: th.text2, borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontFamily: "inherit" }}>← Back to Academy</button>
+          <div style={{ flex: 1 }} />
+          <ThemeToggle dark={dark} onToggle={() => setDark(d => !d)} />
+        </div>
+        <Certificate name={userName} date={new Date().toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })} dark={dark} />
+        <ScrollToTopButton dark={dark} />
+      </div>
+    );
+  }
+
+  // ── HOME PAGE ──
+  return (
+    <div style={{ minHeight: "100vh", background: th.bg, color: th.text, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s, color 0.3s" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 3px; }
+        @keyframes fadeIn  { from { opacity: 0; transform: translateY(8px);  } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeUp  { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse   { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        @keyframes floatDot{ 0%,100% { transform:translateY(0);  } 50% { transform:translateY(-8px); } }
+      `}</style>
+
+      {/* ── NAV ── */}
+      <nav style={{
+        position: "sticky", top: 0, zIndex: 50,
+        background: th.nav, backdropFilter: "blur(12px)",
+        borderBottom: `1px solid ${th.navBorder}`,
+        padding: "0 40px", display: "flex", alignItems: "center", gap: 16, height: 62,
+        transition: "background 0.3s",
+      }}>
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 30, height: 30, background: "linear-gradient(135deg,#2563EB,#7C3AED)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>⚡</div>
+          <span style={{ fontWeight: 800, fontSize: 16, color: th.text }}>Ceylon<span style={{ color: "#2563EB" }}>HS</span> <span style={{ fontSize: 12, fontWeight: 600, color: th.text3 }}>Academy</span></span>
+        </div>
+
+        <div style={{ flex: 1 }} />
+
+        {/* Progress bar */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ width: 90, height: 5, background: th.bg4, borderRadius: 3 }}>
+            <div style={{ width: `${overallPct}%`, height: "100%", background: "linear-gradient(90deg,#2563EB,#7C3AED)", borderRadius: 3, transition: "width 0.5s" }} />
+          </div>
+          <span style={{ fontSize: 12, color: th.text3, minWidth: 30 }}>{overallPct}%</span>
+        </div>
+
+        <span style={{ fontSize: 12, color: th.text3 }}>{totalCompleted}/{totalTopics}</span>
+
+        {/* Theme toggle */}
+        <ThemeToggle dark={dark} onToggle={() => setDark(d => !d)} />
+
+        {/* User name */}
+        <button onClick={() => setShowNameModal(true)} style={{ background: th.bg4, border: "none", color: th.text2, borderRadius: 8, padding: "7px 14px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, transition: "background 0.3s" }}>
+          👤 {userName}
+        </button>
+      </nav>
+
+      {/* ── NAME MODAL ── */}
+      {showNameModal && (
+        <div style={{ position: "fixed", inset: 0, background: "#000000bb", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ background: th.bg2, border: `1px solid ${th.border}`, borderRadius: 16, padding: 32, width: 360, transition: "background 0.3s" }}>
+            <h3 style={{ marginBottom: 8, fontWeight: 700, color: th.text }}>Your Name for Certificate</h3>
+            <p style={{ fontSize: 13, color: th.text3, marginBottom: 16 }}>This name will appear on your completion certificate.</p>
+            <input
+              value={nameInput} onChange={e => setNameInput(e.target.value)}
+              placeholder="Enter your full name"
+              style={{ width: "100%", background: th.inputBg, border: `1px solid ${th.border}`, color: th.text, borderRadius: 8, padding: "10px 14px", fontFamily: "inherit", fontSize: 14, marginBottom: 16, outline: "none", transition: "background 0.3s" }}
+            />
+            <div style={{ display: "flex", gap: 10 }}>
+              <button onClick={() => setShowNameModal(false)} style={{ flex: 1, background: th.bg4, border: "none", color: th.text2, borderRadius: 8, padding: "10px", fontFamily: "inherit", cursor: "pointer" }}>Cancel</button>
+              <button onClick={() => { if (nameInput.trim()) setUserName(nameInput.trim()); setShowNameModal(false); }} style={{ flex: 1, background: "#2563EB", border: "none", color: "#fff", borderRadius: 8, padding: "10px", fontFamily: "inherit", fontWeight: 700, cursor: "pointer" }}>Save</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── HERO ── */}
+      <div style={{
+        background: dark
+          ? "radial-gradient(ellipse 80% 50% at 50% -10%, #2563EB22, transparent)"
+          : "radial-gradient(ellipse 80% 50% at 50% -10%, #DBEAFE, transparent)",
+        padding: "72px 40px 56px", textAlign: "center", transition: "background 0.3s",
+      }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#2563EB18", border: "1px solid #2563EB33", borderRadius: 20, padding: "6px 16px", fontSize: 12, color: "#60A5FA", fontWeight: 600, marginBottom: 24 }}>
+          <span style={{ width: 6, height: 6, background: "#2563EB", borderRadius: "50%", animation: "pulse 2s infinite", display: "inline-block" }} />
+          FREE · SELF-PACED · CERTIFICATE ON COMPLETION
+        </div>
+        <h1 style={{ fontSize: "clamp(32px, 5vw, 56px)", fontWeight: 900, lineHeight: 1.1, marginBottom: 20, color: th.text }}>
+          Master HS Code Classification<br />
+          <span style={{ background: "linear-gradient(135deg,#2563EB,#7C3AED,#06B6D4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            with CeylonHS AI
+          </span>
+        </h1>
+        <p style={{ fontSize: 18, color: th.text3, maxWidth: 540, margin: "0 auto 40px", lineHeight: 1.7 }}>
+          From zero to certified trade professional. Learn to classify 16,000+ products, master our AI search engine, and speed up your customs workflow.
+        </p>
+        <div style={{ display: "flex", justifyContent: "center", gap: 40, flexWrap: "wrap" }}>
+          {[["5", "Modules"], ["18", "Lessons"], ["<48min", "Total Time"], ["Free", "Certificate"]].map(([val, lbl]) => (
+            <div key={lbl} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 26, fontWeight: 800, color: th.text }}>{val}</div>
+              <div style={{ fontSize: 12, color: th.text3 }}>{lbl}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── WHY SECTION ── */}
+      <div style={{ padding: "60px 40px", maxWidth: 1080, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div style={{ fontSize: 11, letterSpacing: "0.12em", color: "#2563EB", fontWeight: 700, marginBottom: 12 }}>WHY THIS MATTERS</div>
+          <h2 style={{ fontSize: 32, fontWeight: 800, marginBottom: 12, color: th.text }}>Why Learn HS Code Classification?</h2>
+          <p style={{ fontSize: 15, color: th.text3, maxWidth: 500, margin: "0 auto" }}>Misclassification costs Sri Lankan businesses millions in penalties annually.</p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+          {[
+            { icon: "💰", title: "Avoid Costly Penalties", body: "Wrong HS codes trigger customs audits and fines that can exceed the value of your shipment." },
+            { icon: "⚡", title: "Faster Clearance", body: "Correct codes mean zero holds at Colombo Port — your cargo moves in hours, not days." },
+            { icon: "🤝", title: "Access Trade Agreements", body: "FTAs like ISFTA require precise classification to claim preferential duty rates." },
+            { icon: "📊", title: "Data-Driven Decisions", body: "Accurate classification gives you clean trade data for business intelligence and planning." }
+          ].map((item, i) => (
+            <div key={i} style={{
+              background: th.cardBg, border: `1px solid ${th.cardBorder}`, borderRadius: 14, padding: 24,
+              animation: `fadeUp 0.5s ease ${i * 0.1}s both`, transition: "background 0.3s",
+            }}>
+              <div style={{ fontSize: 32, marginBottom: 12 }}>{item.icon}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: th.text }}>{item.title}</div>
+              <div style={{ fontSize: 13, color: th.text3, lineHeight: 1.6 }}>{item.body}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── OVERALL PROGRESS ── */}
+      {totalCompleted > 0 && (
+        <div style={{ padding: "0 40px 40px", maxWidth: 1080, margin: "0 auto" }}>
+          <div style={{
+            background: dark ? "linear-gradient(135deg,#1E3A8A22,#7C3AED22)" : "linear-gradient(135deg,#EFF6FF,#F5F3FF)",
+            border: `1px solid ${dark ? "#2563EB33" : "#BFDBFE"}`,
+            borderRadius: 16, padding: "24px 32px", display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap",
+            transition: "background 0.3s",
+          }}>
+            <ProgressRing percent={overallPct} size={72} stroke={6} color="#2563EB" />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 14, color: th.text3, marginBottom: 4 }}>Your Learning Progress</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: th.text }}>{overallPct}% Complete · {totalCompleted} of {totalTopics} lessons done</div>
+            </div>
+            {allDone && (
+              <button onClick={() => setView("cert")} style={{
+                background: "linear-gradient(135deg,#059669,#10B981)", color: "#fff", border: "none",
+                padding: "14px 28px", borderRadius: 10, fontFamily: "inherit", fontSize: 14, fontWeight: 700, cursor: "pointer",
+              }}>🏆 Get Certificate</button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── MODULES SEARCH + GRID ── */}
+      <div style={{ padding: "0 40px 80px", maxWidth: 1080, margin: "0 auto" }}>
+
+        {/* Search heading */}
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div style={{ fontSize: 11, letterSpacing: "0.12em", color: "#2563EB", fontWeight: 700, marginBottom: 10 }}>COURSE MODULES</div>
+          <h2 style={{ fontSize: 26, fontWeight: 800, color: th.text, marginBottom: 6 }}>What do you want to learn?</h2>
+          <p style={{ fontSize: 14, color: th.text3 }}>Search by topic, keyword, or module name</p>
+        </div>
+
+        {/* Search bar */}
+        <div style={{
+          position: "relative", maxWidth: 540, margin: "0 auto 40px",
+        }}>
+          {/* Search icon */}
+          <span style={{
+            position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)",
+            fontSize: 17, pointerEvents: "none", opacity: 0.5,
+          }}>🔍</span>
+
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            placeholder="e.g. AI classification, chatbot, favourites..."
+            style={{
+              width: "100%",
+              background: th.bg2,
+              border: `2px solid ${searchFocused ? "#2563EB" : th.border}`,
+              borderRadius: 14,
+              padding: "14px 44px 14px 46px",
+              fontSize: 15,
+              color: th.text,
+              fontFamily: "'DM Sans', sans-serif",
+              outline: "none",
+              transition: "border-color 0.2s, box-shadow 0.2s",
+              boxShadow: searchFocused ? "0 0 0 4px #2563EB22" : "none",
+            }}
+          />
+
+          {/* Clear button */}
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              style={{
+                position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
+                background: th.bg4, border: "none", color: th.text3,
+                width: 26, height: 26, borderRadius: "50%", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 14, fontWeight: 700, lineHeight: 1,
+              }}
+            >×</button>
+          )}
+        </div>
+
+        {/* Quick filter chips */}
+        <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginBottom: 36 }}>
+          {[
+            { label: "All", value: "" },
+            { label: "🌐 Foundation", value: "foundation" },
+            { label: "🔍 Search & AI", value: "core skills" },
+            { label: "⭐ Productivity", value: "productivity" },
+            { label: "💬 Advanced", value: "advanced" },
+          ].map(chip => {
+            const active = searchQuery.toLowerCase() === chip.value;
+            return (
+              <button
+                key={chip.label}
+                onClick={() => setSearchQuery(chip.value)}
+                style={{
+                  background: active ? "#2563EB" : th.bg2,
+                  border: `1px solid ${active ? "#2563EB" : th.border}`,
+                  color: active ? "#fff" : th.text2,
+                  borderRadius: 20, padding: "6px 16px",
+                  fontSize: 12, fontWeight: active ? 700 : 500,
+                  cursor: "pointer", fontFamily: "inherit",
+                  transition: "all 0.18s",
+                }}
+              >{chip.label}</button>
+            );
+          })}
+        </div>
+
+        {/* Results count */}
+        {searchQuery.trim() !== "" && (
+          <div style={{ fontSize: 13, color: th.text3, marginBottom: 20, textAlign: "center" }}>
+            {filteredModules.length === 0
+              ? "No modules found — try a different keyword"
+              : `${filteredModules.length} module${filteredModules.length > 1 ? "s" : ""} found for "${searchQuery}"`}
+          </div>
+        )}
+
+        {/* Modules grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20 }}>
+          {filteredModules.map((mod, i) => {
+            const modCompleted = mod.topics.filter(t => completed.has(t.id)).length;
+            const modPct = Math.round((modCompleted / mod.topics.length) * 100);
+            const isHov = hovered === mod.id;
+
+            // Highlight matching text in title
+            const highlightText = (text) => {
+              if (!searchQuery.trim()) return text;
+              const idx = text.toLowerCase().indexOf(searchQuery.toLowerCase());
+              if (idx === -1) return text;
+              return (
+                <>
+                  {text.slice(0, idx)}
+                  <mark style={{ background: "#2563EB33", color: "#60A5FA", borderRadius: 3, padding: "0 2px" }}>
+                    {text.slice(idx, idx + searchQuery.length)}
+                  </mark>
+                  {text.slice(idx + searchQuery.length)}
+                </>
+              );
+            };
+
+            return (
+              <div
+                key={mod.id}
+                onClick={() => { setActiveModule(mod); setView("module"); }}
+                onMouseEnter={() => setHovered(mod.id)}
+                onMouseLeave={() => setHovered(null)}
+                style={{
+                  background: isHov ? th.cardBg : th.bg3,
+                  border: `1px solid ${isHov ? mod.color + "66" : th.cardBorder}`,
+                  borderTop: `3px solid ${mod.color}`,
+                  borderRadius: 16, padding: 28, cursor: "pointer",
+                  transition: "all 0.25s cubic-bezier(.4,0,.2,1)",
+                  transform: isHov ? "translateY(-5px)" : "none",
+                  boxShadow: isHov ? `0 20px 40px ${mod.color}22` : "none",
+                  animation: `fadeUp 0.4s ease ${i * 0.07}s both`,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
+                  <div style={{ fontSize: 40 }}>{mod.icon}</div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 11, color: th.text3, marginBottom: 4 }}>{mod.code}</div>
+                    {modPct === 100
+                      ? <Badge color="#10B981">✓ Done</Badge>
+                      : modPct > 0
+                        ? <Badge color={mod.color}>{modPct}%</Badge>
+                        : <Badge color={th.text3}>{mod.duration}</Badge>}
+                  </div>
+                </div>
+                <div style={{ marginBottom: 6 }}>
+                  <Badge color={mod.color}>{mod.category}</Badge>
+                </div>
+                <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6, color: th.text }}>{highlightText(mod.title)}</h3>
+                <p style={{ fontSize: 13, color: th.text3, marginBottom: 20, lineHeight: 1.5 }}>{highlightText(mod.subtitle)}</p>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ height: 4, background: th.bg4, borderRadius: 2 }}>
+                      <div style={{ width: `${modPct}%`, height: "100%", background: mod.color, borderRadius: 2, transition: "width 0.5s" }} />
+                    </div>
+                  </div>
+                  <span style={{ fontSize: 11, color: th.text3, flexShrink: 0 }}>{modCompleted}/{mod.topics.length}</span>
+                </div>
+                <div style={{ marginTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 12, color: th.text3 }}>📖 {mod.lessons} lessons</span>
+                  <span style={{ fontSize: 13, color: mod.color, fontWeight: 700 }}>
+                    {modPct === 100 ? "Review →" : modPct > 0 ? "Continue →" : "Start →"}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Empty state */}
+          {filteredModules.length === 0 && (
+            <div style={{
+              gridColumn: "1 / -1", textAlign: "center", padding: "60px 20px",
+              background: th.bg3, borderRadius: 16, border: `1px dashed ${th.cardBorder}`,
+            }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: th.text, marginBottom: 8 }}>No modules found</div>
+              <div style={{ fontSize: 14, color: th.text3, marginBottom: 24 }}>
+                Try searching for "AI", "chatbot", "search", "favourites", or "HS code"
+              </div>
+              <button onClick={() => setSearchQuery("")} style={{
+                background: "#2563EB", color: "#fff", border: "none",
+                padding: "10px 24px", borderRadius: 8, fontFamily: "inherit",
+                fontSize: 14, fontWeight: 700, cursor: "pointer",
+              }}>Clear Search</button>
+            </div>
+          )}
+
+          {/* Coming Soon card — only show when not searching */}
+          {searchQuery.trim() === "" && (
+            <div style={{
+              background: th.bg3, border: `1px dashed ${th.cardBorder}`, borderRadius: 16, padding: 28,
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+              textAlign: "center", minHeight: 240, transition: "background 0.3s",
+            }}>
+              <div style={{ fontSize: 32, marginBottom: 12, animation: "floatDot 3s ease infinite" }}>🚀</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: th.text3, marginBottom: 6 }}>More Modules Coming</div>
+              <div style={{ fontSize: 12, color: th.text3, lineHeight: 1.6, maxWidth: 200 }}>
+                Advanced duty calculation, FTA eligibility, and API integration modules in development.
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <Badge color={th.text3}>Coming Soon</Badge>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── CTA FOOTER ── */}
+      <div style={{ background: "linear-gradient(135deg,#1E3A8A,#2563EB)", padding: "60px 40px", textAlign: "center" }}>
+        <h2 style={{ fontSize: 30, fontWeight: 800, marginBottom: 12, color: "#fff" }}>Ready to Classify Smarter?</h2>
+        <p style={{ fontSize: 16, color: "#93C5FD", marginBottom: 32 }}>Complete all modules and earn your free CeylonHS certification.</p>
+        <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+          <button onClick={() => { setActiveModule(MODULES[0]); setView("module"); }} style={{
+            background: "#fff", color: "#1E3A8A", border: "none", padding: "14px 32px", borderRadius: 10,
+            fontFamily: "inherit", fontSize: 15, fontWeight: 800, cursor: "pointer",
+          }}>Start Learning Free →</button>
+          <a href="https://ceylonhs.com" target="_blank" rel="noreferrer" style={{
+            background: "transparent", color: "#fff", border: "2px solid #ffffff55",
+            padding: "14px 32px", borderRadius: 10, fontFamily: "inherit", fontSize: 15,
+            fontWeight: 600, cursor: "pointer", textDecoration: "none", display: "inline-block",
+          }}>Try CeylonHS ↗</a>
+        </div>
+      </div>
+
+      {/* Scroll to top button — always present on home */}
+      <ScrollToTopButton dark={dark} />
+    </div>
+  );
+}
+
+import { useState, useEffect, useRef } from "react";
+
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const MODULES = [
   {
