@@ -34,6 +34,15 @@ const NAV = [
             </svg>
         ),
     },
+    {
+        href: '/learning',
+        label: 'Learn',
+        icon: (active: boolean) => (
+            <svg width="22" height="22" fill="none" stroke={active ? '#0B3EA8' : '#9BA5B7'} strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+            </svg>
+        ),
+    },
 ];
 
 export default function BottomNav() {
@@ -48,7 +57,7 @@ export default function BottomNav() {
     }, []);
 
     // Only show on app-inner pages (not home/login/register)
-    const appPages = ['/search', '/favorites', '/history', '/hscode'];
+    const appPages = ['/search', '/favorites', '/history', '/hscode', '/learning'];
     if (!appPages.some(p => pathname.startsWith(p))) return null;
 
     const handleSignOut = async () => {
