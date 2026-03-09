@@ -1,497 +1,96 @@
+// ═══════════════════════════════════════════════
+// CeylonHS Academy — Learning Portal
+// Built for SDGP 2026 · ceylonhs.com
+// ═══════════════════════════════════════════════
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const MODULES = [
   {
-    id: 1,
-    code: 'M01',
-    title: 'Introduction to HS Codes',
-    subtitle: 'Why trade classification matters',
-    icon: '🌐',
-    color: '#2563EB',
-    gradient: 'from-blue-600 to-blue-400',
-    duration: '8 min',
-    lessons: 4,
-    category: 'Foundation',
+    id: 1, code: "M01", title: "Introduction to HS Codes",
+    subtitle: "Why trade classification matters",
+    icon: "🌐", color: "#2563EB", duration: "8 min", lessons: 4, category: "Foundation",
     topics: [
-      {
-        id: '1a',
-        title: 'What is an HS Code?',
-        duration: '2 min',
-        content: {
-          heading: 'Harmonized System (HS) Codes Explained',
-          body: 'The Harmonized System is a standardized numerical method of classifying traded products. It is used by customs authorities around the world to identify products when assessing duties and taxes and for gathering statistics. Developed and maintained by the World Customs Organization (WCO), it is used by more than 200 countries as the basis for their customs tariffs and for the collection of international trade statistics.',
-          highlight:
-            'HS codes are 6-digit numbers used globally to classify every product traded internationally.',
-          points: [
-            'Used in 200+ countries worldwide',
-            'First 6 digits are internationally standardized',
-            'Updated every 5 years by the WCO',
-            'Essential for customs clearance and duty calculation',
-          ],
-        },
-      },
-      {
-        id: '1b',
-        title: 'Structure of an HS Code',
-        duration: '2 min',
-        content: {
-          heading: 'Breaking Down the 6-Digit Hierarchy',
-          body: 'An HS code is built hierarchically. The first two digits represent the Chapter, the next two digits the Heading, and the final two digits the Subheading. For example, 8471.30 — Chapter 84 (Machinery), Heading 8471 (Computers), Subheading 847130 (Portable computers).',
-          highlight: 'Chapter (2) → Heading (4) → Subheading (6)',
-          points: [
-            '21 Sections covering all product types',
-            '99 Chapters for broad categories',
-            '1,244 Headings for specific product types',
-            '5,224+ Subheadings at 6-digit precision',
-          ],
-        },
-      },
-      {
-        id: '1c',
-        title: 'Why HS Codes Matter for Business',
-        duration: '2 min',
-        content: {
-          heading: 'Business Impact of Correct Classification',
-          body: 'Using the wrong HS code can result in penalties, delays, and overpayment of duties. Correct classification opens doors to trade agreements, preferential tariff rates, and smooth customs clearance. In Sri Lanka alone, misclassification is one of the top causes of cargo delays at Colombo port.',
-          highlight: 'Correct HS codes save money, time, and legal risk.',
-          points: [
-            'Avoid customs penalties and fines',
-            'Access preferential duty rates under FTAs',
-            'Speed up customs clearance',
-            'Ensure regulatory compliance',
-          ],
-        },
-      },
-      {
-        id: '1d',
-        title: 'Global Trade & Sri Lanka Context',
-        duration: '2 min',
-        content: {
-          heading: 'HS Codes in the Sri Lankan Trade Ecosystem',
-          body: "Sri Lanka's Department of Customs uses the HS system aligned with the ASEAN Harmonized Tariff Nomenclature (AHTN). CeylonHS was built specifically to serve Sri Lankan traders, customs brokers, and logistics professionals, covering all 16,000+ HS codes relevant to Sri Lanka.",
-          highlight:
-            "CeylonHS is purpose-built for Sri Lanka's trade landscape.",
-          points: [
-            'Sri Lanka Customs uses 8-digit HS codes',
-            'ASEAN AHTN alignment for regional trade',
-            'CeylonHS indexes 16,000+ local codes',
-            'Real-time updates from WCO revisions',
-          ],
-        },
-      },
-    ],
+      { id: "1a", title: "What is an HS Code?", duration: "2 min", content: { heading: "Harmonized System (HS) Codes Explained", body: "The Harmonized System is a standardized numerical method of classifying traded products. It is used by customs authorities around the world to identify products when assessing duties and taxes and for gathering statistics. Developed and maintained by the World Customs Organization (WCO), it is used by more than 200 countries as the basis for their customs tariffs and for the collection of international trade statistics.", highlight: "HS codes are 6-digit numbers used globally to classify every product traded internationally.", points: ["Used in 200+ countries worldwide", "First 6 digits are internationally standardized", "Updated every 5 years by the WCO", "Essential for customs clearance and duty calculation"] } },
+      { id: "1b", title: "Structure of an HS Code", duration: "2 min", content: { heading: "Breaking Down the 6-Digit Hierarchy", body: "An HS code is built hierarchically. The first two digits represent the Chapter, the next two digits the Heading, and the final two digits the Subheading. For example, 8471.30 — Chapter 84 (Machinery), Heading 8471 (Computers), Subheading 847130 (Portable computers).", highlight: "Chapter (2) → Heading (4) → Subheading (6)", points: ["21 Sections covering all product types", "99 Chapters for broad categories", "1,244 Headings for specific product types", "5,224+ Subheadings at 6-digit precision"] } },
+      { id: "1c", title: "Why HS Codes Matter for Business", duration: "2 min", content: { heading: "Business Impact of Correct Classification", body: "Using the wrong HS code can result in penalties, delays, and overpayment of duties. Correct classification opens doors to trade agreements, preferential tariff rates, and smooth customs clearance. In Sri Lanka alone, misclassification is one of the top causes of cargo delays at Colombo port.", highlight: "Correct HS codes save money, time, and legal risk.", points: ["Avoid customs penalties and fines", "Access preferential duty rates under FTAs", "Speed up customs clearance", "Ensure regulatory compliance"] } },
+      { id: "1d", title: "Global Trade & Sri Lanka Context", duration: "2 min", content: { heading: "HS Codes in the Sri Lankan Trade Ecosystem", body: "Sri Lanka's Department of Customs uses the HS system aligned with the ASEAN Harmonized Tariff Nomenclature (AHTN). CeylonHS was built specifically to serve Sri Lankan traders, customs brokers, and logistics professionals, covering all 16,000+ HS codes relevant to Sri Lanka.", highlight: "CeylonHS is purpose-built for Sri Lanka's trade landscape.", points: ["Sri Lanka Customs uses 8-digit HS codes", "ASEAN AHTN alignment for regional trade", "CeylonHS indexes 16,000+ local codes", "Real-time updates from WCO revisions"] } },
+    ]
   },
   {
-    id: 2,
-    code: 'M02',
-    title: 'Searching HS Codes with AI',
-    subtitle: 'Master the hybrid AI search engine',
-    icon: '🔍',
-    color: '#7C3AED',
-    gradient: 'from-violet-600 to-purple-400',
-    duration: '10 min',
-    lessons: 4,
-    category: 'Core Skills',
+    id: 2, code: "M02", title: "Searching HS Codes with AI",
+    subtitle: "Master the hybrid AI search engine",
+    icon: "🔍", color: "#7C3AED", duration: "10 min", lessons: 4, category: "Core Skills",
     topics: [
-      {
-        id: '2a',
-        title: 'Your First Search',
-        duration: '2 min',
-        content: {
-          heading: 'Getting Started with CeylonHS Search',
-          body: "Navigate to the Search page from the top navigation. The search bar accepts natural language — you don't need to know the code already. Type what you're looking for in plain English: product names, descriptions, brand names, or even partial terms.",
-          highlight:
-            "Just type what you're looking for — CeylonHS does the rest.",
-          points: [
-            "Go to ceylonhs.com and click 'Start Searching Free'",
-            'Type a product name, brand, or description',
-            'Results appear in under 100ms',
-            'Click any result to see the full HS hierarchy',
-          ],
-        },
-      },
-      {
-        id: '2b',
-        title: 'Using Natural Language Queries',
-        duration: '3 min',
-        content: {
-          heading: 'How to Write Effective Search Queries',
-          body: "CeylonHS understands natural language. Instead of searching 'electrical appliance heating element 230V', you can just type 'electric kettle' or even 'Breville kettle'. The semantic AI understands context and product categories, not just keywords.",
-          highlight:
-            'The more specific your description, the more precise the result.',
-          points: [
-            "✅ 'wooden dining chairs' → HS 9401.61",
-            "✅ 'Samsung Galaxy phone' → HS 8517.12",
-            "✅ 'coconut oil cooking' → HS 1513.11",
-            "✅ 'Dilmah tea bags' → HS 0902.30",
-          ],
-        },
-      },
-      {
-        id: '2c',
-        title: 'Understanding Search Results',
-        duration: '3 min',
-        content: {
-          heading: 'Reading the Results Panel',
-          body: "Each result card shows the 6-digit HS code, the official description, the confidence score, and the full hierarchy path (Section → Chapter → Heading → Subheading). The top result is almost always the correct classification. Click 'View Details' to expand the full code tree.",
-          highlight:
-            'Green confidence badges mean 95%+ accuracy. Yellow means review recommended.',
-          points: [
-            'HS Code: The 6-digit classification number',
-            'Description: Official WCO product description',
-            'Confidence: AI certainty score (0-100%)',
-            'Hierarchy: Full path from Section to Subheading',
-          ],
-        },
-      },
-      {
-        id: '2d',
-        title: 'Advanced Search Filters',
-        duration: '2 min',
-        content: {
-          heading: 'Refining Your Search Results',
-          body: "Use the filter panel on the right to narrow results by Chapter, Section, or confidence threshold. The autocomplete suggestions help you find the right terminology. Typo tolerance means 'coco noodles' will still find coconut products even with the typo.",
-          highlight:
-            'Filters help when a product falls in multiple categories.',
-          points: [
-            'Filter by Section (e.g., Section XI: Textiles)',
-            'Filter by Chapter for broad category',
-            'Set minimum confidence threshold',
-            'Use autocomplete for WCO terminology',
-          ],
-        },
-      },
-    ],
+      { id: "2a", title: "Your First Search", duration: "2 min", content: { heading: "Getting Started with CeylonHS Search", body: "Navigate to the Search page from the top navigation. The search bar accepts natural language — you don't need to know the code already. Type what you're looking for in plain English: product names, descriptions, brand names, or even partial terms.", highlight: "Just type what you're looking for — CeylonHS does the rest.", points: ["Go to ceylonhs.com and click 'Start Searching Free'", "Type a product name, brand, or description", "Results appear in under 100ms", "Click any result to see the full HS hierarchy"] } },
+      { id: "2b", title: "Using Natural Language Queries", duration: "3 min", content: { heading: "How to Write Effective Search Queries", body: "CeylonHS understands natural language. Instead of searching 'electrical appliance heating element 230V', you can just type 'electric kettle' or even 'Breville kettle'. The semantic AI understands context and product categories, not just keywords.", highlight: "The more specific your description, the more precise the result.", points: ["✅ 'wooden dining chairs' → HS 9401.61", "✅ 'Samsung Galaxy phone' → HS 8517.12", "✅ 'coconut oil cooking' → HS 1513.11", "✅ 'Dilmah tea bags' → HS 0902.30"] } },
+      { id: "2c", title: "Understanding Search Results", duration: "3 min", content: { heading: "Reading the Results Panel", body: "Each result card shows the 6-digit HS code, the official description, the confidence score, and the full hierarchy path (Section → Chapter → Heading → Subheading). The top result is almost always the correct classification. Click 'View Details' to expand the full code tree.", highlight: "Green confidence badges mean 95%+ accuracy. Yellow means review recommended.", points: ["HS Code: The 6-digit classification number", "Description: Official WCO product description", "Confidence: AI certainty score (0-100%)", "Hierarchy: Full path from Section to Subheading"] } },
+      { id: "2d", title: "Advanced Search Filters", duration: "2 min", content: { heading: "Refining Your Search Results", body: "Use the filter panel on the right to narrow results by Chapter, Section, or confidence threshold. The autocomplete suggestions help you find the right terminology. Typo tolerance means 'coco noodles' will still find coconut products even with the typo.", highlight: "Filters help when a product falls in multiple categories.", points: ["Filter by Section (e.g., Section XI: Textiles)", "Filter by Chapter for broad category", "Set minimum confidence threshold", "Use autocomplete for WCO terminology"] } },
+    ]
   },
   {
-    id: 3,
-    code: 'M03',
-    title: 'AI-Powered Classification',
-    subtitle: 'Understand the hybrid AI pipeline',
-    icon: '🤖',
-    color: '#059669',
-    gradient: 'from-emerald-600 to-teal-400',
-    duration: '12 min',
-    lessons: 4,
-    category: 'Core Skills',
+    id: 3, code: "M03", title: "AI-Powered Classification",
+    subtitle: "Understand the hybrid AI pipeline",
+    icon: "🤖", color: "#059669", duration: "12 min", lessons: 4, category: "Core Skills",
     topics: [
-      {
-        id: '3a',
-        title: 'How the AI Engine Works',
-        duration: '3 min',
-        content: {
-          heading: 'The Hybrid AI Pipeline Explained',
-          body: 'CeylonHS uses a three-layer hybrid approach: First, Typesense keyword search finds exact and fuzzy matches at sub-10ms. Second, semantic embedding models understand product context and meaning. Third, Gemini Flash enrichment resolves brand names and unknown products in real-time.',
-          highlight:
-            'Three AI layers working together = 99% classification accuracy.',
-          points: [
-            'Layer 1: Typesense keyword + typo-tolerant search',
-            'Layer 2: Semantic embeddings for context understanding',
-            'Layer 3: Gemini Flash for real-time brand enrichment',
-            'Combined result in under 100ms total',
-          ],
-        },
-      },
-      {
-        id: '3b',
-        title: 'Smart Brand Recognition',
-        duration: '3 min',
-        content: {
-          heading: 'How CeylonHS Resolves Brand Names',
-          body: "When you type 'Dilmah', CeylonHS doesn't just do keyword matching. It triggers Gemini Flash enrichment to identify Dilmah as a Sri Lankan tea brand, then classifies it under the appropriate tea HS code. This brand resolution works for thousands of local and global brands.",
-          highlight: 'Type any brand name — we know what it is.',
-          points: [
-            'Recognizes 10,000+ brand names globally',
-            'Resolves Sri Lankan local brands specifically',
-            'Falls back to semantic search for unknown brands',
-            'Continuously learns from new classifications',
-          ],
-        },
-      },
-      {
-        id: '3c',
-        title: 'Confidence Scores Explained',
-        duration: '3 min',
-        content: {
-          heading: 'Understanding AI Confidence in Classification',
-          body: 'Every result includes a confidence score. 95%+ (green) means the AI is highly certain. 80-95% (yellow) means the product could belong to multiple categories — review the hierarchy. Below 80% (orange) means the description was ambiguous — try adding more details to your query.',
-          highlight:
-            'Low confidence? Add more product details for better results.',
-          points: [
-            '95-100%: High confidence, safe to use',
-            '80-95%: Review the full hierarchy path',
-            '60-80%: Refine your search description',
-            'Below 60%: Consult a customs broker',
-          ],
-        },
-      },
-      {
-        id: '3d',
-        title: 'When AI Gets It Wrong',
-        duration: '3 min',
-        content: {
-          heading: 'Handling Edge Cases and Ambiguous Products',
-          body: 'Some products genuinely fall in multiple HS categories depending on their primary use. A wooden spoon used in cooking is different from one used as a toy. In these cases, CeylonHS shows multiple candidates with confidence scores. You can also report misclassifications to improve the model.',
-          highlight:
-            'Use case determines classification for multi-purpose products.',
-          points: [
-            "Review 'Alternative Classifications' section",
-            "Consider the product's primary use/function",
-            'Check the official WCO notes for the chapter',
-            'Use the feedback button to report errors',
-          ],
-        },
-      },
-    ],
+      { id: "3a", title: "How the AI Engine Works", duration: "3 min", content: { heading: "The Hybrid AI Pipeline Explained", body: "CeylonHS uses a three-layer hybrid approach: First, Typesense keyword search finds exact and fuzzy matches at sub-10ms. Second, semantic embedding models understand product context and meaning. Third, Gemini Flash enrichment resolves brand names and unknown products in real-time.", highlight: "Three AI layers working together = 99% classification accuracy.", points: ["Layer 1: Typesense keyword + typo-tolerant search", "Layer 2: Semantic embeddings for context understanding", "Layer 3: Gemini Flash for real-time brand enrichment", "Combined result in under 100ms total"] } },
+      { id: "3b", title: "Smart Brand Recognition", duration: "3 min", content: { heading: "How CeylonHS Resolves Brand Names", body: "When you type 'Dilmah', CeylonHS doesn't just do keyword matching. It triggers Gemini Flash enrichment to identify Dilmah as a Sri Lankan tea brand, then classifies it under the appropriate tea HS code. This brand resolution works for thousands of local and global brands.", highlight: "Type any brand name — we know what it is.", points: ["Recognizes 10,000+ brand names globally", "Resolves Sri Lankan local brands specifically", "Falls back to semantic search for unknown brands", "Continuously learns from new classifications"] } },
+      { id: "3c", title: "Confidence Scores Explained", duration: "3 min", content: { heading: "Understanding AI Confidence in Classification", body: "Every result includes a confidence score. 95%+ (green) means the AI is highly certain. 80-95% (yellow) means the product could belong to multiple categories — review the hierarchy. Below 80% (orange) means the description was ambiguous — try adding more details to your query.", highlight: "Low confidence? Add more product details for better results.", points: ["95-100%: High confidence, safe to use", "80-95%: Review the full hierarchy path", "60-80%: Refine your search description", "Below 60%: Consult a customs broker"] } },
+      { id: "3d", title: "When AI Gets It Wrong", duration: "3 min", content: { heading: "Handling Edge Cases and Ambiguous Products", body: "Some products genuinely fall in multiple HS categories depending on their primary use. A wooden spoon used in cooking is different from one used as a toy. In these cases, CeylonHS shows multiple candidates with confidence scores. You can also report misclassifications to improve the model.", highlight: "Use case determines classification for multi-purpose products.", points: ["Review 'Alternative Classifications' section", "Consider the product's primary use/function", "Check the official WCO notes for the chapter", "Use the feedback button to report errors"] } },
+    ]
   },
   {
-    id: 4,
-    code: 'M04',
-    title: 'Favourites & History',
-    subtitle: 'Organize your code library',
-    icon: '⭐',
-    color: '#D97706',
-    gradient: 'from-amber-500 to-orange-400',
-    duration: '8 min',
-    lessons: 3,
-    category: 'Productivity',
+    id: 4, code: "M04", title: "Favourites & History",
+    subtitle: "Organize your code library",
+    icon: "⭐", color: "#D97706", duration: "8 min", lessons: 3, category: "Productivity",
     topics: [
-      {
-        id: '4a',
-        title: 'Saving to Favourites',
-        duration: '2 min',
-        content: {
-          heading: 'Building Your Personal HS Code Library',
-          body: 'Click the star icon on any search result to save it to your Favourites. Saved codes are organized by the date you saved them and can be tagged with custom labels. This is perfect for importers and exporters who work with the same set of products regularly.',
-          highlight: 'Build a personal library of codes you use most.',
-          points: [
-            'Click ⭐ on any result to save it',
-            'Access all saved codes from the Favourites tab',
-            "Add custom tags like 'electronics' or 'urgent'",
-            'Export your favourites as CSV for customs declarations',
-          ],
-        },
-      },
-      {
-        id: '4b',
-        title: 'Using Search History',
-        duration: '3 min',
-        content: {
-          heading: 'Your Complete Search History',
-          body: "Every search you perform is automatically saved to your History tab (when logged in). You can re-run past searches with one click, see which codes you've previously verified, and track how your classification needs evolve over time.",
-          highlight: 'Your search history is your audit trail for compliance.',
-          points: [
-            'Full searchable history of all past queries',
-            'Re-run any past search with one click',
-            'Filter history by date range or code',
-            'Export history as PDF for audit purposes',
-          ],
-        },
-      },
-      {
-        id: '4c',
-        title: 'Organising Collections',
-        duration: '3 min',
-        content: {
-          heading: 'Creating Collections for Different Projects',
-          body: "Group your saved codes into Collections — for example, 'Electronics Import Q1 2026' or 'Textile Export Codes'. Collections can be shared with team members, exported as spreadsheets, or used as templates for recurring shipments.",
-          highlight: 'Collections make batch declarations effortless.',
-          points: [
-            'Create named collections for projects/shipments',
-            'Add notes to each code in a collection',
-            'Share collections via link with your team',
-            'One-click export to Excel for declarations',
-          ],
-        },
-      },
-    ],
+      { id: "4a", title: "Saving to Favourites", duration: "2 min", content: { heading: "Building Your Personal HS Code Library", body: "Click the star icon on any search result to save it to your Favourites. Saved codes are organized by the date you saved them and can be tagged with custom labels. This is perfect for importers and exporters who work with the same set of products regularly.", highlight: "Build a personal library of codes you use most.", points: ["Click ⭐ on any result to save it", "Access all saved codes from the Favourites tab", "Add custom tags like 'electronics' or 'urgent'", "Export your favourites as CSV for customs declarations"] } },
+      { id: "4b", title: "Using Search History", duration: "3 min", content: { heading: "Your Complete Search History", body: "Every search you perform is automatically saved to your History tab (when logged in). You can re-run past searches with one click, see which codes you've previously verified, and track how your classification needs evolve over time.", highlight: "Your search history is your audit trail for compliance.", points: ["Full searchable history of all past queries", "Re-run any past search with one click", "Filter history by date range or code", "Export history as PDF for audit purposes"] } },
+      { id: "4c", title: "Organising Collections", duration: "3 min", content: { heading: "Creating Collections for Different Projects", body: "Group your saved codes into Collections — for example, 'Electronics Import Q1 2026' or 'Textile Export Codes'. Collections can be shared with team members, exported as spreadsheets, or used as templates for recurring shipments.", highlight: "Collections make batch declarations effortless.", points: ["Create named collections for projects/shipments", "Add notes to each code in a collection", "Share collections via link with your team", "One-click export to Excel for declarations"] } },
+    ]
   },
   {
-    id: 5,
-    code: 'M05',
-    title: 'Using the AI Chatbot',
-    subtitle: 'Your 24/7 customs classification assistant',
-    icon: '💬',
-    color: '#DC2626',
-    gradient: 'from-red-600 to-rose-400',
-    duration: '10 min',
-    lessons: 3,
-    category: 'Advanced',
+    id: 5, code: "M05", title: "Using the AI Chatbot",
+    subtitle: "Your 24/7 customs classification assistant",
+    icon: "💬", color: "#DC2626", duration: "10 min", lessons: 3, category: "Advanced",
     topics: [
-      {
-        id: '5a',
-        title: 'Introduction to the Chatbot',
-        duration: '3 min',
-        content: {
-          heading: 'Meet Your AI Classification Assistant',
-          body: 'The CeylonHS chatbot (the blue bubble at the bottom right) is powered by a specialized customs AI. Unlike general chatbots, it has deep knowledge of the WCO HS nomenclature, Sri Lanka Customs regulations, and trade compliance. It can classify products, explain duty rates, and guide you through complex edge cases.',
-          highlight:
-            'The chatbot knows HS codes better than most customs brokers.',
-          points: [
-            'Click the 💬 bubble at bottom-right to open',
-            'Ask classification questions in plain English',
-            'Get duty rate estimates for Sri Lanka',
-            'Ask about trade agreement eligibility',
-          ],
-        },
-      },
-      {
-        id: '5b',
-        title: 'Effective Chatbot Queries',
-        duration: '4 min',
-        content: {
-          heading: 'How to Ask the Right Questions',
-          body: "The chatbot performs best when you give it context. Instead of 'what code is this?', say 'I'm importing 500 units of men's cotton t-shirts from India, what HS code should I use and what duties apply?'. The more context, the more specific the answer.",
-          highlight:
-            'Give context: product + use + origin country = perfect answer.',
-          points: [
-            "✅ 'HS code for importing LED TVs from China?'",
-            "✅ 'What duties apply for HS 8471.30 in Sri Lanka?'",
-            "✅ 'Difference between HS 0902.10 and 0902.30?'",
-            "✅ 'Does ISFTA apply to my coconut oil import?'",
-          ],
-        },
-      },
-      {
-        id: '5c',
-        title: 'Chatbot for Complex Scenarios',
-        duration: '3 min',
-        content: {
-          heading: 'Handling Complex Classification Scenarios',
-          body: 'Some products require deeper analysis — kits, sets, composite machines, or products with multiple functions. The chatbot can walk you through the WCO General Rules of Interpretation (GRI) to arrive at the correct code. It can also explain why a product falls in one category over another.',
-          highlight: 'For ambiguous cases, the chatbot explains its reasoning.',
-          points: [
-            'Ask about composite goods classification',
-            'Request GRI rule explanations',
-            'Get chapter notes and legal notes',
-            "Ask for 'alternative codes' if uncertain",
-          ],
-        },
-      },
-    ],
-  },
+      { id: "5a", title: "Introduction to the Chatbot", duration: "3 min", content: { heading: "Meet Your AI Classification Assistant", body: "The CeylonHS chatbot (the blue bubble at the bottom right) is powered by a specialized customs AI. Unlike general chatbots, it has deep knowledge of the WCO HS nomenclature, Sri Lanka Customs regulations, and trade compliance. It can classify products, explain duty rates, and guide you through complex edge cases.", highlight: "The chatbot knows HS codes better than most customs brokers.", points: ["Click the 💬 bubble at bottom-right to open", "Ask classification questions in plain English", "Get duty rate estimates for Sri Lanka", "Ask about trade agreement eligibility"] } },
+      { id: "5b", title: "Effective Chatbot Queries", duration: "4 min", content: { heading: "How to Ask the Right Questions", body: "The chatbot performs best when you give it context. Instead of 'what code is this?', say 'I'm importing 500 units of men's cotton t-shirts from India, what HS code should I use and what duties apply?'. The more context, the more specific the answer.", highlight: "Give context: product + use + origin country = perfect answer.", points: ["✅ 'HS code for importing LED TVs from China?'", "✅ 'What duties apply for HS 8471.30 in Sri Lanka?'", "✅ 'Difference between HS 0902.10 and 0902.30?'", "✅ 'Does ISFTA apply to my coconut oil import?'"] } },
+      { id: "5c", title: "Chatbot for Complex Scenarios", duration: "3 min", content: { heading: "Handling Complex Classification Scenarios", body: "Some products require deeper analysis — kits, sets, composite machines, or products with multiple functions. The chatbot can walk you through the WCO General Rules of Interpretation (GRI) to arrive at the correct code. It can also explain why a product falls in one category over another.", highlight: "For ambiguous cases, the chatbot explains its reasoning.", points: ["Ask about composite goods classification", "Request GRI rule explanations", "Get chapter notes and legal notes", "Ask for 'alternative codes' if uncertain"] } },
+    ]
+  }
 ];
 
 const QUIZ_BANK: Record<number, any[]> = {
   1: [
-    {
-      q: 'How many digits are in a standard international HS code?',
-      options: ['4', '6', '8', '10'],
-      answer: 1,
-    },
-    {
-      q: 'Which organization maintains the Harmonized System?',
-      options: ['WTO', 'IMF', 'WCO', 'UN'],
-      answer: 2,
-    },
-    {
-      q: 'What do the first 2 digits of an HS code represent?',
-      options: ['Section', 'Chapter', 'Heading', 'Subheading'],
-      answer: 1,
-    },
+    { q: "How many digits are in a standard international HS code?", options: ["4", "6", "8", "10"], answer: 1 },
+    { q: "Which organization maintains the Harmonized System?", options: ["WTO", "IMF", "WCO", "UN"], answer: 2 },
+    { q: "What do the first 2 digits of an HS code represent?", options: ["Section", "Chapter", "Heading", "Subheading"], answer: 1 }
   ],
   2: [
-    {
-      q: 'What search technology does CeylonHS use for fast results?',
-      options: ['Elasticsearch', 'Typesense', 'Solr', 'Algolia'],
-      answer: 1,
-    },
-    {
-      q: 'What does a green confidence badge indicate?',
-      options: [
-        '50%+ accuracy',
-        '75%+ accuracy',
-        '95%+ accuracy',
-        '100% accuracy',
-      ],
-      answer: 2,
-    },
-    {
-      q: 'Which query style works BEST with CeylonHS?',
-      options: [
-        'HS numbers only',
-        'Natural language descriptions',
-        'Latin product names',
-        'Only English',
-      ],
-      answer: 1,
-    },
+    { q: "What search technology does CeylonHS use for fast results?", options: ["Elasticsearch", "Typesense", "Solr", "Algolia"], answer: 1 },
+    { q: "What does a green confidence badge indicate?", options: ["50%+ accuracy", "75%+ accuracy", "95%+ accuracy", "100% accuracy"], answer: 2 },
+    { q: "Which query style works BEST with CeylonHS?", options: ["HS numbers only", "Natural language descriptions", "Latin product names", "Only English"], answer: 1 }
   ],
   3: [
-    {
-      q: 'Which AI model does CeylonHS use for brand enrichment?',
-      options: ['GPT-4', 'Claude', 'Gemini Flash', 'Llama'],
-      answer: 2,
-    },
-    {
-      q: 'What should you do if a product has <60% confidence score?',
-      options: [
-        'Use the code anyway',
-        'Try again tomorrow',
-        'Add more product details',
-        'Call Sri Lanka Customs',
-      ],
-      answer: 2,
-    },
-    {
-      q: 'How many AI layers does CeylonHS use?',
-      options: ['1', '2', '3', '5'],
-      answer: 2,
-    },
+    { q: "Which AI model does CeylonHS use for brand enrichment?", options: ["GPT-4", "Claude", "Gemini Flash", "Llama"], answer: 2 },
+    { q: "What should you do if a product has <60% confidence score?", options: ["Use the code anyway", "Try again tomorrow", "Add more product details", "Call Sri Lanka Customs"], answer: 2 },
+    { q: "How many AI layers does CeylonHS use?", options: ["1", "2", "3", "5"], answer: 2 }
   ],
   4: [
-    {
-      q: 'How do you save an HS code to Favourites?',
-      options: ['Email it', 'Click the ⭐ icon', 'Screenshot it', 'Print it'],
-      answer: 1,
-    },
-    {
-      q: 'What can Collections be exported as?',
-      options: ['PDF only', 'CSV only', 'Excel spreadsheet', 'JSON only'],
-      answer: 2,
-    },
-    {
-      q: 'Search history is available when you are...',
-      options: ['Using mobile', 'Logged in', 'On paid plan', 'Using Chrome'],
-      answer: 1,
-    },
+    { q: "How do you save an HS code to Favourites?", options: ["Email it", "Click the ⭐ icon", "Screenshot it", "Print it"], answer: 1 },
+    { q: "What can Collections be exported as?", options: ["PDF only", "CSV only", "Excel spreadsheet", "JSON only"], answer: 2 },
+    { q: "Search history is available when you are...", options: ["Using mobile", "Logged in", "On paid plan", "Using Chrome"], answer: 1 }
   ],
   5: [
-    {
-      q: 'Where is the chatbot located on the CeylonHS website?',
-      options: [
-        'Top navigation',
-        'Footer',
-        'Bottom-right bubble',
-        'Side panel',
-      ],
-      answer: 2,
-    },
-    {
-      q: 'What does GRI stand for in customs classification?',
-      options: [
-        'Global Rate Index',
-        'General Rules of Interpretation',
-        'Goods Registration Interface',
-        'Global Revenue Index',
-      ],
-      answer: 1,
-    },
-    {
-      q: 'The chatbot is specialized in what domain?',
-      options: [
-        'General knowledge',
-        'Sri Lankan cuisine',
-        'WCO HS nomenclature & customs',
-        'Shipping logistics only',
-      ],
-      answer: 2,
-    },
-  ],
+    { q: "Where is the chatbot located on the CeylonHS website?", options: ["Top navigation", "Footer", "Bottom-right bubble", "Side panel"], answer: 2 },
+    { q: "What does GRI stand for in customs classification?", options: ["Global Rate Index", "General Rules of Interpretation", "Goods Registration Interface", "Global Revenue Index"], answer: 1 },
+    { q: "The chatbot is specialized in what domain?", options: ["General knowledge", "Sri Lankan cuisine", "WCO HS nomenclature & customs", "Shipping logistics only"], answer: 2 }
+  ]
 };
 
+<<<<<<< HEAD
 const MODULE_KEYWORDS: Record<number, string[]> = {
   1: [
     'HS Code',
@@ -578,19 +177,153 @@ const MODULE_KEYWORDS: Record<number, string[]> = {
     '24/7',
     'Eligibility',
   ],
+=======
+const MODULE_KEYWORDS = {
+  1: ["HS Code", "Harmonized System", "WCO", "Chapter", "Heading", "Subheading", "Section", "Tariff", "Customs", "Classification", "6-Digit", "Trade", "Sri Lanka", "AHTN", "Nomenclature", "Duty"],
+  2: ["Search", "Typesense", "Natural Language", "Autocomplete", "Results", "Filter", "Query", "Keyword", "Semantic", "Confidence", "100ms", "Hierarchy", "Brand", "Instant", "Precision"],
+  3: ["AI Pipeline", "Gemini Flash", "Embedding", "Semantic AI", "Brand Recognition", "Hybrid", "Accuracy", "99%", "Classification", "Edge Case", "GRI", "Enrichment", "Intelligence", "Model"],
+  4: ["Favourites", "Star", "Collections", "History", "Export", "CSV", "Excel", "Audit Trail", "Tags", "Library", "Shipment", "Recurring", "Compliance", "Save", "Organize"],
+  5: ["Chatbot", "Assistant", "AI", "GRI Rules", "Duty Rate", "FTA", "ISFTA", "Trade Agreement", "Compliance", "Query", "Context", "Customs Broker", "Classification", "24/7", "Eligibility"],
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
 };
 
-// ── COMPONENTS ────────────────────────────────────────────────────────────────
+// ── THEME TOKENS ──────────────────────────────────────────────────────────────
+const DARK = {
+  bg: "#0A0F1E",
+  bg2: "#111827",
+  bg3: "#0D1424",
+  bg4: "#1E293B",
+  border: "#1E293B",
+  text: "#F1F5F9",
+  text2: "#CBD5E1",
+  text3: "#64748B",
+  nav: "#0A0F1Eee",
+  navBorder: "#1E293B",
+  cardBg: "#111827",
+  cardBorder: "#1E293B",
+  inputBg: "#0A0F1E",
+  highlight: "linear-gradient(135deg,#1E3A8A22,#2563EB22)",
+  highlightBorder: "#2563EB44",
+  highlightText: "#93C5FD",
+  notesBg: "#111827",
+  notesBorder: "#1E293B",
+  notesText: "#FCD34D",
+  subtext: "#94A3B8",
+};
+const LIGHT = {
+  bg: "#F0F4FF",
+  bg2: "#FFFFFF",
+  bg3: "#EEF2FF",
+  bg4: "#E2E8F0",
+  border: "#CBD5E1",
+  text: "#0F172A",
+  text2: "#334155",
+  text3: "#64748B",
+  nav: "#FFFFFFee",
+  navBorder: "#E2E8F0",
+  cardBg: "#FFFFFF",
+  cardBorder: "#E2E8F0",
+  inputBg: "#F8FAFF",
+  highlight: "linear-gradient(135deg,#EFF6FF,#DBEAFE)",
+  highlightBorder: "#BFDBFE",
+  highlightText: "#1D4ED8",
+  notesBg: "#FFFBEB",
+  notesBorder: "#FDE68A",
+  notesText: "#92400E",
+  subtext: "#475569",
+};
 
+<<<<<<< HEAD
 function FloatingKeywords({ moduleId }: { moduleId: number }) {
+=======
+// ── DARK / LIGHT TOGGLE BUTTON ────────────────────────────────────────────────
+function ThemeToggle({ dark, onToggle }) {
+  return (
+    <button
+      onClick={onToggle}
+      title={dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      style={{
+        width: 56, height: 30, borderRadius: 15, border: "2px solid",
+        borderColor: dark ? "#2563EB" : "#CBD5E1",
+        cursor: "pointer", background: dark ? "#1E3A8A" : "#E2E8F0",
+        position: "relative", transition: "all 0.3s", flexShrink: 0, outline: "none",
+      }}
+    >
+      {/* Moon icon — visible in dark mode */}
+      <span style={{
+        position: "absolute", left: 6, top: "50%", transform: "translateY(-50%)",
+        fontSize: 13, opacity: dark ? 1 : 0, transition: "opacity 0.25s", lineHeight: 1,
+      }}>🌙</span>
+      {/* Sun icon — visible in light mode */}
+      <span style={{
+        position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)",
+        fontSize: 13, opacity: dark ? 0 : 1, transition: "opacity 0.25s", lineHeight: 1,
+      }}>☀️</span>
+      {/* Sliding knob */}
+      <span style={{
+        position: "absolute", top: 2,
+        left: dark ? 28 : 2,
+        width: 22, height: 22, borderRadius: "50%",
+        background: dark ? "#60A5FA" : "#FFFFFF",
+        transition: "left 0.3s cubic-bezier(.4,0,.2,1)",
+        boxShadow: "0 1px 5px rgba(0,0,0,0.25)",
+        display: "block",
+      }} />
+    </button>
+  );
+}
+
+// ── SCROLL TO TOP BUTTON ───────────────────────────────────────────────────────
+function ScrollToTopButton({ dark }) {
+  const [visible, setVisible] = useState(false);
+  const [hov, setHov] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 320);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      title="Scroll to top"
+      style={{
+        position: "fixed", bottom: 36, right: 36, zIndex: 300,
+        width: 50, height: 50, borderRadius: "50%", border: "none",
+        background: hov
+          ? "linear-gradient(135deg,#1D4ED8,#6D28D9)"
+          : "linear-gradient(135deg,#2563EB,#7C3AED)",
+        color: "#fff", cursor: "pointer",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 20, fontWeight: 900,
+        boxShadow: hov ? "0 8px 28px #2563EB88" : "0 4px 16px #2563EB55",
+        opacity: visible ? 1 : 0,
+        transform: visible
+          ? (hov ? "translateY(-4px) scale(1.12)" : "translateY(0) scale(1)")
+          : "translateY(20px) scale(0.7)",
+        transition: "all 0.35s cubic-bezier(.4,0,.2,1)",
+        pointerEvents: visible ? "auto" : "none",
+      }}
+    >
+      ↑
+    </button>
+  );
+}
+
+// ── FLOATING KEYWORDS BACKGROUND ─────────────────────────────────────────────
+function FloatingKeywords({ moduleId, dark }) {
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
   const words = MODULE_KEYWORDS[moduleId] || [];
   const items = [];
   for (let i = 0; i < 18; i++) {
     const word = words[i % words.length];
-    const left = 3 + ((i * 37 + i * i * 13) % 91);
+    const left = 3 + (i * 37 + i * i * 13) % 91;
     const delay = (i * 1.7) % 18;
-    const duration = 18 + ((i * 3) % 16);
-    const size = 10 + ((i * 7) % 8);
+    const duration = 18 + (i * 3) % 16;
+    const size = 14 + (i * 7) % 8;
     items.push({ word, left, delay, duration, size, key: i });
   }
   return (
@@ -603,33 +336,16 @@ function FloatingKeywords({ moduleId }: { moduleId: number }) {
           100% { opacity: 0;    transform: translateY(-420px); }
         }
       `}</style>
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          pointerEvents: 'none',
-          zIndex: 1,
-          overflow: 'hidden',
-        }}
-      >
+      <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 1, overflow: "hidden" }}>
         {items.map(({ word, left, delay, duration, size, key }) => (
-          <span
-            key={key}
-            style={{
-              position: 'absolute',
-              bottom: '-40px',
-              left: `${left}%`,
-              fontSize: size + 4,
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 700,
-              color: '#60A5FA',
-              opacity: 0,
-              whiteSpace: 'nowrap',
-              letterSpacing: '0.06em',
-              animation: `floatWord ${duration}s ${delay}s ease-in-out infinite`,
-              userSelect: 'none',
-            }}
-          >
+          <span key={key} style={{
+            position: "absolute", bottom: "-40px", left: `${left}%`,
+            fontSize: size, fontFamily: "'DM Sans', sans-serif", fontWeight: 700,
+            color: dark ? "#60A5FA" : "#2563EB",
+            opacity: 0, whiteSpace: "nowrap", letterSpacing: "0.06em",
+            animation: `floatWord ${duration}s ${delay}s ease-in-out infinite`,
+            userSelect: "none",
+          }}>
             {word}
           </span>
         ))}
@@ -638,154 +354,102 @@ function FloatingKeywords({ moduleId }: { moduleId: number }) {
   );
 }
 
+<<<<<<< HEAD
 function ProgressRing({ percent, size = 60, stroke = 5, color = '#2563EB' }: { percent: number; size?: number; stroke?: number; color?: string }) {
+=======
+// ── PROGRESS RING ─────────────────────────────────────────────────────────────
+function ProgressRing({ percent, size = 60, stroke = 5, color = "#2563EB" }) {
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
   const r = (size - stroke * 2) / 2;
   const circ = 2 * Math.PI * r;
   const offset = circ - (percent / 100) * circ;
   return (
-    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={r}
-        fill="none"
-        stroke="#e5e7eb"
-        strokeWidth={stroke}
-      />
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={r}
-        fill="none"
-        stroke={color}
-        strokeWidth={stroke}
-        strokeDasharray={circ}
-        strokeDashoffset={offset}
-        strokeLinecap="round"
-        style={{ transition: 'stroke-dashoffset 0.6s cubic-bezier(.4,0,.2,1)' }}
-      />
+    <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#e5e7eb" strokeWidth={stroke} />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+        strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
+        style={{ transition: "stroke-dashoffset 0.6s cubic-bezier(.4,0,.2,1)" }} />
     </svg>
   );
 }
 
+<<<<<<< HEAD
 function Badge({ children, color = '#2563EB', bg }: { children: React.ReactNode; color?: string; bg?: string }) {
+=======
+// ── BADGE ─────────────────────────────────────────────────────────────────────
+function Badge({ children, color = "#2563EB" }) {
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
   return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 4,
-        padding: '3px 10px',
-        borderRadius: 20,
-        fontSize: 11,
-        fontWeight: 700,
-        letterSpacing: '0.05em',
-        background: bg || color + '18',
-        color,
-      }}
-    >
-      {children}
-    </span>
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 4,
+      padding: "3px 10px", borderRadius: 20,
+      fontSize: 11, fontWeight: 700, letterSpacing: "0.05em",
+      background: color + "18", color,
+    }}>{children}</span>
   );
 }
 
 // ── LESSON VIEWER ─────────────────────────────────────────────────────────────
+<<<<<<< HEAD
 function LessonViewer({ topic, onComplete, onBack }: { topic: any; onComplete: () => void; onBack: () => void }) {
   const [tab, setTab] = useState('learn');
   const [quizAnswers, setQuizAnswers] = useState<Record<number, number | string>>({});
+=======
+// LessonViewer props: { topic, onComplete, onBack, dark }
+function LessonViewer({ topic, onComplete, onBack, dark }) {
+  const th = dark ? DARK : LIGHT;
+  const [tab, setTab] = useState("learn");
+  const [quizAnswers, setQuizAnswers] = useState({});
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [readProgress, setReadProgress] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     setReadProgress(0);
     const timer = setInterval(() => {
-      setReadProgress((p) => {
-        if (p >= 100) {
-          clearInterval(timer);
-          return 100;
-        }
-        return p + 2;
-      });
+      setReadProgress(p => { if (p >= 100) { clearInterval(timer); return 100; } return p + 2; });
     }, 120);
     return () => clearInterval(timer);
   }, [topic.id]);
 
   const moduleId = parseInt(topic.id[0]);
   const quizzes = QUIZ_BANK[moduleId] || [];
+<<<<<<< HEAD
   const score = quizSubmitted
     ? quizzes.filter((q: any, i: number) => quizAnswers[i] === q.answer).length
     : 0;
+=======
+  const score = quizSubmitted ? quizzes.filter((q, i) => quizAnswers[i] === q.answer).length : 0;
+
+  // Helper: quiz result emoji
+  const getQuizEmoji = (s, total) => {
+    if (s === total) return "🏆";
+    if (s >= 2) return "🎉";
+    return "📚";
+  };
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: '#0A0F1E',
-        color: '#F1F5F9',
-        fontFamily: "'DM Sans', sans-serif",
-      }}
-    >
+    <div style={{ minHeight: "100vh", background: th.bg, color: th.text, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s, color 0.3s" }}>
       {/* Header */}
-      <div
-        style={{
-          background: '#111827',
-          borderBottom: '1px solid #1E293B',
-          padding: '16px 32px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 16,
-        }}
-      >
-        <button
-          onClick={onBack}
-          style={{
-            background: '#1E293B',
-            border: 'none',
-            color: '#94A3B8',
-            borderRadius: 8,
-            padding: '8px 16px',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            fontSize: 13,
-          }}
-        >
-          ← Back
-        </button>
+      <div style={{ background: th.bg2, borderBottom: `1px solid ${th.border}`, padding: "16px 32px", display: "flex", alignItems: "center", gap: 16, transition: "background 0.3s", position: "sticky", top: 0, zIndex: 10 }}>
+        <button title="Go back" onClick={onBack} style={{ background: th.bg4, border: "none", color: th.text2, borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontFamily: "inherit", fontSize: 13 }}>← Back</button>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 11, color: '#64748B', marginBottom: 2 }}>
-            CeylonHS Academy
-          </div>
-          <div style={{ fontSize: 15, fontWeight: 600, color: '#F1F5F9' }}>
-            {topic.title}
-          </div>
+          <div style={{ fontSize: 11, color: th.text3, marginBottom: 2 }}>CeylonHS Academy</div>
+          <div style={{ fontSize: 15, fontWeight: 600, color: th.text }}>{topic.title}</div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ fontSize: 12, color: '#64748B' }}>
-            {readProgress < 100 ? 'Reading...' : '✓ Read'}
-          </div>
-          <div
-            style={{
-              width: 80,
-              height: 4,
-              background: '#1E293B',
-              borderRadius: 2,
-            }}
-          >
-            <div
-              style={{
-                width: `${readProgress}%`,
-                height: '100%',
-                background: '#2563EB',
-                borderRadius: 2,
-                transition: 'width 0.3s',
-              }}
-            />
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ fontSize: 12, color: th.text3 }}>{readProgress < 100 ? "Reading..." : "✓ Read"}</div>
+          <div style={{ width: 80, height: 4, background: th.bg4, borderRadius: 2 }}>
+            <div style={{ width: `${readProgress}%`, height: "100%", background: "#2563EB", borderRadius: 2, transition: "width 0.3s" }} />
           </div>
         </div>
       </div>
 
       {/* Tabs */}
+<<<<<<< HEAD
       <div
         style={{
           borderBottom: '1px solid #1E293B',
@@ -819,77 +483,41 @@ function LessonViewer({ topic, onComplete, onBack }: { topic: any; onComplete: (
                 ? '📝 Key Notes'
                 : '🧠 Quiz'}
           </button>
+=======
+      <div style={{ borderBottom: `1px solid ${th.border}`, display: "flex", paddingLeft: 32, background: th.bg2, transition: "background 0.3s" }}>
+        {["learn", "notes", "quiz"].map(t => (
+          <button key={t} onClick={() => setTab(t)} style={{
+            background: "none", border: "none",
+            color: tab === t ? "#2563EB" : th.text3,
+            borderBottom: tab === t ? "2px solid #2563EB" : "2px solid transparent",
+            padding: "14px 20px", cursor: "pointer", fontFamily: "inherit", fontSize: 13,
+            fontWeight: tab === t ? 700 : 400, textTransform: "capitalize", transition: "all 0.2s",
+          }}>{t === "learn" ? "📖 Learn" : t === "notes" ? "📝 Key Notes" : "🧠 Quiz"}</button>
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
         ))}
       </div>
 
-      <div
-        style={{ maxWidth: 780, margin: '0 auto', padding: '40px 32px' }}
-        ref={contentRef}
-      >
-        {tab === 'learn' && (
-          <div style={{ animation: 'fadeIn 0.4s ease' }}>
-            <h1
-              style={{
-                fontSize: 32,
-                fontWeight: 800,
-                marginBottom: 8,
-                color: '#F1F5F9',
-                lineHeight: 1.2,
-              }}
-            >
-              {topic.content.heading}
-            </h1>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 32 }}>
+      <div style={{ maxWidth: 780, margin: "0 auto", padding: "40px 32px" }} ref={contentRef}>
+
+        {/* ── LEARN TAB ── */}
+        {tab === "learn" && (
+          <div style={{ animation: "fadeIn 0.4s ease" }}>
+            <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8, color: th.text, lineHeight: 1.2 }}>{topic.content.heading}</h1>
+            <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
               <Badge color="#2563EB">⏱ {topic.duration}</Badge>
               <Badge color="#059669">📖 Reading</Badge>
             </div>
 
-            {/* Highlight box */}
-            <div
-              style={{
-                background: 'linear-gradient(135deg, #1E3A8A22, #2563EB22)',
-                border: '1px solid #2563EB44',
-                borderRadius: 12,
-                padding: '20px 24px',
-                marginBottom: 32,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 12,
-                  color: '#60A5FA',
-                  fontWeight: 700,
-                  letterSpacing: '0.08em',
-                  marginBottom: 8,
-                }}
-              >
-                KEY TAKEAWAY
-              </div>
-              <div
-                style={{
-                  fontSize: 16,
-                  color: '#93C5FD',
-                  fontWeight: 500,
-                  lineHeight: 1.6,
-                }}
-              >
-                💡 {topic.content.highlight}
-              </div>
+            {/* Key Takeaway */}
+            <div style={{ background: th.highlight, border: `1px solid ${th.highlightBorder}`, borderRadius: 12, padding: "20px 24px", marginBottom: 32 }}>
+              <div style={{ fontSize: 12, color: "#60A5FA", fontWeight: 700, letterSpacing: "0.08em", marginBottom: 8 }}>KEY TAKEAWAY</div>
+              <div style={{ fontSize: 16, color: th.highlightText, fontWeight: 500, lineHeight: 1.6 }}>💡 {topic.content.highlight}</div>
             </div>
 
-            {/* Body */}
-            <p
-              style={{
-                fontSize: 16,
-                lineHeight: 1.8,
-                color: '#CBD5E1',
-                marginBottom: 32,
-              }}
-            >
-              {topic.content.body}
-            </p>
+            <p style={{ fontSize: 16, lineHeight: 1.8, color: th.text2, marginBottom: 32 }}>{topic.content.body}</p>
 
             {/* Points */}
+<<<<<<< HEAD
             <div style={{ display: 'grid', gap: 12 }}>
               {topic.content.points.map((point: string, i: number) => (
                 <div
@@ -928,64 +556,35 @@ function LessonViewer({ topic, onComplete, onBack }: { topic: any; onComplete: (
                   >
                     {point}
                   </span>
+=======
+            <div style={{ display: "grid", gap: 12 }}>
+              {topic.content.points.map((point, i) => (
+                <div key={i} style={{
+                  background: th.bg2, border: `1px solid ${th.border}`, borderRadius: 10,
+                  padding: "14px 20px", display: "flex", alignItems: "flex-start", gap: 12,
+                  animation: `slideUp 0.3s ease ${i * 0.08}s both`,
+                  transition: "background 0.3s",
+                }}>
+                  <div style={{ width: 24, height: 24, background: "#2563EB22", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#60A5FA", fontWeight: 700, flexShrink: 0, marginTop: 1 }}>{i + 1}</div>
+                  <span style={{ fontSize: 14, color: th.text2, lineHeight: 1.5 }}>{point}</span>
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                 </div>
               ))}
             </div>
 
             {readProgress === 100 && (
-              <div
-                style={{
-                  marginTop: 40,
-                  textAlign: 'center',
-                  animation: 'fadeIn 0.5s ease',
-                }}
-              >
-                <div
-                  style={{ fontSize: 14, color: '#64748B', marginBottom: 16 }}
-                >
-                  You've finished this lesson
-                </div>
-                <div
-                  style={{ display: 'flex', gap: 12, justifyContent: 'center' }}
-                >
-                  <button
-                    onClick={() => setTab('quiz')}
-                    style={{
-                      background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '14px 32px',
-                      borderRadius: 10,
-                      fontFamily: 'inherit',
-                      fontSize: 14,
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Take the Quiz 🧠
-                  </button>
-                  <button
-                    onClick={onComplete}
-                    style={{
-                      background: '#1E293B',
-                      color: '#94A3B8',
-                      border: 'none',
-                      padding: '14px 32px',
-                      borderRadius: 10,
-                      fontFamily: 'inherit',
-                      fontSize: 14,
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Mark Complete ✓
-                  </button>
+              <div style={{ marginTop: 40, textAlign: "center", animation: "fadeIn 0.5s ease" }}>
+                <div style={{ fontSize: 14, color: th.text3, marginBottom: 16 }}>You have finished this lesson</div>
+                <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+                  <button onClick={() => setTab("quiz")} style={{ background: "linear-gradient(135deg,#2563EB,#7C3AED)", color: "#fff", border: "none", padding: "14px 32px", borderRadius: 10, fontFamily: "inherit", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>Take the Quiz 🧠</button>
+                  <button onClick={onComplete} style={{ background: th.bg4, color: th.text2, border: "none", padding: "14px 32px", borderRadius: 10, fontFamily: "inherit", fontSize: 14, fontWeight: 600, cursor: "pointer" }}>Mark Complete ✓</button>
                 </div>
               </div>
             )}
           </div>
         )}
 
+<<<<<<< HEAD
         {tab === 'notes' && (
           <div style={{ animation: 'fadeIn 0.4s ease' }}>
             <h2
@@ -1020,51 +619,35 @@ function LessonViewer({ topic, onComplete, onBack }: { topic: any; onComplete: (
                     POINT {i + 1}
                   </div>
                   <div style={{ fontSize: 15, color: '#CBD5E1' }}>{point}</div>
+=======
+        {/* ── NOTES TAB ── */}
+        {tab === "notes" && (
+          <div style={{ animation: "fadeIn 0.4s ease" }}>
+            <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24, color: th.text }}>Key Points to Remember</h2>
+            <div style={{ display: "grid", gap: 16 }}>
+              {topic.content.points.map((point, i) => (
+                <div key={i} style={{ background: th.bg2, borderLeft: "3px solid #2563EB", borderRadius: "0 10px 10px 0", padding: "16px 20px", transition: "background 0.3s" }}>
+                  <div style={{ fontSize: 12, color: "#60A5FA", fontWeight: 700, marginBottom: 4 }}>POINT {i + 1}</div>
+                  <div style={{ fontSize: 15, color: th.text2 }}>{point}</div>
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                 </div>
               ))}
             </div>
-            <div
-              style={{
-                marginTop: 32,
-                background: '#111827',
-                borderRadius: 12,
-                padding: 20,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 12,
-                  color: '#F59E0B',
-                  fontWeight: 700,
-                  marginBottom: 8,
-                }}
-              >
-                ⚡ HIGHLIGHT
-              </div>
-              <div style={{ fontSize: 15, color: '#FCD34D' }}>
-                {topic.content.highlight}
-              </div>
+            <div style={{ marginTop: 32, background: th.notesBg, border: `1px solid ${th.notesBorder}`, borderRadius: 12, padding: 20, transition: "background 0.3s" }}>
+              <div style={{ fontSize: 12, color: "#F59E0B", fontWeight: 700, marginBottom: 8 }}>⚡ HIGHLIGHT</div>
+              <div style={{ fontSize: 15, color: th.notesText }}>{topic.content.highlight}</div>
             </div>
           </div>
         )}
 
-        {tab === 'quiz' && (
-          <div style={{ animation: 'fadeIn 0.4s ease' }}>
-            <h2
-              style={{
-                fontSize: 24,
-                fontWeight: 700,
-                marginBottom: 8,
-                color: '#F1F5F9',
-              }}
-            >
-              Module Quiz
-            </h2>
-            <p style={{ fontSize: 14, color: '#64748B', marginBottom: 32 }}>
-              Test your knowledge — {quizzes.length} questions
-            </p>
+        {/* ── QUIZ TAB ── */}
+        {tab === "quiz" && (
+          <div style={{ animation: "fadeIn 0.4s ease" }}>
+            <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 8, color: th.text }}>Module Quiz</h2>
+            <p style={{ fontSize: 14, color: th.text3, marginBottom: 32 }}>Test your knowledge — {quizzes.length} questions</p>
 
             {quizSubmitted ? (
+<<<<<<< HEAD
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 64, marginBottom: 16 }}>
                   {score === quizzes.length ? '🏆' : score >= 2 ? '🎉' : '📚'}
@@ -1092,61 +675,29 @@ function LessonViewer({ topic, onComplete, onBack }: { topic: any; onComplete: (
                     : score >= 2
                       ? 'Good work! Review missed questions below.'
                       : 'Review the lesson and try again.'}
+=======
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 64, marginBottom: 16 }}>{getQuizEmoji(score, quizzes.length)}</div>
+                <div style={{ fontSize: 40, fontWeight: 800, color: score === quizzes.length ? "#10B981" : score >= 2 ? "#F59E0B" : "#EF4444", marginBottom: 8 }}>
+                  {score}/{quizzes.length}
                 </div>
-                <div
-                  style={{ display: 'flex', gap: 12, justifyContent: 'center' }}
-                >
-                  <button
-                    onClick={() => {
-                      setQuizAnswers({});
-                      setQuizSubmitted(false);
-                    }}
-                    style={{
-                      background: '#1E293B',
-                      color: '#94A3B8',
-                      border: 'none',
-                      padding: '12px 24px',
-                      borderRadius: 8,
-                      fontFamily: 'inherit',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Retry
-                  </button>
-                  <button
-                    onClick={onComplete}
-                    style={{
-                      background: 'linear-gradient(135deg, #059669, #10B981)',
-                      color: '#fff',
-                      border: 'none',
-                      padding: '12px 24px',
-                      borderRadius: 8,
-                      fontFamily: 'inherit',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                    }}
-                  >
-                    Complete Lesson ✓
-                  </button>
+                <div style={{ fontSize: 16, color: th.subtext, marginBottom: 32 }}>
+                  {score === quizzes.length ? "Perfect score! You are ready to move on." : score >= 2 ? "Good work! Review missed questions." : "Review the lesson and try again."}
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
+                </div>
+                <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+                  <button onClick={() => { setQuizAnswers({}); setQuizSubmitted(false); }} style={{ background: th.bg4, color: th.text2, border: "none", padding: "12px 24px", borderRadius: 8, fontFamily: "inherit", cursor: "pointer" }}>Retry</button>
+                  <button onClick={onComplete} style={{ background: "linear-gradient(135deg,#059669,#10B981)", color: "#fff", border: "none", padding: "12px 24px", borderRadius: 8, fontFamily: "inherit", fontWeight: 700, cursor: "pointer" }}>Complete Lesson ✓</button>
                 </div>
               </div>
             ) : (
               <div>
                 {quizzes.map((q, qi) => (
                   <div key={qi} style={{ marginBottom: 32 }}>
-                    <div
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 600,
-                        color: '#F1F5F9',
-                        marginBottom: 16,
-                      }}
-                    >
-                      <span style={{ color: '#60A5FA', marginRight: 8 }}>
-                        Q{qi + 1}.
-                      </span>
-                      {q.q}
+                    <div style={{ fontSize: 16, fontWeight: 600, color: th.text, marginBottom: 16 }}>
+                      <span style={{ color: "#60A5FA", marginRight: 8 }}>Q{qi + 1}.</span>{q.q}
                     </div>
+<<<<<<< HEAD
                     <div style={{ display: 'grid', gap: 10 }}>
                       {q.options.map((opt: string, oi: number) => (
                         <button
@@ -1174,6 +725,18 @@ function LessonViewer({ topic, onComplete, onBack }: { topic: any; onComplete: (
                             {['A', 'B', 'C', 'D'][oi]}.
                           </span>
                           {opt}
+=======
+                    <div style={{ display: "grid", gap: 10 }}>
+                      {q.options.map((opt, oi) => (
+                        <button key={oi} onClick={() => setQuizAnswers(a => ({ ...a, [qi]: oi }))} style={{
+                          background: quizAnswers[qi] === oi ? (dark ? "#1E3A8A" : "#DBEAFE") : th.bg2,
+                          border: `1px solid ${quizAnswers[qi] === oi ? "#2563EB" : th.border}`,
+                          color: quizAnswers[qi] === oi ? (dark ? "#93C5FD" : "#1D4ED8") : th.text2,
+                          borderRadius: 8, padding: "12px 20px", textAlign: "left",
+                          fontFamily: "inherit", fontSize: 14, cursor: "pointer", transition: "all 0.15s",
+                        }}>
+                          <span style={{ marginRight: 10, opacity: 0.5 }}>{["A", "B", "C", "D"][oi]}.</span>{opt}
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                         </button>
                       ))}
                     </div>
@@ -1183,142 +746,86 @@ function LessonViewer({ topic, onComplete, onBack }: { topic: any; onComplete: (
                   onClick={() => setQuizSubmitted(true)}
                   disabled={Object.keys(quizAnswers).length < quizzes.length}
                   style={{
-                    background:
-                      Object.keys(quizAnswers).length < quizzes.length
-                        ? '#1E293B'
-                        : 'linear-gradient(135deg, #2563EB, #7C3AED)',
-                    color:
-                      Object.keys(quizAnswers).length < quizzes.length
-                        ? '#64748B'
-                        : '#fff',
-                    border: 'none',
-                    padding: '14px 36px',
-                    borderRadius: 10,
-                    fontFamily: 'inherit',
-                    fontSize: 15,
-                    fontWeight: 700,
-                    cursor: 'pointer',
+                    background: Object.keys(quizAnswers).length < quizzes.length ? th.bg4 : "linear-gradient(135deg,#2563EB,#7C3AED)",
+                    color: Object.keys(quizAnswers).length < quizzes.length ? th.text3 : "#fff",
+                    border: "none", padding: "14px 36px", borderRadius: 10,
+                    fontFamily: "inherit", fontSize: 15, fontWeight: 700, cursor: "pointer", transition: "all 0.2s",
                   }}
-                >
-                  Submit Answers
-                </button>
+                >Submit Answers</button>
               </div>
             )}
           </div>
         )}
       </div>
-
-      <style>{`
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-      `}</style>
     </div>
   );
 }
 
 // ── MODULE DETAIL ─────────────────────────────────────────────────────────────
+<<<<<<< HEAD
 function ModuleDetail({ module, completed, onTopicComplete, onBack }: { module: any; completed: any; onTopicComplete: (id: string) => void; onBack: () => void }) {
   const [activeTopic, setActiveTopic] = useState<any>(null);
   const completedCount = module.topics.filter((t: any) => completed?.[t.id]).length;
+=======
+function ModuleDetail({ module, completed, onTopicComplete, onBack, dark }) {
+  const th = dark ? DARK : LIGHT;
+  const [activeTopic, setActiveTopic] = useState(null);
+
+  // Scroll to top when module opens
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
+  const completedCount = module.topics.filter(t => completed.has(t.id)).length;
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
   const pct = Math.round((completedCount / module.topics.length) * 100);
 
   if (activeTopic) {
     return (
       <LessonViewer
+<<<<<<< HEAD
         topic={activeTopic as any}
         onComplete={() => {
           onTopicComplete(activeTopic?.id);
           setActiveTopic(null);
         }}
+=======
+        topic={activeTopic}
+        dark={dark}
+        onComplete={() => { onTopicComplete(activeTopic.id); setActiveTopic(null); }}
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
         onBack={() => setActiveTopic(null)}
       />
     );
   }
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: '#0A0F1E',
-        color: '#F1F5F9',
-        fontFamily: "'DM Sans', sans-serif",
-        position: 'relative',
-      }}
-    >
-      <FloatingKeywords moduleId={module.id} />
+    <div style={{ minHeight: "100vh", background: th.bg, color: th.text, fontFamily: "'DM Sans', sans-serif", position: "relative", transition: "background 0.3s, color 0.3s" }}>
+      <FloatingKeywords moduleId={module.id} dark={dark} />
+
       {/* Hero */}
-      <div
-        style={{
-          background: `linear-gradient(135deg, #0A0F1E 0%, ${module.color}33 100%)`,
-          borderBottom: '1px solid #1E293B',
-          padding: '48px 48px 40px',
-        }}
-      >
-        <button
-          onClick={onBack}
-          style={{
-            background: '#1E293B',
-            border: 'none',
-            color: '#94A3B8',
-            borderRadius: 8,
-            padding: '8px 16px',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            fontSize: 13,
-            marginBottom: 24,
-          }}
-        >
-          ← All Modules
-        </button>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 24 }}>
+      <div style={{
+        background: dark
+          ? `linear-gradient(135deg, ${th.bg} 0%, ${module.color}22 100%)`
+          : `linear-gradient(135deg, ${th.bg} 0%, ${module.color}11 100%)`,
+        borderBottom: `1px solid ${th.border}`, padding: "48px 48px 40px", position: "relative", zIndex: 2,
+      }}>
+        <button title="Go back" onClick={onBack} style={{ background: th.bg4, border: "none", color: th.text2, borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, marginBottom: 24 }}>← All Modules</button>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 24 }}>
           <div style={{ fontSize: 56 }}>{module.icon}</div>
           <div style={{ flex: 1 }}>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
               <Badge color={module.color}>{module.code}</Badge>
               <Badge color={module.color}>{module.category}</Badge>
-              <Badge color="#64748B">⏱ {module.duration}</Badge>
+              <Badge color={th.text3}>⏱ {module.duration}</Badge>
             </div>
-            <h1
-              style={{
-                fontSize: 36,
-                fontWeight: 800,
-                marginBottom: 8,
-                lineHeight: 1.2,
-              }}
-            >
-              {module.title}
-            </h1>
-            <p style={{ fontSize: 16, color: '#94A3B8', marginBottom: 20 }}>
-              {module.subtitle}
-            </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <div style={{ flex: 1, maxWidth: 200 }}>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    fontSize: 12,
-                    color: '#64748B',
-                    marginBottom: 4,
-                  }}
-                >
-                  <span>Progress</span>
-                  <span>
-                    {completedCount}/{module.topics.length} lessons
-                  </span>
+            <h1 style={{ fontSize: 36, fontWeight: 800, marginBottom: 8, lineHeight: 1.2, color: th.text }}>{module.title}</h1>
+            <p style={{ fontSize: 16, color: th.text3, marginBottom: 20 }}>{module.subtitle}</p>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ flex: 1, maxWidth: 220 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: th.text3, marginBottom: 4 }}>
+                  <span>Progress</span><span>{completedCount}/{module.topics.length} lessons</span>
                 </div>
-                <div
-                  style={{ height: 6, background: '#1E293B', borderRadius: 3 }}
-                >
-                  <div
-                    style={{
-                      width: `${pct}%`,
-                      height: '100%',
-                      background: module.color,
-                      borderRadius: 3,
-                      transition: 'width 0.5s',
-                    }}
-                  />
+                <div style={{ height: 6, background: th.bg4, borderRadius: 3 }}>
+                  <div style={{ width: `${pct}%`, height: "100%", background: module.color, borderRadius: 3, transition: "width 0.5s" }} />
                 </div>
               </div>
               {pct === 100 && <Badge color="#10B981">✓ Completed</Badge>}
@@ -1327,6 +834,7 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack }: { module: 
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* Lessons */}
       <div style={{ maxWidth: 760, margin: '0 auto', padding: '40px 48px' }}>
         <h2
@@ -1343,23 +851,23 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack }: { module: 
         <div style={{ display: 'grid', gap: 12 }}>
           {module.topics.map((topic: any, i: number) => {
             const done = completed?.[topic.id];
+=======
+      {/* Lessons List */}
+      <div style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px", position: "relative", zIndex: 2 }}>
+        <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 24, color: th.text3, letterSpacing: "0.1em" }}>LESSONS IN THIS MODULE</h2>
+        <div style={{ display: "grid", gap: 12 }}>
+          {module.topics.map((topic, i) => {
+            const done = completed.has(topic.id);
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
             return (
-              <button
-                key={topic.id}
-                onClick={() => setActiveTopic(topic)}
+              <button key={topic.id} onClick={() => setActiveTopic(topic)}
                 style={{
-                  background: '#111827',
-                  border: `1px solid ${done ? module.color + '44' : '#1E293B'}`,
-                  borderRadius: 12,
-                  padding: '20px 24px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 16,
-                  cursor: 'pointer',
-                  textAlign: 'left',
-                  transition: 'all 0.2s',
-                  width: '100%',
+                  background: th.bg2, border: `1px solid ${done ? module.color + "55" : th.border}`,
+                  borderTop: `3px solid ${done ? module.color : th.border}`,
+                  borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "center", gap: 16,
+                  cursor: "pointer", textAlign: "left", transition: "all 0.2s", width: "100%",
                 }}
+<<<<<<< HEAD
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.borderColor = module.color + '88')
                 }
@@ -1368,59 +876,26 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack }: { module: 
                   ? module.color + '44'
                   : '#1E293B')
                 }
+=======
+                onMouseEnter={e => { e.currentTarget.style.borderColor = module.color + "88"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = done ? module.color + "55" : th.border; e.currentTarget.style.transform = "translateY(0)"; }}
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
               >
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 10,
-                    background: done ? module.color + '33' : '#1E293B',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 18,
-                    flexShrink: 0,
-                  }}
-                >
-                  {done ? (
-                    <span style={{ color: module.color, fontWeight: 700 }}>
-                      ✓
-                    </span>
-                  ) : (
-                    <span
-                      style={{
-                        color: '#64748B',
-                        fontSize: 14,
-                        fontWeight: 700,
-                      }}
-                    >
-                      {i + 1}
-                    </span>
-                  )}
+                <div style={{
+                  width: 44, height: 44, borderRadius: 10,
+                  background: done ? module.color + "22" : th.bg4,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 18, flexShrink: 0, transition: "background 0.3s",
+                }}>
+                  {done
+                    ? <span style={{ color: module.color, fontWeight: 700, fontSize: 18 }}>✓</span>
+                    : <span style={{ color: th.text3, fontSize: 14, fontWeight: 700 }}>{i + 1}</span>}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div
-                    style={{
-                      fontSize: 15,
-                      fontWeight: 600,
-                      color: done ? '#94A3B8' : '#F1F5F9',
-                      marginBottom: 4,
-                      fontFamily: 'inherit',
-                    }}
-                  >
-                    {topic.title}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: '#64748B',
-                      fontFamily: 'inherit',
-                    }}
-                  >
-                    ⏱ {topic.duration}
-                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: done ? th.text3 : th.text, marginBottom: 4, fontFamily: "inherit" }}>{topic.title}</div>
+                  <div style={{ fontSize: 12, color: th.text3, fontFamily: "inherit" }}>⏱ {topic.duration}</div>
                 </div>
-                <div style={{ color: '#64748B', fontSize: 18 }}>›</div>
+                <div style={{ color: th.text3, fontSize: 20 }}>›</div>
               </button>
             );
           })}
@@ -1431,135 +906,44 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack }: { module: 
 }
 
 // ── CERTIFICATE ───────────────────────────────────────────────────────────────
+<<<<<<< HEAD
 function Certificate({ name, date }: { name: string; date: string }) {
+=======
+function Certificate({ name, date, dark }) {
+  const th = dark ? DARK : LIGHT;
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: '#0A0F1E',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 32,
-        fontFamily: "'DM Sans', sans-serif",
-      }}
-    >
-      <div
-        style={{
-          width: '100%',
-          maxWidth: 720,
-          background: 'linear-gradient(135deg, #0F172A, #1E1B4B)',
-          border: '2px solid #2563EB44',
-          borderRadius: 20,
-          padding: 56,
-          textAlign: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
-        {/* Decorative corners */}
-        {[
-          ['0', '0', 'right', 'bottom'],
-          ['auto', '0', 'left', 'bottom'],
-          ['0', 'auto', 'right', 'top'],
-          ['auto', 'auto', 'left', 'top'],
-        ].map(([b, r, bl, tr], i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              bottom: b,
-              right: r,
-              top: b === '0' ? undefined : tr,
-              left: r === '0' ? undefined : bl,
-              width: 60,
-              height: 60,
-              border: '2px solid #2563EB44',
-              borderRadius: i < 2 ? '100% 0 0 0' : '0 0 0 100%',
-            }}
-          />
-        ))}
-
-        <div style={{ fontSize: 48, marginBottom: 16 }}>🏆</div>
-        <div
-          style={{
-            fontSize: 11,
-            letterSpacing: '0.2em',
-            color: '#60A5FA',
-            fontWeight: 700,
-            marginBottom: 16,
-          }}
-        >
-          CEYLONHS ACADEMY
-        </div>
-        <div style={{ fontSize: 13, color: '#64748B', marginBottom: 8 }}>
-          This certifies that
-        </div>
-        <div
-          style={{
-            fontSize: 36,
-            fontWeight: 800,
-            color: '#F1F5F9',
-            marginBottom: 8,
-          }}
-        >
-          {name || 'Trade Professional'}
-        </div>
-        <div style={{ fontSize: 14, color: '#94A3B8', marginBottom: 32 }}>
-          has successfully completed
-        </div>
-        <div
-          style={{
-            fontSize: 22,
-            fontWeight: 700,
-            color: '#60A5FA',
-            marginBottom: 8,
-          }}
-        >
-          CeylonHS Trade Classification Fundamentals
-        </div>
-        <div style={{ fontSize: 13, color: '#64748B', marginBottom: 40 }}>
-          All 5 modules · 18 lessons · 5 quizzes passed
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 48,
-            marginBottom: 40,
-          }}
-        >
-          {[
-            ['16,000+', 'HS Codes Learned'],
-            ['5', 'Modules Completed'],
-            ['2026', 'Certification Year'],
-          ].map(([val, lbl]) => (
-            <div key={lbl} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 24, fontWeight: 800, color: '#2563EB' }}>
-                {val}
-              </div>
-              <div style={{ fontSize: 11, color: '#64748B' }}>{lbl}</div>
+    <div style={{ minHeight: "100vh", background: th.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 32, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
+      <div style={{
+        width: "100%", maxWidth: 720,
+        background: dark ? "linear-gradient(135deg,#0F172A,#1E1B4B)" : "linear-gradient(135deg,#EFF6FF,#F0F4FF)",
+        border: `2px solid ${dark ? "#2563EB44" : "#BFDBFE"}`,
+        borderRadius: 20, padding: 56, textAlign: "center", position: "relative", overflow: "hidden",
+        boxShadow: dark ? "0 24px 60px #2563EB22" : "0 24px 60px #2563EB11",
+      }}>
+        <div style={{ fontSize: 52, marginBottom: 16 }}>🏆</div>
+        <div style={{ fontSize: 11, letterSpacing: "0.2em", color: "#60A5FA", fontWeight: 700, marginBottom: 16 }}>CEYLONHS ACADEMY</div>
+        <div style={{ fontSize: 13, color: th.text3, marginBottom: 8 }}>This certifies that</div>
+        <div style={{ fontSize: 36, fontWeight: 800, color: th.text, marginBottom: 8 }}>{name || "Trade Professional"}</div>
+        <div style={{ fontSize: 14, color: th.text3, marginBottom: 32 }}>has successfully completed</div>
+        <div style={{ fontSize: 22, fontWeight: 700, color: "#2563EB", marginBottom: 8 }}>CeylonHS Trade Classification Fundamentals</div>
+        <div style={{ fontSize: 13, color: th.text3, marginBottom: 40 }}>All 5 modules · 18 lessons · 5 quizzes passed</div>
+        <div style={{ display: "flex", justifyContent: "center", gap: 48, marginBottom: 40, flexWrap: "wrap" }}>
+          {[["16,000+", "HS Codes Learned"], ["5", "Modules Completed"], ["2026", "Certification Year"]].map(([val, lbl]) => (
+            <div key={lbl} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 24, fontWeight: 800, color: "#2563EB" }}>{val}</div>
+              <div style={{ fontSize: 11, color: th.text3 }}>{lbl}</div>
             </div>
           ))}
         </div>
-
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 12,
-          }}
-        >
-          <div style={{ height: 1, width: 60, background: '#1E293B' }} />
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 11, color: '#2563EB', fontWeight: 700 }}>
-              CEYLONHS.COM
-            </div>
-            <div style={{ fontSize: 10, color: '#64748B' }}>Issued {date}</div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+          <div style={{ height: 1, width: 60, background: th.border }} />
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 11, color: "#2563EB", fontWeight: 700 }}>CEYLONHS.COM</div>
+            <div style={{ fontSize: 10, color: th.text3 }}>Issued {date}</div>
+            <div style={{ fontSize: 10, color: th.text3, marginTop: 2 }}>Verified by CeylonHS Academy · ceylonhs.com</div>
           </div>
-          <div style={{ height: 1, width: 60, background: '#1E293B' }} />
+          <div style={{ height: 1, width: 60, background: th.border }} />
         </div>
       </div>
     </div>
@@ -1568,6 +952,7 @@ function Certificate({ name, date }: { name: string; date: string }) {
 
 // ── MAIN APP ──────────────────────────────────────────────────────────────────
 export default function CeylonHSAcademy() {
+<<<<<<< HEAD
   const [view, setView] = useState('home'); // home | module | cert
   const [activeModule, setActiveModule] = useState<any>(null);
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
@@ -1575,10 +960,25 @@ export default function CeylonHSAcademy() {
   const [nameInput, setNameInput] = useState('');
   const [showNameModal, setShowNameModal] = useState(false);
   const [hovered, setHovered] = useState<Record<number, boolean>>({});
+=======
+  const [dark, setDark] = useState(true);
+  const [view, setView] = useState("home");
+  const [activeModule, setActiveModule] = useState(null);
+  const [completed, setCompleted] = useState(new Set());
+  const [userName, setUserName] = useState("Trade Professional");
+  const [nameInput, setNameInput] = useState("");
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [hovered, setHovered] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+
+  const th = dark ? DARK : LIGHT;
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
 
   const totalTopics = MODULES.reduce((a, m) => a + m.topics.length, 0);
   const totalCompleted = Object.keys(completed).length;
   const overallPct = Math.round((totalCompleted / totalTopics) * 100);
+<<<<<<< HEAD
   const allDone = MODULES.every((m) =>
     m.topics.every((t) => completed[t.id])
   );
@@ -1595,271 +995,137 @@ export default function CeylonHSAcademy() {
   const handleModuleHover = (id: number, isHovering: boolean) => {
     setHovered((prev) => ({ ...prev, [id]: isHovering }));
   };
+=======
+  const allDone = MODULES.every(m => m.topics.every(t => completed.has(t.id)));
 
-  if (view === 'module' && activeModule) {
+  const filteredModules = searchQuery.trim() === ""
+    ? MODULES
+    : MODULES.filter(m => {
+        const q = searchQuery.toLowerCase();
+        return (
+          m.title.toLowerCase().includes(q) ||
+          m.subtitle.toLowerCase().includes(q) ||
+          m.category.toLowerCase().includes(q) ||
+          m.code.toLowerCase().includes(q) ||
+          m.topics.some(t => t.title.toLowerCase().includes(q)) ||
+          (MODULE_KEYWORDS[m.id] || []).some(k => k.toLowerCase().includes(q))
+        );
+      });
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
+
+  const handleTopicComplete = (id) => setCompleted(prev => new Set([...prev, id]));
+
+  if (view === "module" && activeModule) {
     return (
-      <ModuleDetail
-        module={activeModule}
-        completed={completed}
-        onTopicComplete={handleTopicComplete}
-        onBack={() => setView('home')}
-      />
+      <>
+        <ModuleDetail
+          module={activeModule}
+          completed={completed}
+          onTopicComplete={handleTopicComplete}
+          onBack={() => setView("home")}
+          dark={dark}
+        />
+        <ScrollToTopButton dark={dark} />
+      </>
     );
   }
 
-  if (view === 'cert') {
+  if (view === "cert") {
     return (
-      <div>
-        <div
-          style={{
-            background: '#111827',
-            padding: '16px 32px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 16,
-            fontFamily: "'DM Sans', sans-serif",
-          }}
-        >
-          <button
-            onClick={() => setView('home')}
-            style={{
-              background: '#1E293B',
-              border: 'none',
-              color: '#94A3B8',
-              borderRadius: 8,
-              padding: '8px 16px',
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-            }}
-          >
-            ← Back to Academy
-          </button>
+      <div style={{ background: th.bg, minHeight: "100vh", transition: "background 0.3s" }}>
+        <div style={{ background: th.bg2, padding: "16px 32px", display: "flex", alignItems: "center", gap: 16, fontFamily: "'DM Sans', sans-serif", borderBottom: `1px solid ${th.border}`, transition: "background 0.3s" }}>
+          <button title="Go back" onClick={() => setView("home")} style={{ background: th.bg4, border: "none", color: th.text2, borderRadius: 8, padding: "8px 16px", cursor: "pointer", fontFamily: "inherit" }}>← Back to Academy</button>
+          <div style={{ flex: 1 }} />
+          <ThemeToggle dark={dark} onToggle={() => setDark(d => !d)} />
         </div>
-        <Certificate
-          name={userName}
-          date={new Date().toLocaleDateString('en-GB', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        />
+        <Certificate name={userName} date={new Date().toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })} dark={dark} />
+        <ScrollToTopButton dark={dark} />
       </div>
     );
   }
 
+  // ── HOME PAGE ──
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: '#0A0F1E',
-        color: '#F1F5F9',
-        fontFamily: "'DM Sans', sans-serif",
-      }}
-    >
+    <div style={{ minHeight: "100vh", background: th.bg, color: th.text, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s, color 0.3s" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #111827; } ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 3px; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes floatDot { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 3px; }
+        @keyframes fadeIn  { from { opacity: 0; transform: translateY(8px);  } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeUp  { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse   { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        @keyframes floatDot{ 0%,100% { transform:translateY(0);  } 50% { transform:translateY(-8px); } }
       `}</style>
 
-      {/* NAV */}
-      <nav
-        style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 50,
-          background: '#0A0F1Eee',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid #1E293B',
-          padding: '0 40px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 24,
-          height: 60,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div
-            style={{
-              width: 28,
-              height: 28,
-              background: 'linear-gradient(135deg, #2563EB, #7C3AED)',
-              borderRadius: 7,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 14,
-            }}
-          >
-            ⚡
-          </div>
-          <span style={{ fontWeight: 800, fontSize: 16 }}>
-            Ceylon<span style={{ color: '#2563EB' }}>HS</span> Academy
-          </span>
+      {/* ── NAV ── */}
+      <nav style={{
+        position: "sticky", top: 0, zIndex: 50,
+        background: th.nav, backdropFilter: "blur(12px)",
+        borderBottom: `1px solid ${th.navBorder}`,
+        padding: "0 40px", display: "flex", alignItems: "center", gap: 16, height: 62,
+        transition: "background 0.3s",
+      }}>
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ width: 30, height: 30, background: "linear-gradient(135deg,#2563EB,#7C3AED)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15 }}>⚡</div>
+          <span style={{ fontWeight: 800, fontSize: 16, color: th.text }}>Ceylon<span style={{ color: "#2563EB" }}>HS</span> <span style={{ fontSize: 12, fontWeight: 600, color: th.text3 }}>Academy</span></span>
         </div>
+
         <div style={{ flex: 1 }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div
-            style={{
-              width: 80,
-              height: 5,
-              background: '#1E293B',
-              borderRadius: 3,
-            }}
-          >
-            <div
-              style={{
-                width: `${overallPct}%`,
-                height: '100%',
-                background: 'linear-gradient(90deg, #2563EB, #7C3AED)',
-                borderRadius: 3,
-                transition: 'width 0.5s',
-              }}
-            />
+
+        {/* Progress bar */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ width: 90, height: 5, background: th.bg4, borderRadius: 3 }}>
+            <div style={{ width: `${overallPct}%`, height: "100%", background: "linear-gradient(90deg,#2563EB,#7C3AED)", borderRadius: 3, transition: "width 0.5s" }} />
           </div>
-          <span style={{ fontSize: 12, color: '#64748B' }}>{overallPct}%</span>
+          <span style={{ fontSize: 12, color: th.text3, minWidth: 30 }}>{overallPct}%</span>
         </div>
-        <div style={{ fontSize: 13, color: '#64748B' }}>
-          {totalCompleted}/{totalTopics} lessons
-        </div>
-        <button
-          onClick={() => setShowNameModal(true)}
-          style={{
-            background: '#1E293B',
-            border: 'none',
-            color: '#94A3B8',
-            borderRadius: 8,
-            padding: '7px 14px',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            fontSize: 13,
-          }}
-        >
+
+        <span style={{ fontSize: 12, color: th.text3 }}>{totalCompleted}/{totalTopics}</span>
+
+        {/* Theme toggle */}
+        <ThemeToggle dark={dark} onToggle={() => setDark(d => !d)} />
+
+        {/* User name */}
+        <button onClick={() => setShowNameModal(true)} style={{ background: th.bg4, border: "none", color: th.text2, borderRadius: 8, padding: "7px 14px", cursor: "pointer", fontFamily: "inherit", fontSize: 13, transition: "background 0.3s" }}>
           👤 {userName}
         </button>
       </nav>
 
-      {/* Name modal */}
+      {/* ── NAME MODAL ── */}
       {showNameModal && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: '#000000aa',
-            zIndex: 100,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <div
-            style={{
-              background: '#111827',
-              border: '1px solid #1E293B',
-              borderRadius: 16,
-              padding: 32,
-              width: 360,
-            }}
-          >
-            <h3 style={{ marginBottom: 16, fontWeight: 700 }}>
-              Your Name for Certificate
-            </h3>
+        <div style={{ position: "fixed", inset: 0, background: "#000000bb", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ background: th.bg2, border: `1px solid ${th.border}`, borderRadius: 16, padding: 32, width: 360, transition: "background 0.3s" }}>
+            <h3 style={{ marginBottom: 8, fontWeight: 700, color: th.text }}>Your Name for Certificate</h3>
+            <p style={{ fontSize: 13, color: th.text3, marginBottom: 16 }}>This name will appear on your completion certificate.</p>
             <input
-              value={nameInput}
-              onChange={(e) => setNameInput(e.target.value)}
+              value={nameInput} onChange={e => setNameInput(e.target.value)}
               placeholder="Enter your full name"
-              style={{
-                width: '100%',
-                background: '#0A0F1E',
-                border: '1px solid #1E293B',
-                color: '#F1F5F9',
-                borderRadius: 8,
-                padding: '10px 14px',
-                fontFamily: 'inherit',
-                fontSize: 14,
-                marginBottom: 16,
-                outline: 'none',
-              }}
+              style={{ width: "100%", background: th.inputBg, border: `1px solid ${th.border}`, color: th.text, borderRadius: 8, padding: "10px 14px", fontFamily: "inherit", fontSize: 14, marginBottom: 16, outline: "none", transition: "background 0.3s" }}
             />
-            <div style={{ display: 'flex', gap: 10 }}>
-              <button
-                onClick={() => setShowNameModal(false)}
-                style={{
-                  flex: 1,
-                  background: '#1E293B',
-                  border: 'none',
-                  color: '#94A3B8',
-                  borderRadius: 8,
-                  padding: '10px',
-                  fontFamily: 'inherit',
-                  cursor: 'pointer',
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  if (nameInput.trim()) setUserName(nameInput.trim());
-                  setShowNameModal(false);
-                }}
-                style={{
-                  flex: 1,
-                  background: '#2563EB',
-                  border: 'none',
-                  color: '#fff',
-                  borderRadius: 8,
-                  padding: '10px',
-                  fontFamily: 'inherit',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                }}
-              >
-                Save
-              </button>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button onClick={() => setShowNameModal(false)} style={{ flex: 1, background: th.bg4, border: "none", color: th.text2, borderRadius: 8, padding: "10px", fontFamily: "inherit", cursor: "pointer" }}>Cancel</button>
+              <button onClick={() => { if (nameInput.trim()) setUserName(nameInput.trim()); setShowNameModal(false); }} style={{ flex: 1, background: "#2563EB", border: "none", color: "#fff", borderRadius: 8, padding: "10px", fontFamily: "inherit", fontWeight: 700, cursor: "pointer" }}>Save</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* HERO */}
-      <div
-        style={{
-          background:
-            'radial-gradient(ellipse 80% 50% at 50% -10%, #2563EB22, transparent)',
-          padding: '72px 40px 56px',
-          textAlign: 'center',
-        }}
-      >
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            background: '#2563EB18',
-            border: '1px solid #2563EB33',
-            borderRadius: 20,
-            padding: '6px 16px',
-            fontSize: 12,
-            color: '#60A5FA',
-            fontWeight: 600,
-            marginBottom: 24,
-          }}
-        >
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              background: '#2563EB',
-              borderRadius: '50%',
-              animation: 'pulse 2s infinite',
-            }}
-          />
+      {/* ── HERO ── */}
+      <div style={{
+        background: dark
+          ? "radial-gradient(ellipse 80% 50% at 50% -10%, #2563EB22, transparent)"
+          : "radial-gradient(ellipse 80% 50% at 50% -10%, #DBEAFE, transparent)",
+        padding: "72px 40px 56px", textAlign: "center", transition: "background 0.3s",
+      }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#2563EB18", border: "1px solid #2563EB33", borderRadius: 20, padding: "6px 16px", fontSize: 12, color: "#60A5FA", fontWeight: 600, marginBottom: 24 }}>
+          <span style={{ width: 6, height: 6, background: "#2563EB", borderRadius: "50%", animation: "pulse 2s infinite", display: "inline-block" }} />
           FREE · SELF-PACED · CERTIFICATE ON COMPLETION
         </div>
+<<<<<<< HEAD
         <h1
           style={{
             fontSize: 'clamp(36px, 5vw, 58px)',
@@ -1878,200 +1144,87 @@ export default function CeylonHSAcademy() {
             }}
           >
             with CeylonHS
+=======
+        <h1 style={{ fontSize: "clamp(32px, 5vw, 56px)", fontWeight: 900, lineHeight: 1.1, marginBottom: 20, color: th.text }}>
+          Master HS Code Classification<br />
+          <span style={{ background: "linear-gradient(135deg,#2563EB,#7C3AED,#06B6D4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            with CeylonHS AI
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
           </span>
         </h1>
-        <p
-          style={{
-            fontSize: 18,
-            color: '#94A3B8',
-            maxWidth: 540,
-            margin: '0 auto 40px',
-            lineHeight: 1.7,
-          }}
-        >
-          From zero to certified trade professional. Learn to classify 16,000+
-          products, master our AI search engine, and speed up your customs
-          workflow.
+        <p style={{ fontSize: 18, color: th.text3, maxWidth: 540, margin: "0 auto 40px", lineHeight: 1.7 }}>
+          From zero to certified trade professional. Learn to classify 16,000+ products, master our AI search engine, and speed up your customs workflow.
         </p>
-
-        {/* Stats */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: 32,
-            flexWrap: 'wrap',
-          }}
-        >
-          {[
-            ['5', 'Modules'],
-            ['18', 'Lessons'],
-            ['<48min', 'Total Time'],
-            ['Free', 'Certificate'],
-          ].map(([val, lbl]) => (
-            <div key={lbl} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 24, fontWeight: 800, color: '#F1F5F9' }}>
-                {val}
-              </div>
-              <div style={{ fontSize: 12, color: '#64748B' }}>{lbl}</div>
+        <div style={{ display: "flex", justifyContent: "center", gap: 40, flexWrap: "wrap" }}>
+          {[["5", "Modules"], ["18", "Lessons"], ["<48min", "Total Time"], ["Free", "Certificate"]].map(([val, lbl]) => (
+            <div key={lbl} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 26, fontWeight: 800, color: th.text }}>{val}</div>
+              <div style={{ fontSize: 12, color: th.text3 }}>{lbl}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* WHY SECTION */}
-      <div style={{ padding: '60px 40px', maxWidth: 1080, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
-          <div
-            style={{
-              fontSize: 11,
-              letterSpacing: '0.12em',
-              color: '#2563EB',
-              fontWeight: 700,
-              marginBottom: 12,
-            }}
-          >
-            WHY THIS MATTERS
-          </div>
-          <h2 style={{ fontSize: 32, fontWeight: 800, marginBottom: 12 }}>
-            Why Learn HS Code Classification?
-          </h2>
-          <p
-            style={{
-              fontSize: 15,
-              color: '#64748B',
-              maxWidth: 500,
-              margin: '0 auto',
-            }}
-          >
-            Misclassification costs Sri Lankan businesses millions in penalties
-            annually.
-          </p>
+      {/* ── WHY SECTION ── */}
+      <div style={{ padding: "60px 40px", maxWidth: 1080, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div style={{ fontSize: 11, letterSpacing: "0.12em", color: "#2563EB", fontWeight: 700, marginBottom: 12 }}>WHY THIS MATTERS</div>
+          <h2 style={{ fontSize: 32, fontWeight: 800, marginBottom: 12, color: th.text }}>Why Learn HS Code Classification?</h2>
+          <p style={{ fontSize: 15, color: th.text3, maxWidth: 500, margin: "0 auto" }}>Misclassification costs Sri Lankan businesses millions in penalties annually.</p>
         </div>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: 16,
-          }}
-        >
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
           {[
-            {
-              icon: '💰',
-              title: 'Avoid Costly Penalties',
-              body: 'Wrong HS codes trigger customs audits and fines that can exceed the value of your shipment.',
-            },
-            {
-              icon: '⚡',
-              title: 'Faster Clearance',
-              body: 'Correct codes mean zero holds at Colombo Port — your cargo moves in hours, not days.',
-            },
-            {
-              icon: '🤝',
-              title: 'Access Trade Agreements',
-              body: 'FTAs like ISFTA require precise classification to claim preferential duty rates.',
-            },
-            {
-              icon: '📊',
-              title: 'Data-Driven Decisions',
-              body: 'Accurate classification gives you clean trade data for business intelligence and planning.',
-            },
+            { icon: "💰", title: "Avoid Costly Penalties", body: "Wrong HS codes trigger customs audits and fines that can exceed the value of your shipment." },
+            { icon: "⚡", title: "Faster Clearance", body: "Correct codes mean zero holds at Colombo Port — your cargo moves in hours, not days." },
+            { icon: "🤝", title: "Access Trade Agreements", body: "FTAs like ISFTA require precise classification to claim preferential duty rates." },
+            { icon: "📊", title: "Data-Driven Decisions", body: "Accurate classification gives you clean trade data for business intelligence and planning." }
           ].map((item, i) => (
-            <div
-              key={i}
-              style={{
-                background: '#111827',
-                border: '1px solid #1E293B',
-                borderRadius: 14,
-                padding: 24,
-                animation: `fadeUp 0.5s ease ${i * 0.1}s both`,
-              }}
-            >
+            <div key={i} style={{
+              background: th.cardBg, border: `1px solid ${th.cardBorder}`, borderRadius: 14, padding: 24,
+              animation: `fadeUp 0.5s ease ${i * 0.1}s both`, transition: "background 0.3s",
+            }}>
               <div style={{ fontSize: 32, marginBottom: 12 }}>{item.icon}</div>
-              <div
-                style={{
-                  fontSize: 15,
-                  fontWeight: 700,
-                  marginBottom: 8,
-                  color: '#F1F5F9',
-                }}
-              >
-                {item.title}
-              </div>
-              <div style={{ fontSize: 13, color: '#64748B', lineHeight: 1.6 }}>
-                {item.body}
-              </div>
+              <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: th.text }}>{item.title}</div>
+              <div style={{ fontSize: 13, color: th.text3, lineHeight: 1.6 }}>{item.body}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* OVERALL PROGRESS */}
+      {/* ── OVERALL PROGRESS ── */}
       {totalCompleted > 0 && (
-        <div
-          style={{ padding: '0 40px 40px', maxWidth: 1080, margin: '0 auto' }}
-        >
-          <div
-            style={{
-              background: 'linear-gradient(135deg, #1E3A8A22, #7C3AED22)',
-              border: '1px solid #2563EB33',
-              borderRadius: 16,
-              padding: '24px 32px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 24,
-            }}
-          >
-            <ProgressRing
-              percent={overallPct}
-              size={72}
-              stroke={6}
-              color="#2563EB"
-            />
+        <div style={{ padding: "0 40px 40px", maxWidth: 1080, margin: "0 auto" }}>
+          <div style={{
+            background: dark ? "linear-gradient(135deg,#1E3A8A22,#7C3AED22)" : "linear-gradient(135deg,#EFF6FF,#F5F3FF)",
+            border: `1px solid ${dark ? "#2563EB33" : "#BFDBFE"}`,
+            borderRadius: 16, padding: "24px 32px", display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap",
+            transition: "background 0.3s",
+          }}>
+            <ProgressRing percent={overallPct} size={72} stroke={6} color="#2563EB" />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, color: '#94A3B8', marginBottom: 4 }}>
-                Your Learning Progress
-              </div>
-              <div style={{ fontSize: 22, fontWeight: 800 }}>
-                {overallPct}% Complete · {totalCompleted} of {totalTopics}{' '}
-                lessons done
-              </div>
+              <div style={{ fontSize: 14, color: th.text3, marginBottom: 4 }}>Your Learning Progress</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: th.text }}>{overallPct}% Complete · {totalCompleted} of {totalTopics} lessons done</div>
             </div>
             {allDone && (
-              <button
-                onClick={() => setView('cert')}
-                style={{
-                  background: 'linear-gradient(135deg, #059669, #10B981)',
-                  color: '#fff',
-                  border: 'none',
-                  padding: '14px 28px',
-                  borderRadius: 10,
-                  fontFamily: 'inherit',
-                  fontSize: 14,
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                }}
-              >
-                🏆 Get Certificate
-              </button>
+              <button onClick={() => setView("cert")} style={{
+                background: "linear-gradient(135deg,#059669,#10B981)", color: "#fff", border: "none",
+                padding: "14px 28px", borderRadius: 10, fontFamily: "inherit", fontSize: 14, fontWeight: 700, cursor: "pointer",
+              }}>🏆 Get Certificate</button>
             )}
           </div>
         </div>
       )}
 
-      {/* MODULES GRID */}
-      <div style={{ padding: '0 40px 80px', maxWidth: 1080, margin: '0 auto' }}>
-        <div
-          style={{
-            fontSize: 11,
-            letterSpacing: '0.12em',
-            color: '#2563EB',
-            fontWeight: 700,
-            marginBottom: 16,
-          }}
-        >
-          COURSE MODULES
+      {/* ── MODULES SEARCH + GRID ── */}
+      <div style={{ padding: "0 40px 80px", maxWidth: 1080, margin: "0 auto" }}>
+
+        {/* Search heading */}
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <div style={{ fontSize: 11, letterSpacing: "0.12em", color: "#2563EB", fontWeight: 700, marginBottom: 10 }}>COURSE MODULES</div>
+          <h2 style={{ fontSize: 26, fontWeight: 800, color: th.text, marginBottom: 6 }}>What do you want to learn?</h2>
+          <p style={{ fontSize: 14, color: th.text3 }}>Search by topic, keyword, or module name</p>
         </div>
+<<<<<<< HEAD
         <div
           style={{
             display: 'grid',
@@ -2102,88 +1255,158 @@ export default function CeylonHSAcademy() {
                   boxShadow: hovered?.[mod.id]
                     ? '0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1)'
                     : '0 4px 6px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.05)',
+=======
+
+        {/* Search bar */}
+        <div style={{
+          position: "relative", maxWidth: 540, margin: "0 auto 40px",
+        }}>
+          {/* Search icon */}
+          <span style={{
+            position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)",
+            fontSize: 17, pointerEvents: "none", opacity: 0.5,
+          }}>🔍</span>
+
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            placeholder="e.g. AI classification, chatbot, favourites..."
+            style={{
+              width: "100%",
+              background: th.bg2,
+              border: `2px solid ${searchFocused ? "#2563EB" : th.border}`,
+              borderRadius: 14,
+              padding: "14px 44px 14px 46px",
+              fontSize: 15,
+              color: th.text,
+              fontFamily: "'DM Sans', sans-serif",
+              outline: "none",
+              transition: "border-color 0.2s, box-shadow 0.2s",
+              boxShadow: searchFocused ? "0 0 0 4px #2563EB22" : "none",
+            }}
+          />
+
+          {/* Clear button */}
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              style={{
+                position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)",
+                background: th.bg4, border: "none", color: th.text3,
+                width: 26, height: 26, borderRadius: "50%", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 14, fontWeight: 700, lineHeight: 1,
+              }}
+            >×</button>
+          )}
+        </div>
+
+        {/* Quick filter chips */}
+        <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginBottom: 36 }}>
+          {[
+            { label: "All", value: "" },
+            { label: "🌐 Foundation", value: "foundation" },
+            { label: "🔍 Search & AI", value: "core skills" },
+            { label: "⭐ Productivity", value: "productivity" },
+            { label: "💬 Advanced", value: "advanced" },
+          ].map(chip => {
+            const active = searchQuery.toLowerCase() === chip.value;
+            return (
+              <button
+                key={chip.label}
+                onClick={() => setSearchQuery(chip.value)}
+                style={{
+                  background: active ? "#2563EB" : th.bg2,
+                  border: `1px solid ${active ? "#2563EB" : th.border}`,
+                  color: active ? "#fff" : th.text2,
+                  borderRadius: 20, padding: "6px 16px",
+                  fontSize: 12, fontWeight: active ? 700 : 500,
+                  cursor: "pointer", fontFamily: "inherit",
+                  transition: "all 0.18s",
+                }}
+              >{chip.label}</button>
+            );
+          })}
+        </div>
+
+        {/* Results count */}
+        {searchQuery.trim() !== "" && (
+          <div style={{ fontSize: 13, color: th.text3, marginBottom: 20, textAlign: "center" }}>
+            {filteredModules.length === 0
+              ? "No modules found — try a different keyword"
+              : `${filteredModules.length} module${filteredModules.length > 1 ? "s" : ""} found for "${searchQuery}"`}
+          </div>
+        )}
+
+        {/* Modules grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20 }}>
+          {filteredModules.map((mod, i) => {
+            const modCompleted = mod.topics.filter(t => completed.has(t.id)).length;
+            const modPct = Math.round((modCompleted / mod.topics.length) * 100);
+            const isHov = hovered === mod.id;
+
+            // Highlight matching text in title
+            const highlightText = (text) => {
+              if (!searchQuery.trim()) return text;
+              const idx = text.toLowerCase().indexOf(searchQuery.toLowerCase());
+              if (idx === -1) return text;
+              return (
+                <>
+                  {text.slice(0, idx)}
+                  <mark style={{ background: "#2563EB33", color: "#60A5FA", borderRadius: 3, padding: "0 2px" }}>
+                    {text.slice(idx, idx + searchQuery.length)}
+                  </mark>
+                  {text.slice(idx + searchQuery.length)}
+                </>
+              );
+            };
+
+            return (
+              <div
+                key={mod.id}
+                onClick={() => { setActiveModule(mod); setView("module"); }}
+                onMouseEnter={() => setHovered(mod.id)}
+                onMouseLeave={() => setHovered(null)}
+                style={{
+                  background: isHov ? th.cardBg : th.bg3,
+                  border: `1px solid ${isHov ? mod.color + "66" : th.cardBorder}`,
+                  borderTop: `3px solid ${mod.color}`,
+                  borderRadius: 16, padding: 28, cursor: "pointer",
+                  transition: "all 0.25s cubic-bezier(.4,0,.2,1)",
+                  transform: isHov ? "translateY(-5px)" : "none",
+                  boxShadow: isHov ? `0 20px 40px ${mod.color}22` : "none",
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                   animation: `fadeUp 0.4s ease ${i * 0.07}s both`,
                 }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    justifyContent: 'space-between',
-                    marginBottom: 20,
-                  }}
-                >
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
                   <div style={{ fontSize: 40 }}>{mod.icon}</div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div
-                      style={{
-                        fontSize: 11,
-                        color: '#64748B',
-                        marginBottom: 4,
-                      }}
-                    >
-                      {mod.code}
-                    </div>
-                    {modPct === 100 ? (
-                      <Badge color="#10B981">✓ Done</Badge>
-                    ) : modPct > 0 ? (
-                      <Badge color={mod.color}>{modPct}%</Badge>
-                    ) : (
-                      <Badge color="#64748B">{mod.duration}</Badge>
-                    )}
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 11, color: th.text3, marginBottom: 4 }}>{mod.code}</div>
+                    {modPct === 100
+                      ? <Badge color="#10B981">✓ Done</Badge>
+                      : modPct > 0
+                        ? <Badge color={mod.color}>{modPct}%</Badge>
+                        : <Badge color={th.text3}>{mod.duration}</Badge>}
                   </div>
                 </div>
-
                 <div style={{ marginBottom: 6 }}>
                   <Badge color={mod.color}>{mod.category}</Badge>
                 </div>
-                <h3
-                  style={{
-                    fontSize: 18,
-                    fontWeight: 800,
-                    marginBottom: 6,
-                    color: '#F1F5F9',
-                  }}
-                >
-                  {mod.title}
-                </h3>
-                <p
-                  style={{
-                    fontSize: 13,
-                    color: '#64748B',
-                    marginBottom: 20,
-                    lineHeight: 1.5,
-                  }}
-                >
-                  {mod.subtitle}
-                </p>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6, color: th.text }}>{highlightText(mod.title)}</h3>
+                <p style={{ fontSize: 13, color: th.text3, marginBottom: 20, lineHeight: 1.5 }}>{highlightText(mod.subtitle)}</p>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div style={{ flex: 1 }}>
-                    <div
-                      style={{
-                        height: 4,
-                        background: '#1E293B',
-                        borderRadius: 2,
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: `${modPct}%`,
-                          height: '100%',
-                          background: mod.color,
-                          borderRadius: 2,
-                          transition: 'width 0.5s',
-                        }}
-                      />
+                    <div style={{ height: 4, background: th.bg4, borderRadius: 2 }}>
+                      <div style={{ width: `${modPct}%`, height: "100%", background: mod.color, borderRadius: 2, transition: "width 0.5s" }} />
                     </div>
                   </div>
-                  <span
-                    style={{ fontSize: 11, color: '#64748B', flexShrink: 0 }}
-                  >
-                    {modCompleted}/{mod.topics.length}
-                  </span>
+                  <span style={{ fontSize: 11, color: th.text3, flexShrink: 0 }}>{modCompleted}/{mod.topics.length}</span>
                 </div>
+<<<<<<< HEAD
 
                 <div
                   style={{
@@ -2204,127 +1427,76 @@ export default function CeylonHSAcademy() {
                       : modPct > 0
                         ? 'Continue →'
                         : 'Start →'}
+=======
+                <div style={{ marginTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 12, color: th.text3 }}>📖 {mod.lessons} lessons</span>
+                  <span style={{ fontSize: 13, color: mod.color, fontWeight: 700 }}>
+                    {modPct === 100 ? "Review →" : modPct > 0 ? "Continue →" : "Start →"}
+>>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                   </span>
                 </div>
               </div>
             );
           })}
 
-          {/* Coming Soon Module */}
-          <div
-            style={{
-              background: '#0D1424',
-              border: '1px dashed #1E293B',
-              borderRadius: 16,
-              padding: 28,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-              minHeight: 240,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 32,
-                marginBottom: 12,
-                animation: 'floatDot 3s ease infinite',
-              }}
-            >
-              🚀
+          {/* Empty state */}
+          {filteredModules.length === 0 && (
+            <div style={{
+              gridColumn: "1 / -1", textAlign: "center", padding: "60px 20px",
+              background: th.bg3, borderRadius: 16, border: `1px dashed ${th.cardBorder}`,
+            }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>🔍</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: th.text, marginBottom: 8 }}>No modules found</div>
+              <div style={{ fontSize: 14, color: th.text3, marginBottom: 24 }}>
+                Try searching for "AI", "chatbot", "search", "favourites", or "HS code"
+              </div>
+              <button onClick={() => setSearchQuery("")} style={{
+                background: "#2563EB", color: "#fff", border: "none",
+                padding: "10px 24px", borderRadius: 8, fontFamily: "inherit",
+                fontSize: 14, fontWeight: 700, cursor: "pointer",
+              }}>Clear Search</button>
             </div>
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 700,
-                color: '#64748B',
-                marginBottom: 6,
-              }}
-            >
-              More Modules Coming
+          )}
+
+          {/* Coming Soon card — only show when not searching */}
+          {searchQuery.trim() === "" && (
+            <div style={{
+              background: th.bg3, border: `1px dashed ${th.cardBorder}`, borderRadius: 16, padding: 28,
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+              textAlign: "center", minHeight: 240, transition: "background 0.3s",
+            }}>
+              <div style={{ fontSize: 32, marginBottom: 12, animation: "floatDot 3s ease infinite" }}>🚀</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: th.text3, marginBottom: 6 }}>More Modules Coming</div>
+              <div style={{ fontSize: 12, color: th.text3, lineHeight: 1.6, maxWidth: 200 }}>
+                Advanced duty calculation, FTA eligibility, and API integration modules in development.
+              </div>
+              <div style={{ marginTop: 16 }}>
+                <Badge color={th.text3}>Coming Soon</Badge>
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: 12,
-                color: '#475569',
-                lineHeight: 1.6,
-                maxWidth: 200,
-              }}
-            >
-              Advanced duty calculation, FTA eligibility, and API integration
-              modules in development.
-            </div>
-            <div style={{ marginTop: 16 }}>
-              <Badge color="#64748B">Coming Soon</Badge>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* CTA FOOTER */}
-      <div
-        style={{
-          background: 'linear-gradient(135deg, #1E3A8A, #2563EB)',
-          padding: '60px 40px',
-          textAlign: 'center',
-        }}
-      >
-        <h2 style={{ fontSize: 30, fontWeight: 800, marginBottom: 12 }}>
-          Ready to Classify Smarter?
-        </h2>
-        <p style={{ fontSize: 16, color: '#93C5FD', marginBottom: 32 }}>
-          Complete all modules and earn your free CeylonHS certification.
-        </p>
-        <div
-          style={{
-            display: 'flex',
-            gap: 16,
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-          }}
-        >
-          <button
-            onClick={() => {
-              setActiveModule(MODULES[0]);
-              setView('module');
-            }}
-            style={{
-              background: '#fff',
-              color: '#1E3A8A',
-              border: 'none',
-              padding: '14px 32px',
-              borderRadius: 10,
-              fontFamily: 'inherit',
-              fontSize: 15,
-              fontWeight: 800,
-              cursor: 'pointer',
-            }}
-          >
-            Start Learning Free →
-          </button>
-          <a
-            href="https://ceylonhs.com"
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              background: 'transparent',
-              color: '#fff',
-              border: '2px solid #ffffff44',
-              padding: '14px 32px',
-              borderRadius: 10,
-              fontFamily: 'inherit',
-              fontSize: 15,
-              fontWeight: 600,
-              cursor: 'pointer',
-              textDecoration: 'none',
-              display: 'inline-block',
-            }}
-          >
-            Try CeylonHS ↗
-          </a>
+      {/* ── CTA FOOTER ── */}
+      <div style={{ background: "linear-gradient(135deg,#1E3A8A,#2563EB)", padding: "60px 40px", textAlign: "center" }}>
+        <h2 style={{ fontSize: 30, fontWeight: 800, marginBottom: 12, color: "#fff" }}>Ready to Classify Smarter?</h2>
+        <p style={{ fontSize: 16, color: "#93C5FD", marginBottom: 32 }}>Complete all modules and earn your free CeylonHS certification.</p>
+        <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+          <button onClick={() => { setActiveModule(MODULES[0]); setView("module"); }} style={{
+            background: "#fff", color: "#1E3A8A", border: "none", padding: "14px 32px", borderRadius: 10,
+            fontFamily: "inherit", fontSize: 15, fontWeight: 800, cursor: "pointer",
+          }}>Start Learning Free →</button>
+          <a href="https://ceylonhs.com" target="_blank" rel="noreferrer" style={{
+            background: "transparent", color: "#fff", border: "2px solid #ffffff55",
+            padding: "14px 32px", borderRadius: 10, fontFamily: "inherit", fontSize: 15,
+            fontWeight: 600, cursor: "pointer", textDecoration: "none", display: "inline-block",
+          }}>Try CeylonHS ↗</a>
         </div>
       </div>
+
+      {/* Scroll to top button — always present on home */}
+      <ScrollToTopButton dark={dark} />
     </div>
   );
 }
