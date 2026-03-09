@@ -90,101 +90,12 @@ const QUIZ_BANK: Record<number, any[]> = {
   ]
 };
 
-<<<<<<< HEAD
 const MODULE_KEYWORDS: Record<number, string[]> = {
-  1: [
-    'HS Code',
-    'Harmonized System',
-    'WCO',
-    'Chapter',
-    'Heading',
-    'Subheading',
-    'Section',
-    'Tariff',
-    'Customs',
-    'Classification',
-    '6-Digit',
-    'Trade',
-    'Sri Lanka',
-    'AHTN',
-    'Nomenclature',
-    'Duty',
-  ],
-  2: [
-    'Search',
-    'Typesense',
-    'Natural Language',
-    'Autocomplete',
-    'Results',
-    'Filter',
-    'Query',
-    'Keyword',
-    'Semantic',
-    'Confidence',
-    '100ms',
-    'Hierarchy',
-    'Brand',
-    'Instant',
-    'Precision',
-  ],
-  3: [
-    'AI Pipeline',
-    'Gemini Flash',
-    'Embedding',
-    'Semantic AI',
-    'Brand Recognition',
-    'Hybrid',
-    'Accuracy',
-    '99%',
-    'Classification',
-    'Edge Case',
-    'GRI',
-    'Enrichment',
-    'Intelligence',
-    'Model',
-  ],
-  4: [
-    'Favourites',
-    'Star',
-    'Collections',
-    'History',
-    'Export',
-    'CSV',
-    'Excel',
-    'Audit Trail',
-    'Tags',
-    'Library',
-    'Shipment',
-    'Recurring',
-    'Compliance',
-    'Save',
-    'Organize',
-  ],
-  5: [
-    'Chatbot',
-    'Assistant',
-    'AI',
-    'GRI Rules',
-    'Duty Rate',
-    'FTA',
-    'ISFTA',
-    'Trade Agreement',
-    'Compliance',
-    'Query',
-    'Context',
-    'Customs Broker',
-    'Classification',
-    '24/7',
-    'Eligibility',
-  ],
-=======
-const MODULE_KEYWORDS = {
   1: ["HS Code", "Harmonized System", "WCO", "Chapter", "Heading", "Subheading", "Section", "Tariff", "Customs", "Classification", "6-Digit", "Trade", "Sri Lanka", "AHTN", "Nomenclature", "Duty"],
   2: ["Search", "Typesense", "Natural Language", "Autocomplete", "Results", "Filter", "Query", "Keyword", "Semantic", "Confidence", "100ms", "Hierarchy", "Brand", "Instant", "Precision"],
   3: ["AI Pipeline", "Gemini Flash", "Embedding", "Semantic AI", "Brand Recognition", "Hybrid", "Accuracy", "99%", "Classification", "Edge Case", "GRI", "Enrichment", "Intelligence", "Model"],
   4: ["Favourites", "Star", "Collections", "History", "Export", "CSV", "Excel", "Audit Trail", "Tags", "Library", "Shipment", "Recurring", "Compliance", "Save", "Organize"],
   5: ["Chatbot", "Assistant", "AI", "GRI Rules", "Duty Rate", "FTA", "ISFTA", "Trade Agreement", "Compliance", "Query", "Context", "Customs Broker", "Classification", "24/7", "Eligibility"],
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
 };
 
 // ── THEME TOKENS ──────────────────────────────────────────────────────────────
@@ -233,11 +144,8 @@ const LIGHT = {
   subtext: "#475569",
 };
 
-<<<<<<< HEAD
-function FloatingKeywords({ moduleId }: { moduleId: number }) {
-=======
 // ── DARK / LIGHT TOGGLE BUTTON ────────────────────────────────────────────────
-function ThemeToggle({ dark, onToggle }) {
+function ThemeToggle({ dark, onToggle }: { dark: boolean; onToggle: () => void }) {
   return (
     <button
       onClick={onToggle}
@@ -274,7 +182,7 @@ function ThemeToggle({ dark, onToggle }) {
 }
 
 // ── SCROLL TO TOP BUTTON ───────────────────────────────────────────────────────
-function ScrollToTopButton({ dark }) {
+function ScrollToTopButton({ dark }: { dark: boolean }) {
   const [visible, setVisible] = useState(false);
   const [hov, setHov] = useState(false);
 
@@ -314,8 +222,7 @@ function ScrollToTopButton({ dark }) {
 }
 
 // ── FLOATING KEYWORDS BACKGROUND ─────────────────────────────────────────────
-function FloatingKeywords({ moduleId, dark }) {
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
+function FloatingKeywords({ moduleId, dark }: { moduleId: number; dark: boolean }) {
   const words = MODULE_KEYWORDS[moduleId] || [];
   const items = [];
   for (let i = 0; i < 18; i++) {
@@ -354,12 +261,8 @@ function FloatingKeywords({ moduleId, dark }) {
   );
 }
 
-<<<<<<< HEAD
-function ProgressRing({ percent, size = 60, stroke = 5, color = '#2563EB' }: { percent: number; size?: number; stroke?: number; color?: string }) {
-=======
 // ── PROGRESS RING ─────────────────────────────────────────────────────────────
-function ProgressRing({ percent, size = 60, stroke = 5, color = "#2563EB" }) {
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
+function ProgressRing({ percent, size = 60, stroke = 5, color = "#2563EB" }: { percent: number; size?: number; stroke?: number; color?: string }) {
   const r = (size - stroke * 2) / 2;
   const circ = 2 * Math.PI * r;
   const offset = circ - (percent / 100) * circ;
@@ -373,12 +276,8 @@ function ProgressRing({ percent, size = 60, stroke = 5, color = "#2563EB" }) {
   );
 }
 
-<<<<<<< HEAD
-function Badge({ children, color = '#2563EB', bg }: { children: React.ReactNode; color?: string; bg?: string }) {
-=======
 // ── BADGE ─────────────────────────────────────────────────────────────────────
-function Badge({ children, color = "#2563EB" }) {
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
+function Badge({ children, color = "#2563EB" }: { children: React.ReactNode; color?: string }) {
   return (
     <span style={{
       display: "inline-flex", alignItems: "center", gap: 4,
@@ -390,17 +289,11 @@ function Badge({ children, color = "#2563EB" }) {
 }
 
 // ── LESSON VIEWER ─────────────────────────────────────────────────────────────
-<<<<<<< HEAD
-function LessonViewer({ topic, onComplete, onBack }: { topic: any; onComplete: () => void; onBack: () => void }) {
-  const [tab, setTab] = useState('learn');
-  const [quizAnswers, setQuizAnswers] = useState<Record<number, number | string>>({});
-=======
 // LessonViewer props: { topic, onComplete, onBack, dark }
-function LessonViewer({ topic, onComplete, onBack, dark }) {
+function LessonViewer({ topic, onComplete, onBack, dark }: { topic: any; onComplete: () => void; onBack: () => void; dark: boolean }) {
   const th = dark ? DARK : LIGHT;
   const [tab, setTab] = useState("learn");
-  const [quizAnswers, setQuizAnswers] = useState({});
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
+  const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [readProgress, setReadProgress] = useState(0);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -416,20 +309,14 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
 
   const moduleId = parseInt(topic.id[0]);
   const quizzes = QUIZ_BANK[moduleId] || [];
-<<<<<<< HEAD
-  const score = quizSubmitted
-    ? quizzes.filter((q: any, i: number) => quizAnswers[i] === q.answer).length
-    : 0;
-=======
-  const score = quizSubmitted ? quizzes.filter((q, i) => quizAnswers[i] === q.answer).length : 0;
+  const score = quizSubmitted ? quizzes.filter((q: any, i: number) => quizAnswers[i] === q.answer).length : 0;
 
   // Helper: quiz result emoji
-  const getQuizEmoji = (s, total) => {
+  const getQuizEmoji = (s: number, total: number) => {
     if (s === total) return "🏆";
     if (s >= 2) return "🎉";
     return "📚";
   };
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
 
   return (
     <div style={{ minHeight: "100vh", background: th.bg, color: th.text, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s, color 0.3s" }}>
@@ -449,41 +336,6 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
       </div>
 
       {/* Tabs */}
-<<<<<<< HEAD
-      <div
-        style={{
-          borderBottom: '1px solid #1E293B',
-          display: 'flex',
-          gap: 0,
-          paddingLeft: 32,
-        }}
-      >
-        {['learn', 'notes', 'quiz'].map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: tab === t ? '#2563EB' : '#64748B',
-              borderBottom:
-                tab === t ? '2px solid #2563EB' : '2px solid transparent',
-              padding: '14px 20px',
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              fontSize: 13,
-              fontWeight: tab === t ? 700 : 400,
-              textTransform: 'capitalize',
-              transition: 'all 0.2s',
-            }}
-          >
-            {t === 'learn'
-              ? '📖 Learn'
-              : t === 'notes'
-                ? '📝 Key Notes'
-                : '🧠 Quiz'}
-          </button>
-=======
       <div style={{ borderBottom: `1px solid ${th.border}`, display: "flex", paddingLeft: 32, background: th.bg2, transition: "background 0.3s" }}>
         {["learn", "notes", "quiz"].map(t => (
           <button key={t} onClick={() => setTab(t)} style={{
@@ -493,7 +345,6 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
             padding: "14px 20px", cursor: "pointer", fontFamily: "inherit", fontSize: 13,
             fontWeight: tab === t ? 700 : 400, textTransform: "capitalize", transition: "all 0.2s",
           }}>{t === "learn" ? "📖 Learn" : t === "notes" ? "📝 Key Notes" : "🧠 Quiz"}</button>
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
         ))}
       </div>
 
@@ -517,48 +368,8 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
             <p style={{ fontSize: 16, lineHeight: 1.8, color: th.text2, marginBottom: 32 }}>{topic.content.body}</p>
 
             {/* Points */}
-<<<<<<< HEAD
-            <div style={{ display: 'grid', gap: 12 }}>
-              {topic.content.points.map((point: string, i: number) => (
-                <div
-                  key={i}
-                  style={{
-                    background: '#111827',
-                    border: '1px solid #1E293B',
-                    borderRadius: 10,
-                    padding: '14px 20px',
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 12,
-                    animation: `slideUp 0.3s ease ${i * 0.08}s both`,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 24,
-                      height: 24,
-                      background: '#2563EB22',
-                      borderRadius: 6,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 11,
-                      color: '#60A5FA',
-                      fontWeight: 700,
-                      flexShrink: 0,
-                      marginTop: 1,
-                    }}
-                  >
-                    {i + 1}
-                  </div>
-                  <span
-                    style={{ fontSize: 14, color: '#CBD5E1', lineHeight: 1.5 }}
-                  >
-                    {point}
-                  </span>
-=======
             <div style={{ display: "grid", gap: 12 }}>
-              {topic.content.points.map((point, i) => (
+              {topic.content.points.map((point: string, i: number) => (
                 <div key={i} style={{
                   background: th.bg2, border: `1px solid ${th.border}`, borderRadius: 10,
                   padding: "14px 20px", display: "flex", alignItems: "flex-start", gap: 12,
@@ -567,7 +378,6 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
                 }}>
                   <div style={{ width: 24, height: 24, background: "#2563EB22", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#60A5FA", fontWeight: 700, flexShrink: 0, marginTop: 1 }}>{i + 1}</div>
                   <span style={{ fontSize: 14, color: th.text2, lineHeight: 1.5 }}>{point}</span>
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                 </div>
               ))}
             </div>
@@ -584,52 +394,15 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
           </div>
         )}
 
-<<<<<<< HEAD
-        {tab === 'notes' && (
-          <div style={{ animation: 'fadeIn 0.4s ease' }}>
-            <h2
-              style={{
-                fontSize: 24,
-                fontWeight: 700,
-                marginBottom: 24,
-                color: '#F1F5F9',
-              }}
-            >
-              Key Points to Remember
-            </h2>
-            <div style={{ display: 'grid', gap: 16 }}>
-              {topic.content.points.map((point: string, i: number) => (
-                <div
-                  key={i}
-                  style={{
-                    background: '#111827',
-                    borderLeft: '3px solid #2563EB',
-                    borderRadius: '0 10px 10px 0',
-                    padding: '16px 20px',
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: '#60A5FA',
-                      fontWeight: 700,
-                      marginBottom: 4,
-                    }}
-                  >
-                    POINT {i + 1}
-                  </div>
-                  <div style={{ fontSize: 15, color: '#CBD5E1' }}>{point}</div>
-=======
         {/* ── NOTES TAB ── */}
         {tab === "notes" && (
           <div style={{ animation: "fadeIn 0.4s ease" }}>
             <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24, color: th.text }}>Key Points to Remember</h2>
             <div style={{ display: "grid", gap: 16 }}>
-              {topic.content.points.map((point, i) => (
+              {topic.content.points.map((point: string, i: number) => (
                 <div key={i} style={{ background: th.bg2, borderLeft: "3px solid #2563EB", borderRadius: "0 10px 10px 0", padding: "16px 20px", transition: "background 0.3s" }}>
                   <div style={{ fontSize: 12, color: "#60A5FA", fontWeight: 700, marginBottom: 4 }}>POINT {i + 1}</div>
                   <div style={{ fontSize: 15, color: th.text2 }}>{point}</div>
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                 </div>
               ))}
             </div>
@@ -647,35 +420,6 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
             <p style={{ fontSize: 14, color: th.text3, marginBottom: 32 }}>Test your knowledge — {quizzes.length} questions</p>
 
             {quizSubmitted ? (
-<<<<<<< HEAD
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 64, marginBottom: 16 }}>
-                  {score === quizzes.length ? '🏆' : score >= 2 ? '🎉' : '📚'}
-                </div>
-                <div
-                  style={{
-                    fontSize: 40,
-                    fontWeight: 800,
-                    color:
-                      score === quizzes.length
-                        ? '#10B981'
-                        : score >= 2
-                          ? '#F59E0B'
-                          : '#EF4444',
-                    marginBottom: 8,
-                  }}
-                >
-                  {score}/{quizzes.length}
-                </div>
-                <div
-                  style={{ fontSize: 16, color: '#94A3B8', marginBottom: 32 }}
-                >
-                  {score === quizzes.length
-                    ? "Perfect score! You're ready to move on."
-                    : score >= 2
-                      ? 'Good work! Review missed questions below.'
-                      : 'Review the lesson and try again.'}
-=======
               <div style={{ textAlign: "center" }}>
                 <div style={{ fontSize: 64, marginBottom: 16 }}>{getQuizEmoji(score, quizzes.length)}</div>
                 <div style={{ fontSize: 40, fontWeight: 800, color: score === quizzes.length ? "#10B981" : score >= 2 ? "#F59E0B" : "#EF4444", marginBottom: 8 }}>
@@ -683,7 +427,6 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
                 </div>
                 <div style={{ fontSize: 16, color: th.subtext, marginBottom: 32 }}>
                   {score === quizzes.length ? "Perfect score! You are ready to move on." : score >= 2 ? "Good work! Review missed questions." : "Review the lesson and try again."}
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                 </div>
                 <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
                   <button onClick={() => { setQuizAnswers({}); setQuizSubmitted(false); }} style={{ background: th.bg4, color: th.text2, border: "none", padding: "12px 24px", borderRadius: 8, fontFamily: "inherit", cursor: "pointer" }}>Retry</button>
@@ -692,42 +435,13 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
               </div>
             ) : (
               <div>
-                {quizzes.map((q, qi) => (
+                {quizzes.map((q: any, qi: number) => (
                   <div key={qi} style={{ marginBottom: 32 }}>
                     <div style={{ fontSize: 16, fontWeight: 600, color: th.text, marginBottom: 16 }}>
                       <span style={{ color: "#60A5FA", marginRight: 8 }}>Q{qi + 1}.</span>{q.q}
                     </div>
-<<<<<<< HEAD
-                    <div style={{ display: 'grid', gap: 10 }}>
-                      {q.options.map((opt: string, oi: number) => (
-                        <button
-                          key={oi}
-                          onClick={() =>
-                            setQuizAnswers((prev) => ({ ...prev, [qi]: oi }))
-                          }
-                          style={{
-                            background:
-                              quizAnswers[qi] === oi ? '#1E3A8A' : '#111827',
-                            border: `1px solid ${quizAnswers[qi] === oi ? '#2563EB' : '#1E293B'
-                              }`,
-                            color:
-                              quizAnswers[qi] === oi ? '#93C5FD' : '#94A3B8',
-                            borderRadius: 8,
-                            padding: '12px 20px',
-                            textAlign: 'left',
-                            fontFamily: 'inherit',
-                            fontSize: 14,
-                            cursor: 'pointer',
-                            transition: 'all 0.15s',
-                          }}
-                        >
-                          <span style={{ marginRight: 10, opacity: 0.5 }}>
-                            {['A', 'B', 'C', 'D'][oi]}.
-                          </span>
-                          {opt}
-=======
                     <div style={{ display: "grid", gap: 10 }}>
-                      {q.options.map((opt, oi) => (
+                      {q.options.map((opt: string, oi: number) => (
                         <button key={oi} onClick={() => setQuizAnswers(a => ({ ...a, [qi]: oi }))} style={{
                           background: quizAnswers[qi] === oi ? (dark ? "#1E3A8A" : "#DBEAFE") : th.bg2,
                           border: `1px solid ${quizAnswers[qi] === oi ? "#2563EB" : th.border}`,
@@ -736,7 +450,6 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
                           fontFamily: "inherit", fontSize: 14, cursor: "pointer", transition: "all 0.15s",
                         }}>
                           <span style={{ marginRight: 10, opacity: 0.5 }}>{["A", "B", "C", "D"][oi]}.</span>{opt}
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                         </button>
                       ))}
                     </div>
@@ -762,36 +475,22 @@ function LessonViewer({ topic, onComplete, onBack, dark }) {
 }
 
 // ── MODULE DETAIL ─────────────────────────────────────────────────────────────
-<<<<<<< HEAD
-function ModuleDetail({ module, completed, onTopicComplete, onBack }: { module: any; completed: any; onTopicComplete: (id: string) => void; onBack: () => void }) {
-  const [activeTopic, setActiveTopic] = useState<any>(null);
-  const completedCount = module.topics.filter((t: any) => completed?.[t.id]).length;
-=======
-function ModuleDetail({ module, completed, onTopicComplete, onBack, dark }) {
+function ModuleDetail({ module, completed, onTopicComplete, onBack, dark }: { module: any; completed: Set<string>; onTopicComplete: (id: string) => void; onBack: () => void; dark: boolean }) {
   const th = dark ? DARK : LIGHT;
-  const [activeTopic, setActiveTopic] = useState(null);
+  const [activeTopic, setActiveTopic] = useState<any>(null);
 
   // Scroll to top when module opens
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const completedCount = module.topics.filter(t => completed.has(t.id)).length;
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
+  const completedCount = module.topics.filter((t: any) => completed.has(t.id)).length;
   const pct = Math.round((completedCount / module.topics.length) * 100);
 
   if (activeTopic) {
     return (
       <LessonViewer
-<<<<<<< HEAD
-        topic={activeTopic as any}
-        onComplete={() => {
-          onTopicComplete(activeTopic?.id);
-          setActiveTopic(null);
-        }}
-=======
         topic={activeTopic}
         dark={dark}
         onComplete={() => { onTopicComplete(activeTopic.id); setActiveTopic(null); }}
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
         onBack={() => setActiveTopic(null)}
       />
     );
@@ -834,31 +533,12 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack, dark }) {
         </div>
       </div>
 
-<<<<<<< HEAD
-      {/* Lessons */}
-      <div style={{ maxWidth: 760, margin: '0 auto', padding: '40px 48px' }}>
-        <h2
-          style={{
-            fontSize: 18,
-            fontWeight: 700,
-            marginBottom: 24,
-            color: '#94A3B8',
-            letterSpacing: '0.05em',
-          }}
-        >
-          LESSONS
-        </h2>
-        <div style={{ display: 'grid', gap: 12 }}>
-          {module.topics.map((topic: any, i: number) => {
-            const done = completed?.[topic.id];
-=======
       {/* Lessons List */}
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "40px 48px", position: "relative", zIndex: 2 }}>
         <h2 style={{ fontSize: 13, fontWeight: 700, marginBottom: 24, color: th.text3, letterSpacing: "0.1em" }}>LESSONS IN THIS MODULE</h2>
         <div style={{ display: "grid", gap: 12 }}>
-          {module.topics.map((topic, i) => {
+          {module.topics.map((topic: any, i: number) => {
             const done = completed.has(topic.id);
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
             return (
               <button key={topic.id} onClick={() => setActiveTopic(topic)}
                 style={{
@@ -867,19 +547,8 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack, dark }) {
                   borderRadius: 12, padding: "20px 24px", display: "flex", alignItems: "center", gap: 16,
                   cursor: "pointer", textAlign: "left", transition: "all 0.2s", width: "100%",
                 }}
-<<<<<<< HEAD
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.borderColor = module.color + '88')
-                }
-                onMouseLeave={(e) =>
-                (e.currentTarget.style.borderColor = done
-                  ? module.color + '44'
-                  : '#1E293B')
-                }
-=======
                 onMouseEnter={e => { e.currentTarget.style.borderColor = module.color + "88"; e.currentTarget.style.transform = "translateY(-2px)"; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = done ? module.color + "55" : th.border; e.currentTarget.style.transform = "translateY(0)"; }}
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
               >
                 <div style={{
                   width: 44, height: 44, borderRadius: 10,
@@ -906,12 +575,8 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack, dark }) {
 }
 
 // ── CERTIFICATE ───────────────────────────────────────────────────────────────
-<<<<<<< HEAD
-function Certificate({ name, date }: { name: string; date: string }) {
-=======
-function Certificate({ name, date, dark }) {
+function Certificate({ name, date, dark }: { name: string; date: string; dark: boolean }) {
   const th = dark ? DARK : LIGHT;
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
   return (
     <div style={{ minHeight: "100vh", background: th.bg, display: "flex", alignItems: "center", justifyContent: "center", padding: 32, fontFamily: "'DM Sans', sans-serif", transition: "background 0.3s" }}>
       <div style={{
@@ -952,51 +617,23 @@ function Certificate({ name, date, dark }) {
 
 // ── MAIN APP ──────────────────────────────────────────────────────────────────
 export default function CeylonHSAcademy() {
-<<<<<<< HEAD
-  const [view, setView] = useState('home'); // home | module | cert
-  const [activeModule, setActiveModule] = useState<any>(null);
-  const [completed, setCompleted] = useState<Record<string, boolean>>({});
-  const [userName, setUserName] = useState('Trade Professional');
-  const [nameInput, setNameInput] = useState('');
-  const [showNameModal, setShowNameModal] = useState(false);
-  const [hovered, setHovered] = useState<Record<number, boolean>>({});
-=======
   const [dark, setDark] = useState(true);
   const [view, setView] = useState("home");
-  const [activeModule, setActiveModule] = useState(null);
-  const [completed, setCompleted] = useState(new Set());
+  const [activeModule, setActiveModule] = useState<any>(null);
+  const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [userName, setUserName] = useState("Trade Professional");
   const [nameInput, setNameInput] = useState("");
   const [showNameModal, setShowNameModal] = useState(false);
-  const [hovered, setHovered] = useState(null);
+  const [hovered, setHovered] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
 
   const th = dark ? DARK : LIGHT;
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
 
   const totalTopics = MODULES.reduce((a, m) => a + m.topics.length, 0);
   const totalCompleted = Object.keys(completed).length;
   const overallPct = Math.round((totalCompleted / totalTopics) * 100);
-<<<<<<< HEAD
-  const allDone = MODULES.every((m) =>
-    m.topics.every((t) => completed[t.id])
-  );
-
-  const handleTopicComplete = (id: string) => {
-    setCompleted((prev) => ({ ...prev, [id]: true }));
-  };
-
-  const handleModuleClick = (m: any) => {
-    setActiveModule(m);
-    setView('module');
-  };
-
-  const handleModuleHover = (id: number, isHovering: boolean) => {
-    setHovered((prev) => ({ ...prev, [id]: isHovering }));
-  };
-=======
-  const allDone = MODULES.every(m => m.topics.every(t => completed.has(t.id)));
+  const allDone = MODULES.every((m: any) => m.topics.every((t: any) => completed.has(t.id)));
 
   const filteredModules = searchQuery.trim() === ""
     ? MODULES
@@ -1007,13 +644,12 @@ export default function CeylonHSAcademy() {
           m.subtitle.toLowerCase().includes(q) ||
           m.category.toLowerCase().includes(q) ||
           m.code.toLowerCase().includes(q) ||
-          m.topics.some(t => t.title.toLowerCase().includes(q)) ||
-          (MODULE_KEYWORDS[m.id] || []).some(k => k.toLowerCase().includes(q))
+          m.topics.some((t: any) => t.title.toLowerCase().includes(q)) ||
+          (MODULE_KEYWORDS[m.id] || []).some((k: string) => k.toLowerCase().includes(q))
         );
       });
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
 
-  const handleTopicComplete = (id) => setCompleted(prev => new Set([...prev, id]));
+  const handleTopicComplete = (id: string) => setCompleted(prev => new Set([...prev, id]));
 
   if (view === "module" && activeModule) {
     return (
@@ -1125,31 +761,10 @@ export default function CeylonHSAcademy() {
           <span style={{ width: 6, height: 6, background: "#2563EB", borderRadius: "50%", animation: "pulse 2s infinite", display: "inline-block" }} />
           FREE · SELF-PACED · CERTIFICATE ON COMPLETION
         </div>
-<<<<<<< HEAD
-        <h1
-          style={{
-            fontSize: 'clamp(36px, 5vw, 58px)',
-            fontWeight: 900,
-            lineHeight: 1.1,
-            marginBottom: 20,
-          }}
-        >
-          Master HS Code Classification
-          <br />
-          <span
-            style={{
-              background: 'linear-gradient(135deg, #2563EB, #7C3AED, #06B6D4)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            with CeylonHS
-=======
         <h1 style={{ fontSize: "clamp(32px, 5vw, 56px)", fontWeight: 900, lineHeight: 1.1, marginBottom: 20, color: th.text }}>
           Master HS Code Classification<br />
           <span style={{ background: "linear-gradient(135deg,#2563EB,#7C3AED,#06B6D4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
             with CeylonHS AI
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
           </span>
         </h1>
         <p style={{ fontSize: 18, color: th.text3, maxWidth: 540, margin: "0 auto 40px", lineHeight: 1.7 }}>
@@ -1224,38 +839,6 @@ export default function CeylonHSAcademy() {
           <h2 style={{ fontSize: 26, fontWeight: 800, color: th.text, marginBottom: 6 }}>What do you want to learn?</h2>
           <p style={{ fontSize: 14, color: th.text3 }}>Search by topic, keyword, or module name</p>
         </div>
-<<<<<<< HEAD
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: 20,
-          }}
-        >
-          {MODULES.map((mod, i) => {
-            const modCompleted = mod.topics.filter((t: any) =>
-              completed[t.id]
-            ).length;
-            const modPct = Math.round((modCompleted / mod.topics.length) * 100);
-            const isHov = hovered?.[mod.id] || false;
-            return (
-              <div
-                key={mod.id}
-                onClick={() => handleModuleClick(mod)}
-                onMouseEnter={() => handleModuleHover(mod.id, true)}
-                onMouseLeave={() => handleModuleHover(mod.id, false)}
-                style={{
-                  background: isHov ? '#111827' : '#0D1424',
-                  border: `1px solid ${isHov ? mod.color + '66' : '#1E293B'}`,
-                  borderRadius: 16,
-                  padding: 28,
-                  cursor: 'pointer',
-                  transition: 'all 0.25s cubic-bezier(.4,0,.2,1)',
-                  transform: hovered?.[mod.id] ? 'translateY(-4px)' : 'none',
-                  boxShadow: hovered?.[mod.id]
-                    ? '0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1)'
-                    : '0 4px 6px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.05)',
-=======
 
         {/* Search bar */}
         <div style={{
@@ -1344,12 +927,12 @@ export default function CeylonHSAcademy() {
         {/* Modules grid */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20 }}>
           {filteredModules.map((mod, i) => {
-            const modCompleted = mod.topics.filter(t => completed.has(t.id)).length;
+            const modCompleted = mod.topics.filter((t: any) => completed.has(t.id)).length;
             const modPct = Math.round((modCompleted / mod.topics.length) * 100);
             const isHov = hovered === mod.id;
 
             // Highlight matching text in title
-            const highlightText = (text) => {
+            const highlightText = (text: string) => {
               if (!searchQuery.trim()) return text;
               const idx = text.toLowerCase().indexOf(searchQuery.toLowerCase());
               if (idx === -1) return text;
@@ -1378,7 +961,6 @@ export default function CeylonHSAcademy() {
                   transition: "all 0.25s cubic-bezier(.4,0,.2,1)",
                   transform: isHov ? "translateY(-5px)" : "none",
                   boxShadow: isHov ? `0 20px 40px ${mod.color}22` : "none",
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                   animation: `fadeUp 0.4s ease ${i * 0.07}s both`,
                 }}
               >
@@ -1406,33 +988,10 @@ export default function CeylonHSAcademy() {
                   </div>
                   <span style={{ fontSize: 11, color: th.text3, flexShrink: 0 }}>{modCompleted}/{mod.topics.length}</span>
                 </div>
-<<<<<<< HEAD
-
-                <div
-                  style={{
-                    marginTop: 16,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <span style={{ fontSize: 12, color: '#64748B' }}>
-                    📖 {mod.lessons} lessons
-                  </span>
-                  <span
-                    style={{ fontSize: 13, color: mod.color, fontWeight: 700 }}
-                  >
-                    {modPct === 100
-                      ? 'Review →'
-                      : modPct > 0
-                        ? 'Continue →'
-                        : 'Start →'}
-=======
                 <div style={{ marginTop: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <span style={{ fontSize: 12, color: th.text3 }}>📖 {mod.lessons} lessons</span>
                   <span style={{ fontSize: 13, color: mod.color, fontWeight: 700 }}>
                     {modPct === 100 ? "Review →" : modPct > 0 ? "Continue →" : "Start →"}
->>>>>>> 7ce22a52a47af9bcd0c365bfdb287602683535a3
                   </span>
                 </div>
               </div>
