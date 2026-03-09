@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { label: "How It Works", href: "#how-it-works" },
   { label: "Pricing", href: "#pricing" },
   { label: "Team", href: "#team" },
+  { label: "Academy", href: "/learning" },
 ];
 
 export default function LandingNav() {
@@ -24,11 +25,10 @@ export default function LandingNav() {
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled
           ? "bg-surface/80 backdrop-blur-2xl border-b border-border shadow-sm"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <nav
         className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6"
@@ -128,9 +128,8 @@ export default function LandingNav() {
 
       {/* ── Mobile dropdown ──────────────────── */}
       <div
-        className={`overflow-hidden transition-all duration-300 md:hidden ${
-          mobileOpen ? "max-h-80 border-b border-border" : "max-h-0"
-        } bg-surface/95 backdrop-blur-2xl`}
+        className={`overflow-hidden transition-all duration-300 md:hidden ${mobileOpen ? "max-h-80 border-b border-border" : "max-h-0"
+          } bg-surface/95 backdrop-blur-2xl`}
       >
         {NAV_LINKS.map((l) => (
           <a
