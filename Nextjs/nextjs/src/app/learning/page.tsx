@@ -374,7 +374,7 @@ const MODULES = [
   },
 ];
 
-const QUIZ_BANK = {
+const QUIZ_BANK: Record<number, any[]> = {
   1: [
     {
       q: 'How many digits are in a standard international HS code?',
@@ -492,7 +492,7 @@ const QUIZ_BANK = {
   ],
 };
 
-const MODULE_KEYWORDS = {
+const MODULE_KEYWORDS: Record<number, string[]> = {
   1: [
     'HS Code',
     'Harmonized System',
@@ -582,7 +582,7 @@ const MODULE_KEYWORDS = {
 
 // ── COMPONENTS ────────────────────────────────────────────────────────────────
 
-function FloatingKeywords({ moduleId }) {
+function FloatingKeywords({ moduleId }: { moduleId: number }) {
   const words = MODULE_KEYWORDS[moduleId] || [];
   const items = [];
   for (let i = 0; i < 18; i++) {
@@ -638,7 +638,7 @@ function FloatingKeywords({ moduleId }) {
   );
 }
 
-function ProgressRing({ percent, size = 60, stroke = 5, color = '#2563EB' }) {
+function ProgressRing({ percent, size = 60, stroke = 5, color = '#2563EB' }: { percent: number; size?: number; stroke?: number; color?: string }) {
   const r = (size - stroke * 2) / 2;
   const circ = 2 * Math.PI * r;
   const offset = circ - (percent / 100) * circ;
@@ -668,7 +668,7 @@ function ProgressRing({ percent, size = 60, stroke = 5, color = '#2563EB' }) {
   );
 }
 
-function Badge({ children, color = '#2563EB', bg }) {
+function Badge({ children, color = '#2563EB', bg }: { children: React.ReactNode; color?: string; bg?: string }) {
   return (
     <span
       style={{
@@ -690,12 +690,12 @@ function Badge({ children, color = '#2563EB', bg }) {
 }
 
 // ── LESSON VIEWER ─────────────────────────────────────────────────────────────
-function LessonViewer({ topic, onComplete, onBack }) {
+function LessonViewer({ topic, onComplete, onBack }: { topic: any; onComplete: () => void; onBack: () => void }) {
   const [tab, setTab] = useState('learn');
-  const [quizAnswers, setQuizAnswers] = useState({});
+  const [quizAnswers, setQuizAnswers] = useState<Record<number, number | string>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [readProgress, setReadProgress] = useState(0);
-  const contentRef = useRef();
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setReadProgress(0);
@@ -714,7 +714,7 @@ function LessonViewer({ topic, onComplete, onBack }) {
   const moduleId = parseInt(topic.id[0]);
   const quizzes = QUIZ_BANK[moduleId] || [];
   const score = quizSubmitted
-    ? quizzes.filter((q, i) => quizAnswers[i] === q.answer).length
+    ? quizzes.filter((q: any, i: number) => quizAnswers[i] === q.answer).length
     : 0;
 
   return (
@@ -816,8 +816,8 @@ function LessonViewer({ topic, onComplete, onBack }) {
             {t === 'learn'
               ? '📖 Learn'
               : t === 'notes'
-              ? '📝 Key Notes'
-              : '🧠 Quiz'}
+                ? '📝 Key Notes'
+                : '🧠 Quiz'}
           </button>
         ))}
       </div>
@@ -891,7 +891,7 @@ function LessonViewer({ topic, onComplete, onBack }) {
 
             {/* Points */}
             <div style={{ display: 'grid', gap: 12 }}>
-              {topic.content.points.map((point, i) => (
+              {topic.content.points.map((point: string, i: number) => (
                 <div
                   key={i}
                   style={{
@@ -999,7 +999,7 @@ function LessonViewer({ topic, onComplete, onBack }) {
               Key Points to Remember
             </h2>
             <div style={{ display: 'grid', gap: 16 }}>
-              {topic.content.points.map((point, i) => (
+              {topic.content.points.map((point: string, i: number) => (
                 <div
                   key={i}
                   style={{
@@ -1077,8 +1077,8 @@ function LessonViewer({ topic, onComplete, onBack }) {
                       score === quizzes.length
                         ? '#10B981'
                         : score >= 2
-                        ? '#F59E0B'
-                        : '#EF4444',
+                          ? '#F59E0B'
+                          : '#EF4444',
                     marginBottom: 8,
                   }}
                 >
@@ -1090,8 +1090,8 @@ function LessonViewer({ topic, onComplete, onBack }) {
                   {score === quizzes.length
                     ? "Perfect score! You're ready to move on."
                     : score >= 2
-                    ? 'Good work! Review missed questions below.'
-                    : 'Review the lesson and try again.'}
+                      ? 'Good work! Review missed questions below.'
+                      : 'Review the lesson and try again.'}
                 </div>
                 <div
                   style={{ display: 'flex', gap: 12, justifyContent: 'center' }}
@@ -1148,18 +1148,17 @@ function LessonViewer({ topic, onComplete, onBack }) {
                       {q.q}
                     </div>
                     <div style={{ display: 'grid', gap: 10 }}>
-                      {q.options.map((opt, oi) => (
+                      {q.options.map((opt: string, oi: number) => (
                         <button
                           key={oi}
                           onClick={() =>
-                            setQuizAnswers((a) => ({ ...a, [qi]: oi }))
+                            setQuizAnswers((prev) => ({ ...prev, [qi]: oi }))
                           }
                           style={{
                             background:
                               quizAnswers[qi] === oi ? '#1E3A8A' : '#111827',
-                            border: `1px solid ${
-                              quizAnswers[qi] === oi ? '#2563EB' : '#1E293B'
-                            }`,
+                            border: `1px solid ${quizAnswers[qi] === oi ? '#2563EB' : '#1E293B'
+                              }`,
                             color:
                               quizAnswers[qi] === oi ? '#93C5FD' : '#94A3B8',
                             borderRadius: 8,
@@ -1218,19 +1217,17 @@ function LessonViewer({ topic, onComplete, onBack }) {
 }
 
 // ── MODULE DETAIL ─────────────────────────────────────────────────────────────
-function ModuleDetail({ module, completed, onTopicComplete, onBack }) {
-  const [activeTopic, setActiveTopic] = useState(null);
-  const completedCount = module.topics.filter((t) =>
-    completed.has(t.id)
-  ).length;
+function ModuleDetail({ module, completed, onTopicComplete, onBack }: { module: any; completed: any; onTopicComplete: (id: string) => void; onBack: () => void }) {
+  const [activeTopic, setActiveTopic] = useState<any>(null);
+  const completedCount = module.topics.filter((t: any) => completed?.[t.id]).length;
   const pct = Math.round((completedCount / module.topics.length) * 100);
 
   if (activeTopic) {
     return (
       <LessonViewer
-        topic={activeTopic}
+        topic={activeTopic as any}
         onComplete={() => {
-          onTopicComplete(activeTopic.id);
+          onTopicComplete(activeTopic?.id);
           setActiveTopic(null);
         }}
         onBack={() => setActiveTopic(null)}
@@ -1344,8 +1341,8 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack }) {
           LESSONS
         </h2>
         <div style={{ display: 'grid', gap: 12 }}>
-          {module.topics.map((topic, i) => {
-            const done = completed.has(topic.id);
+          {module.topics.map((topic: any, i: number) => {
+            const done = completed?.[topic.id];
             return (
               <button
                 key={topic.id}
@@ -1367,9 +1364,9 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack }) {
                   (e.currentTarget.style.borderColor = module.color + '88')
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.borderColor = done
-                    ? module.color + '44'
-                    : '#1E293B')
+                (e.currentTarget.style.borderColor = done
+                  ? module.color + '44'
+                  : '#1E293B')
                 }
               >
                 <div
@@ -1434,7 +1431,7 @@ function ModuleDetail({ module, completed, onTopicComplete, onBack }) {
 }
 
 // ── CERTIFICATE ───────────────────────────────────────────────────────────────
-function Certificate({ name, date }) {
+function Certificate({ name, date }: { name: string; date: string }) {
   return (
     <div
       style={{
@@ -1572,22 +1569,31 @@ function Certificate({ name, date }) {
 // ── MAIN APP ──────────────────────────────────────────────────────────────────
 export default function CeylonHSAcademy() {
   const [view, setView] = useState('home'); // home | module | cert
-  const [activeModule, setActiveModule] = useState(null);
-  const [completed, setCompleted] = useState(new Set());
+  const [activeModule, setActiveModule] = useState<any>(null);
+  const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [userName, setUserName] = useState('Trade Professional');
   const [nameInput, setNameInput] = useState('');
   const [showNameModal, setShowNameModal] = useState(false);
-  const [hovered, setHovered] = useState(null);
+  const [hovered, setHovered] = useState<Record<number, boolean>>({});
 
   const totalTopics = MODULES.reduce((a, m) => a + m.topics.length, 0);
-  const totalCompleted = completed.size;
+  const totalCompleted = Object.keys(completed).length;
   const overallPct = Math.round((totalCompleted / totalTopics) * 100);
   const allDone = MODULES.every((m) =>
-    m.topics.every((t) => completed.has(t.id))
+    m.topics.every((t) => completed[t.id])
   );
 
-  const handleTopicComplete = (id) => {
-    setCompleted((prev) => new Set([...prev, id]));
+  const handleTopicComplete = (id: string) => {
+    setCompleted((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const handleModuleClick = (m: any) => {
+    setActiveModule(m);
+    setView('module');
+  };
+
+  const handleModuleHover = (id: number, isHovering: boolean) => {
+    setHovered((prev) => ({ ...prev, [id]: isHovering }));
   };
 
   if (view === 'module' && activeModule) {
@@ -1871,7 +1877,7 @@ export default function CeylonHSAcademy() {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            with CeylonHS 
+            with CeylonHS
           </span>
         </h1>
         <p
@@ -2074,20 +2080,17 @@ export default function CeylonHSAcademy() {
           }}
         >
           {MODULES.map((mod, i) => {
-            const modCompleted = mod.topics.filter((t) =>
-              completed.has(t.id)
+            const modCompleted = mod.topics.filter((t: any) =>
+              completed[t.id]
             ).length;
             const modPct = Math.round((modCompleted / mod.topics.length) * 100);
-            const isHov = hovered === mod.id;
+            const isHov = hovered?.[mod.id] || false;
             return (
               <div
                 key={mod.id}
-                onClick={() => {
-                  setActiveModule(mod);
-                  setView('module');
-                }}
-                onMouseEnter={() => setHovered(mod.id)}
-                onMouseLeave={() => setHovered(null)}
+                onClick={() => handleModuleClick(mod)}
+                onMouseEnter={() => handleModuleHover(mod.id, true)}
+                onMouseLeave={() => handleModuleHover(mod.id, false)}
                 style={{
                   background: isHov ? '#111827' : '#0D1424',
                   border: `1px solid ${isHov ? mod.color + '66' : '#1E293B'}`,
@@ -2095,8 +2098,10 @@ export default function CeylonHSAcademy() {
                   padding: 28,
                   cursor: 'pointer',
                   transition: 'all 0.25s cubic-bezier(.4,0,.2,1)',
-                  transform: isHov ? 'translateY(-4px)' : 'none',
-                  boxShadow: isHov ? `0 20px 40px ${mod.color}22` : 'none',
+                  transform: hovered?.[mod.id] ? 'translateY(-4px)' : 'none',
+                  boxShadow: hovered?.[mod.id]
+                    ? '0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1)'
+                    : '0 4px 6px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.05)',
                   animation: `fadeUp 0.4s ease ${i * 0.07}s both`,
                 }}
               >
@@ -2197,8 +2202,8 @@ export default function CeylonHSAcademy() {
                     {modPct === 100
                       ? 'Review →'
                       : modPct > 0
-                      ? 'Continue →'
-                      : 'Start →'}
+                        ? 'Continue →'
+                        : 'Start →'}
                   </span>
                 </div>
               </div>
