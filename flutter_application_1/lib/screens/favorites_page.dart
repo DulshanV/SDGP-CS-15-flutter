@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import '../theme/app_colors.dart';
 import 'hs_code_detail_page.dart';
 
 /// Page showing the user's favorited HS codes.
@@ -17,8 +18,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
   List<FavoriteItem> _favorites = [];
   bool _isLoading = true;
   String? _error;
-
-  static const Color primaryBlue = Color(0xFF0B3EA8);
 
   @override
   void initState() {
@@ -85,10 +84,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F4F8),
+      backgroundColor: AppColors.surface,
       appBar: AppBar(
         title: const Text('Favorites', style: TextStyle(fontWeight: FontWeight.w700)),
-        backgroundColor: primaryBlue,
+        backgroundColor: AppColors.primaryBlue,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -108,7 +107,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.bookmark_border, size: 64, color: Color(0xFFB7BFCC)),
+              const Icon(Icons.bookmark_border, size: 64, color: AppColors.textMuted),
               const SizedBox(height: 16),
               Text(_error!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
@@ -124,17 +123,17 @@ class _FavoritesPageState extends State<FavoritesPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.bookmark_border, size: 64, color: Color(0xFFB7BFCC)),
+            Icon(Icons.bookmark_border, size: 64, color: AppColors.textMuted),
             SizedBox(height: 16),
             Text(
               'No favorites yet',
-              style: TextStyle(fontSize: 18, color: Color(0xFF5D6778)),
+              style: TextStyle(fontSize: 18, color: AppColors.textMedium),
             ),
             SizedBox(height: 8),
             Text(
               'Search for HS codes and tap the heart icon\nto save them here.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Color(0xFF9BA5B7)),
+              style: TextStyle(fontSize: 14, color: AppColors.textLight),
             ),
           ],
         ),
@@ -150,11 +149,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
           final fav = _favorites[index];
           return Card(
             margin: const EdgeInsets.only(bottom: 10),
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: const BorderSide(color: Color(0xFFDADCE0)),
-            ),
             child: ListTile(
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -162,7 +156,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 fav.hscode,
                 style: const TextStyle(
                   fontWeight: FontWeight.w700,
-                  color: primaryBlue,
+                  color: AppColors.primaryBlue,
                   fontFamily: 'monospace',
                   fontSize: 16,
                 ),
@@ -176,20 +170,20 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       fav.description!,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 13, color: Color(0xFF5D6778)),
+                      style: const TextStyle(fontSize: 13, color: AppColors.textMedium),
                     ),
                   ],
                   if (fav.section != null) ...[
                     const SizedBox(height: 4),
                     Text(
                       'Section ${fav.section}',
-                      style: const TextStyle(fontSize: 12, color: Color(0xFF9BA5B7)),
+                      style: const TextStyle(fontSize: 12, color: AppColors.textLight),
                     ),
                   ],
                 ],
               ),
               trailing: IconButton(
-                icon: const Icon(Icons.favorite, color: Colors.redAccent),
+                icon: const Icon(Icons.favorite, color: AppColors.error),
                 onPressed: () => _removeFavorite(fav),
               ),
               onTap: () {

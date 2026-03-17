@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/favorites_service.dart';
 import '../models/user_model.dart';
 import '../config.dart';
 import 'package:http/http.dart' as http;
@@ -528,8 +529,8 @@ class AuthService extends ChangeNotifier {
     _token = null;
     _lastErrorMessage = null;
 
-    // Note: FavoritesService cache will be cleared when app state is refreshed
-    // This happens automatically when user logs back in
+    // UIX-020: Clear favorites cache on logout
+    FavoritesService().clearCache();
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');

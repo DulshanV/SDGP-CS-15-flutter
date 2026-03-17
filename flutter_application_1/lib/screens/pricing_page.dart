@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/pricing_model.dart';
 import '../services/pricing_service.dart';
 import '../services/auth_service.dart';
+import '../theme/app_colors.dart';
 
 class PricingPage extends StatefulWidget {
   const PricingPage({super.key, this.isEmbedded = false});
@@ -13,16 +15,10 @@ class PricingPage extends StatefulWidget {
 }
 
 class _PricingPageState extends State<PricingPage> {
-  static const Color primaryBlue = Color(0xFF0B3EA8);
-  static const Color secondaryBlue = Color(0xFF0A2E8A);
-  static const Color accentBlue = Color(0xFF4DA7FF);
-  static const Color softBlue = Color(0xFFD7EAFF);
-
   late final PricingService _pricingService;
   late final AuthService _authService;
 
   late Future<List<PricingPlan>> _plansFuture;
-  late Future<UserSubscription?> _subscriptionFuture;
 
   @override
   void initState() {
@@ -38,8 +34,7 @@ class _PricingPageState extends State<PricingPage> {
   void _loadSubscription() {
     final user = _authService.user;
     if (user != null) {
-      _subscriptionFuture =
-          _pricingService.getUserSubscription(user.id).then((sub) => sub);
+      _pricingService.getUserSubscription(user.id);
       setState(() {});
     }
   }
@@ -51,17 +46,13 @@ class _PricingPageState extends State<PricingPage> {
           ? null
           : AppBar(
               title: const Text('Pricing Plans'),
-              backgroundColor: primaryBlue,
+              backgroundColor: AppColors.primaryBlue,
               elevation: 0,
             ),
       body: SingleChildScrollView(
         child: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [primaryBlue, secondaryBlue],
-            ),
+            gradient: AppColors.primaryGradient,
           ),
           child: SafeArea(
             child: Column(
@@ -85,7 +76,7 @@ class _PricingPageState extends State<PricingPage> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
-                          color: softBlue,
+                          color: AppColors.softBlue,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -102,7 +93,7 @@ class _PricingPageState extends State<PricingPage> {
                           }
 
                           if (snapshot.hasError) {
-                            return Text(
+                            return const Text(
                               'Error loading plans',
                               style: TextStyle(
                                 color: Colors.white,
@@ -118,7 +109,7 @@ class _PricingPageState extends State<PricingPage> {
                               // Pricing cards
                               ...plans.map((plan) {
                                 return _buildPricingCard(context, plan);
-                              }).toList(),
+                              }),
 
                               // Features comparison section
                               const SizedBox(height: 48),
@@ -156,7 +147,7 @@ class _PricingPageState extends State<PricingPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-            color: isPopular ? accentBlue : Colors.transparent,
+            color: isPopular ? AppColors.accentBlue : Colors.transparent,
             width: isPopular ? 2 : 0,
           ),
         ),
@@ -167,7 +158,7 @@ class _PricingPageState extends State<PricingPage> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: isPopular
-                  ? [softBlue, Colors.white]
+                  ? [AppColors.softBlue, Colors.white]
                   : [Colors.white, Colors.grey[50]!],
             ),
           ),
@@ -182,7 +173,7 @@ class _PricingPageState extends State<PricingPage> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     decoration: BoxDecoration(
-                      color: accentBlue,
+                      color: AppColors.accentBlue,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: const Text(
@@ -205,7 +196,7 @@ class _PricingPageState extends State<PricingPage> {
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: primaryBlue,
+                    color: AppColors.primaryBlue,
                   ),
                 ),
 
@@ -214,9 +205,9 @@ class _PricingPageState extends State<PricingPage> {
                 // Description
                 Text(
                   plan.description,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.grey[600],
+                    color: AppColors.textMedium,
                   ),
                 ),
 
@@ -230,7 +221,7 @@ class _PricingPageState extends State<PricingPage> {
                       style: const TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
-                        color: primaryBlue,
+                        color: AppColors.primaryBlue,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -252,7 +243,7 @@ class _PricingPageState extends State<PricingPage> {
                   child: ElevatedButton(
                     onPressed: () => _handlePlanSelection(context, plan),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isPopular ? accentBlue : primaryBlue,
+                      backgroundColor: isPopular ? AppColors.accentBlue : AppColors.primaryBlue,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
@@ -280,8 +271,8 @@ class _PricingPageState extends State<PricingPage> {
                         Container(
                           width: 20,
                           height: 20,
-                          decoration: BoxDecoration(
-                            color: accentBlue,
+                          decoration: const BoxDecoration(
+                            color: AppColors.accentBlue,
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
@@ -303,7 +294,7 @@ class _PricingPageState extends State<PricingPage> {
                       ],
                     ),
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
@@ -328,7 +319,7 @@ class _PricingPageState extends State<PricingPage> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: primaryBlue,
+              color: AppColors.primaryBlue,
             ),
           ),
           const SizedBox(height: 20),
@@ -360,7 +351,7 @@ class _PricingPageState extends State<PricingPage> {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: primaryBlue,
+              color: AppColors.primaryBlue,
             ),
           ),
           const SizedBox(height: 20),
@@ -392,15 +383,15 @@ class _PricingPageState extends State<PricingPage> {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: primaryBlue,
+            color: AppColors.primaryBlue,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           answer,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 13,
-            color: Colors.grey[700],
+            color: AppColors.textMedium,
           ),
         ),
       ],
@@ -412,7 +403,7 @@ class _PricingPageState extends State<PricingPage> {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: accentBlue,
+        color: AppColors.accentBlue,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -437,15 +428,11 @@ class _PricingPageState extends State<PricingPage> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Contact support: support@ceylonhs.com'),
-                ),
-              );
+              launchUrl(Uri.parse('mailto:support@ceylonhs.com?subject=CeylonHS Enterprise Inquiry'));
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
-              foregroundColor: accentBlue,
+              foregroundColor: AppColors.accentBlue,
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -483,7 +470,7 @@ class _PricingPageState extends State<PricingPage> {
               _processUpgrade(context, plan);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: primaryBlue,
+              backgroundColor: AppColors.primaryBlue,
             ),
             child: const Text('Upgrade'),
           ),
@@ -492,17 +479,43 @@ class _PricingPageState extends State<PricingPage> {
     );
   }
 
-  void _processUpgrade(BuildContext context, PricingPlan plan) {
-    // Simulate payment processing
+  Future<void> _processUpgrade(BuildContext context, PricingPlan plan) async {
     Navigator.pop(context);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Successfully upgraded to ${plan.displayName} plan!'),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    final user = _authService.user;
+    if (user == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please log in to upgrade your plan.'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+      return;
+    }
+
+    try {
+      await _pricingService.upgradeSubscription(user.id, plan.tier);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Successfully upgraded to ${plan.displayName} plan!'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Upgrade failed: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
 
     // Reload subscription info
     _loadSubscription();

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../config.dart';
 import '../models/user_model.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/search_history_service.dart';
+import '../theme/app_colors.dart';
 import 'search_page.dart';
 
 /// Dedicated page for viewing and managing recent searches.
@@ -28,11 +28,6 @@ class _RecentsPageState extends State<RecentsPage> {
   bool _isLoadingServer = false;
   String? _error;
   String _filterText = '';
-
-  static const Color primaryBlue = Color(0xFF0B3EA8);
-  static const Color lightGray = Color(0xFFF5F5F5);
-  static const Color darkGray = Color(0xFF2C3442);
-  static const Color mediumGray = Color(0xFF5D6778);
 
   @override
   void initState() {
@@ -96,7 +91,7 @@ class _RecentsPageState extends State<RecentsPage> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: const Text('Clear'),
           ),
         ],
@@ -107,7 +102,7 @@ class _RecentsPageState extends State<RecentsPage> {
 
     await _history.clearAll();
     setState(() => _localRecents.clear());
-    
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Recent searches cleared')),
@@ -125,7 +120,7 @@ class _RecentsPageState extends State<RecentsPage> {
     if (_auth.isLoggedIn) {
       await _api.recordSearch(query: query);
     }
-    
+
     // Navigate to search with the query
     if (mounted) {
       Navigator.push(
@@ -161,7 +156,7 @@ class _RecentsPageState extends State<RecentsPage> {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        foregroundColor: primaryBlue,
+        foregroundColor: AppColors.primaryBlue,
       ),
       body: Column(
         children: [
@@ -174,10 +169,10 @@ class _RecentsPageState extends State<RecentsPage> {
               },
               decoration: InputDecoration(
                 hintText: 'Filter searches...',
-                prefixIcon: const Icon(Icons.search, color: mediumGray),
+                prefixIcon: const Icon(Icons.search, color: AppColors.textMedium),
                 suffixIcon: _filterText.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear, color: mediumGray),
+                        icon: const Icon(Icons.clear, color: AppColors.textMedium),
                         onPressed: () {
                           setState(() => _filterText = '');
                         },
@@ -185,7 +180,7 @@ class _RecentsPageState extends State<RecentsPage> {
                     : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
+                  borderSide: const BorderSide(color: AppColors.cardBorder),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
@@ -194,7 +189,7 @@ class _RecentsPageState extends State<RecentsPage> {
               ),
             ),
           ),
-          
+
           // Content
           Expanded(
             child: _buildContent(),
@@ -225,7 +220,7 @@ class _RecentsPageState extends State<RecentsPage> {
                   const Text(
                     'Local Recent Searches',
                     style: TextStyle(
-                      color: darkGray,
+                      color: AppColors.textHeading,
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                     ),
@@ -236,7 +231,7 @@ class _RecentsPageState extends State<RecentsPage> {
                     icon: const Icon(Icons.delete_outline, size: 16),
                     label: const Text('Clear'),
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.redAccent,
+                      foregroundColor: AppColors.error,
                       padding: EdgeInsets.zero,
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -285,7 +280,7 @@ class _RecentsPageState extends State<RecentsPage> {
                 child: Text(
                   'Search History (${_serverHistory.length} total)',
                   style: const TextStyle(
-                    color: darkGray,
+                    color: AppColors.textHeading,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
@@ -306,25 +301,25 @@ class _RecentsPageState extends State<RecentsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.history,
             size: 64,
-            color: Colors.grey[300],
+            color: AppColors.textMuted,
           ),
           const SizedBox(height: 16),
-          Text(
+          const Text(
             'No recent searches',
             style: TextStyle(
-              color: Colors.grey[600],
+              color: AppColors.textMedium,
               fontSize: 18,
               fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 8),
-          Text(
+          const Text(
             'Your search history will appear here',
             style: TextStyle(
-              color: Colors.grey[500],
+              color: AppColors.textLight,
               fontSize: 14,
             ),
           ),
@@ -348,7 +343,7 @@ class _RecentsPageState extends State<RecentsPage> {
             icon: const Icon(Icons.search),
             label: const Text('Start Searching'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: primaryBlue,
+              backgroundColor: AppColors.primaryBlue,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(
                 horizontal: 24,
@@ -379,7 +374,7 @@ class _RecentsPageState extends State<RecentsPage> {
               const Icon(
                 Icons.access_time,
                 size: 20,
-                color: mediumGray,
+                color: AppColors.textMedium,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -389,7 +384,7 @@ class _RecentsPageState extends State<RecentsPage> {
                     Text(
                       query,
                       style: const TextStyle(
-                        color: darkGray,
+                        color: AppColors.textHeading,
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
@@ -400,7 +395,7 @@ class _RecentsPageState extends State<RecentsPage> {
                     Text(
                       subtitle,
                       style: const TextStyle(
-                        color: Color(0xFFB7BFCC),
+                        color: AppColors.textMuted,
                         fontSize: 12,
                       ),
                     ),
@@ -408,7 +403,7 @@ class _RecentsPageState extends State<RecentsPage> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.close, size: 18, color: mediumGray),
+                icon: const Icon(Icons.close, size: 18, color: AppColors.textMedium),
                 onPressed: onRemove,
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints.tightFor(
@@ -436,7 +431,7 @@ class _RecentsPageState extends State<RecentsPage> {
               const Icon(
                 Icons.history,
                 size: 20,
-                color: mediumGray,
+                color: AppColors.textMedium,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -446,7 +441,7 @@ class _RecentsPageState extends State<RecentsPage> {
                     Text(
                       item.queryText,
                       style: const TextStyle(
-                        color: darkGray,
+                        color: AppColors.textHeading,
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
@@ -457,7 +452,7 @@ class _RecentsPageState extends State<RecentsPage> {
                     Text(
                       '${item.resultsCount} results',
                       style: const TextStyle(
-                        color: Color(0xFFB7BFCC),
+                        color: AppColors.textMuted,
                         fontSize: 12,
                       ),
                     ),
@@ -471,13 +466,13 @@ class _RecentsPageState extends State<RecentsPage> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: lightGray,
+                    color: AppColors.chipBg,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     item.topResultHscode!,
                     style: const TextStyle(
-                      color: primaryBlue,
+                      color: AppColors.primaryBlue,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),

@@ -124,7 +124,7 @@ final Map<String, FeaturedCategory> defaultFeaturedCategories = {
     id: 'cosmetics',
     name: 'Cosmetics',
     description: 'Beauty and personal care',
-    iconCodePoint: '0xealb', // spa_outlined
+    iconCodePoint: '0xea1b', // spa_outlined
     order: 5,
     createdAt: DateTime.now(),
   ),
