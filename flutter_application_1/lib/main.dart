@@ -951,7 +951,7 @@ class _MainHomePageState extends State<MainHomePage> {
           SearchPage(isEmbedded: true, initialQuery: _searchQuery),
           const RecentsPage(isEmbedded: true),
           const PricingPage(isEmbedded: true),
-          const _ProfileContent(),
+          const UserProfilePage(isEmbedded: true),
         ],
       ),
       bottomNavigationBar: Container(
@@ -1079,6 +1079,25 @@ class _HomeContentState extends State<_HomeContent> {
     }
   }
 
+  double _categoryMaxExtent(double width) {
+    if (width >= 900) return 220;
+    if (width >= 600) return 190;
+    return 168;
+  }
+
+  double _categorySpacing(double width) {
+    if (width >= 900) return 16;
+    if (width >= 600) return 14;
+    return 10;
+  }
+
+  double _categoryAspectRatio(double width) {
+    if (width >= 900) return 1.28;
+    if (width >= 600) return 1.18;
+    if (width >= 380) return 1.08;
+    return 0.96;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1110,17 +1129,27 @@ class _HomeContentState extends State<_HomeContent> {
                             ),
                           ),
                           const Spacer(),
-                          Container(
-                            width: 28,
-                            height: 28,
-                            decoration: const BoxDecoration(
-                              color: Color(0xE6FFFFFF),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.person,
-                              size: 18,
-                              color: Color(0xFF0B3EA8),
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const UserProfilePage(),
+                                ),
+                              );
+                            },
+                            borderRadius: BorderRadius.circular(14),
+                            child: Container(
+                              width: 28,
+                              height: 28,
+                              decoration: const BoxDecoration(
+                                color: Color(0xE6FFFFFF),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.person,
+                                size: 18,
+                                color: Color(0xFF0B3EA8),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -1275,29 +1304,37 @@ class _HomeContentState extends State<_HomeContent> {
                                 ),
                               ),
                             )
-                          : GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                                childAspectRatio: 1.5,
+                            : LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final width = constraints.maxWidth;
+                                  final spacing = _categorySpacing(width);
+                                  final maxExtent = _categoryMaxExtent(width);
+                                  final aspectRatio = _categoryAspectRatio(width);
+
+                                  return GridView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: maxExtent,
+                                      crossAxisSpacing: spacing,
+                                      mainAxisSpacing: spacing,
+                                      childAspectRatio: aspectRatio,
+                                    ),
+                                    itemCount: _featuredCategories.length,
+                                    itemBuilder: (context, index) {
+                                      final category = _featuredCategories[index];
+                                      return _FeaturedCategoryCard(
+                                        icon: category.getIconData(),
+                                        label: category.name,
+                                        onTap: () =>
+                                            widget.onSearch?.call(category.name),
+                                      );
+                                    },
+                                  );
+                                },
                               ),
-                              itemCount: _featuredCategories.length,
-                              itemBuilder: (context, index) {
-                                final category = _featuredCategories[index];
-                                return GestureDetector(
-                                  onTap: () =>
-                                      widget.onSearch?.call(category.name),
-                                  child: _FeaturedCategoryCard(
-                                    icon: category.getIconData(),
-                                    label: category.name,
-                                  ),
-                                );
-                              },
-                            ),
                     ],
                   ),
                 ),
@@ -1309,14 +1346,16 @@ class _HomeContentState extends State<_HomeContent> {
   }
 }
 
-class _ProfileContent extends StatefulWidget {
-  const _ProfileContent();
+class UserProfilePage extends StatefulWidget {
+  const UserProfilePage({super.key, this.isEmbedded = false});
+
+  final bool isEmbedded;
 
   @override
-  State<_ProfileContent> createState() => _ProfileContentState();
+  State<UserProfilePage> createState() => _UserProfilePageState();
 }
 
-class _ProfileContentState extends State<_ProfileContent> {
+class _UserProfilePageState extends State<UserProfilePage> {
   static const Color primaryBlue = Color(0xFF0B3EA8);
   final AuthService _auth = AuthService();
 
@@ -1337,6 +1376,14 @@ class _ProfileContentState extends State<_ProfileContent> {
     if (!isLoggedIn || user == null) {
       return Scaffold(
         backgroundColor: Colors.white,
+        appBar: widget.isEmbedded
+            ? null
+            : AppBar(
+                title: const Text('Profile'),
+                backgroundColor: primaryBlue,
+                foregroundColor: Colors.white,
+                elevation: 0,
+              ),
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -1373,7 +1420,16 @@ class _ProfileContentState extends State<_ProfileContent> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: widget.isEmbedded
+          ? null
+          : AppBar(
+              title: const Text('Profile'),
+              backgroundColor: primaryBlue,
+              foregroundColor: Colors.white,
+              elevation: 0,
+            ),
       body: SafeArea(
+        top: widget.isEmbedded,
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
           child: Column(
@@ -1634,34 +1690,93 @@ class _RecentSearchCard extends StatelessWidget {
 }
 
 class _FeaturedCategoryCard extends StatelessWidget {
-  const _FeaturedCategoryCard({required this.icon, required this.label});
+  const _FeaturedCategoryCard({
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
 
   final IconData icon;
   final String label;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 92,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 30, color: const Color(0xFF6FA0D9)),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Color(0xFF2C3442),
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final compact = width < 155;
+        final spacious = width >= 200;
+        final iconSize = spacious ? 34.0 : (compact ? 26.0 : 30.0);
+        final fontSize = spacious ? 16.0 : (compact ? 13.5 : 15.0);
+        final verticalPadding = spacious ? 18.0 : (compact ? 12.0 : 14.0);
+        final horizontalPadding = spacious ? 16.0 : (compact ? 12.0 : 14.0);
+
+        return Semantics(
+          button: true,
+          label: 'Featured category $label',
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(18),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 180),
+                curve: Curves.easeOutCubic,
+                padding: EdgeInsets.symmetric(
+                  horizontal: horizontalPadding,
+                  vertical: verticalPadding,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: const Color(0xFFD9E5F5),
+                  ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x120B3EA8),
+                      blurRadius: 18,
+                      offset: Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: iconSize + 18,
+                      height: iconSize + 18,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEAF3FF),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(
+                        icon,
+                        size: iconSize,
+                        color: const Color(0xFF2E73D3),
+                      ),
+                    ),
+                    SizedBox(height: compact ? 10 : 12),
+                    Text(
+                      label,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: const Color(0xFF2C3442),
+                        fontSize: fontSize,
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

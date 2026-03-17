@@ -1,0 +1,97 @@
+# Conclusion {#sec-conclusion}
+
+## Chapter Overview
+
+This chapter concludes the CW2 implementation report by assessing the achievement of aims and objectives established in CW1, documenting deviations from the original scope, identifying project limitations, proposing future enhancements, noting any extra-curricular contributions, and providing concluding remarks on the CeylonHS project.
+
+## Achievements of Aims and Objectives {#sec-achievements}
+
+The CW1 design phase established the primary aim of designing and developing an intelligent HS Code Finder System for Sri Lanka Customs that enhances accuracy, efficiency, and transparency in trade classification. @tbl-objectives-eval assesses the achievement of each objective.
+
+| CW1 Objective | Implementation Evidence | Achievement |
+|---|---|---|
+| Develop a web-based application for HS code search | Next.js web application deployed at ceylonhs.com with SSR landing page, search, favourites, history, and admin pages | Fully achieved |
+| Integrate Sri Lanka Customs tariff dataset | 16,000+ HS codes loaded from cleaned CSV, indexed in FAISS (384-dim vectors) with metadata | Fully achieved |
+| Implement smart keyword search and matching algorithm | Seven-stage hybrid pipeline: HS detection → typo correction → semantic search → merge/rank → LLM enrichment → re-search → response construction | Fully achieved |
+| Display HS code, description, and duty rate | Detail pages show full HS hierarchy (5 levels), description, section, parent, and sub-classifications | Fully achieved |
+| Matching percentage indicator | Colour-coded relevance badges (green ≥50%, yellow 30–50%, grey <30%) with confidence bar on all result cards | Fully achieved |
+| Design responsive UI for general users and customs officers | Next.js responsive design (4 breakpoints) + Flutter cross-platform mobile app with bottom tab navigation | Fully achieved |
+| Officer login system for internal data updates | Admin role-based access control with Firebase authentication; admin dashboard with 5 management tabs | Fully achieved |
+| AI chatbot integration for query assistance | Groq Llama 3.3 70B chatbot with scoped system prompt, knowledge base context, and floating UI widget | Fully achieved |
+| Cross-platform mobile application | Flutter application supporting Android/iOS with Google Sign-In, search, favourites, history, and admin | Fully achieved (additional to CW1 scope) |
+| CI/CD pipeline and cloud deployment | GitHub Actions CI/CD with automated testing and SSH deployment to DigitalOcean droplet | Fully achieved (additional to CW1 scope) |
+
+: Achievement of CW1 Objectives {#tbl-objectives-eval}
+
+All nine objectives from CW1 were fully achieved, with two additional capabilities (cross-platform mobile app and CI/CD pipeline) implemented beyond the original scope.
+
+## Deviations {#sec-deviations}
+
+Several changes were made from the original CW1 scope based on technical discoveries and requirements refinement during implementation. @tbl-deviations documents each deviation with justification.
+
+| Area | CW1 Plan | CW2 Implementation | Justification |
+|---|---|---|---|
+| Backend framework | Flask | FastAPI | FastAPI provides native async support, automatic OpenAPI documentation, and Pydantic validation — essential for the high-concurrency search workload |
+| Frontend framework | React.js (SPA) | Next.js 16 (SSR/SSG) | Server-side rendering was required for SEO optimisation; the original SPA had zero crawlable content for search engines |
+| Embedding model | all-MiniLM-l12-v2 | all-MiniLM-L6-v2 | The L6 variant provides sufficient quality at significantly faster CPU inference speed, critical for sub-100ms search latency on a single-core VPS |
+| Search backend | Single search engine | Dual backend (FAISS + Typesense) | Factory pattern with auto-fallback ensures zero downtime; Typesense adds BM25 keyword matching alongside vector search |
+| Mobile platform | Not specified in CW1 | Flutter cross-platform app | Trade professionals frequently work in the field; a native mobile experience addresses this use case better than a responsive web app alone |
+| Database | Not specified | SQLite (dev) + PostgreSQL (prod) | Async SQLAlchemy with dialect-aware configuration enables simple development with robust production deployment |
+| LLM provider | Not specified | Multi-provider cascade (Groq/Gemini/Cohere) | Single-provider rate limits (30 RPM on free tiers) were insufficient; the cascade distributes load across three providers |
+
+: Deviations from CW1 Scope {#tbl-deviations}
+
+All deviations were driven by practical engineering requirements discovered during implementation. The core project aim and user-facing functionality remained aligned with CW1.
+
+## Limitations of the Project {#sec-limitations}
+
+Despite successful implementation of all core objectives, several limitations were identified:
+
+1. **English-only interface** — The system currently supports only English-language queries and descriptions. Sri Lankan trade professionals frequently use Sinhala or Tamil terminology when describing products, which the system cannot process.
+
+2. **Brand name coverage** — The LLM enrichment pipeline depends on the training knowledge of the underlying models (Llama 3.3, Gemini, Cohere). Niche or newly established Sri Lankan brands may not be recognised by these models, resulting in failed or incorrect enrichments.
+
+3. **No payment integration** — While the pricing tiers (Starter $3, Business $5, Enterprise $9) are displayed, no actual payment gateway (Stripe, PayPal) has been integrated. Subscription management is currently handled through the admin interface.
+
+4. **Single-server deployment** — The production system runs on a single DigitalOcean droplet without horizontal scaling or load balancing. Under very high concurrent load, performance may degrade.
+
+5. **No offline mobile capability** — The Flutter application requires an active internet connection for all search operations. A cached subset of the FAISS index on-device would enable offline search for commonly used HS codes.
+
+6. **Limited training data** — While the training data collection mechanism is operational, insufficient volume has been collected for meaningful embedding model fine-tuning. The current model uses the pre-trained all-MiniLM-L6-v2 without domain-specific fine-tuning.
+
+7. **Manual admin operations** — Some administrative tasks (granting admin role, seeding categories) require running Python scripts on the server rather than being exposed through the admin dashboard UI.
+
+8. **No automated integration tests** — While unit tests cover individual endpoints, end-to-end integration tests spanning the full search pipeline (including actual FAISS search and LLM enrichment) are not part of the CI pipeline due to model download requirements.
+
+## Future Enhancements {#sec-future}
+
+Based on the limitations identified and user feedback from the evaluation phase, the following enhancements are proposed:
+
+| Priority | Enhancement | Description | Complexity |
+|---|---|---|---|
+| High | Multi-language support | Add Sinhala and Tamil HS code descriptions and query processing | High |
+| High | Payment integration | Connect pricing tiers to Stripe/PayPal for subscription billing | Medium |
+| High | Embedding fine-tuning | Use collected training pairs to fine-tune all-MiniLM-L6-v2 for HS domain | Medium |
+| Medium | Offline mobile search | Cache FAISS index subset on-device for connectivity-independent search | High |
+| Medium | Bulk classification | CSV upload for batch HS code classification (customs broker feature) | Medium |
+| Medium | Public API | REST API with API key authentication for programmatic access (paid tier) | Medium |
+| Low | ASYCUDA integration | Connect with Sri Lanka's ASYCUDA World system for declaration pre-filling | High |
+| Low | Horizontal scaling | Kubernetes deployment with load balancing for high-availability | High |
+
+: Proposed Future Enhancements {#tbl-future}
+
+## Extra Work {#sec-extra-work}
+
+*(This section should be completed by team members listing any competitions, conferences, hackathons, or research activities undertaken during the SDGP period. Proof of participation should be included as appendix items.)*
+
+## Concluding Remarks {#sec-concluding-remarks}
+
+CeylonHS was successfully designed, implemented, and deployed as a production-ready AI-powered HS code search platform for Sri Lanka. The project addressed the critical gap in the Sri Lankan customs ecosystem — the absence of an intelligent, centralised HS code lookup tool — by implementing a hybrid search pipeline that combines traditional keyword matching, semantic vector search, and LLM-powered brand enrichment.
+
+The system demonstrates several technical innovations: a multi-provider LLM cascade that maximises free-tier availability across three AI providers with permanent caching; a dual-backend search architecture with automatic fallback for zero-downtime reliability; and a continuous learning loop that collects training data from production search interactions for future model improvement.
+
+The project was delivered through three integrated platforms — a FastAPI backend, a Flutter mobile application, and a Next.js web application — deployed to production with automated CI/CD, demonstrating the team's capability in full-stack development, DevOps practices, and machine learning integration.
+
+The development process also yielded valuable engineering lessons, particularly during the Sprint 1 production outage that reinforced the importance of testing discipline, feature branching, and deployment checklists. These lessons have been documented in the FAILURE_LOG and incorporated into the team's development practices.
+
+CeylonHS represents a meaningful step toward digitising Sri Lanka's trade classification infrastructure, aligning with national digital transformation goals and demonstrating the practical application of AI technologies to domain-specific information retrieval challenges.

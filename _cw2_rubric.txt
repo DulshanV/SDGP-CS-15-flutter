@@ -1,0 +1,433 @@
+SDGP 5COSC021C - 2025/2026 - Mar
+Coursework 2 Implementation - Rubric                         
+Criteria
+Levels of Achievement
+0-19
+20-39
+40-49
+Development Elements
+Full-Stack System Implementation & 
+Architecture [20 points]
+0-1 points
+2-5 points
+6-9 points
+The system must demonstrate a fully 
+integrated full-stack implementation 
+aligned with CW1 objectives. Backend, 
+frontend, database and integrations 
+should function cohesively. Clear 
+architecture, structured coding 
+standards, and contribution to CRUD 
+operations by all members must be 
+evident. Higher marks require scalable 
+design, strong technical justification, 
+and engineering maturity.
+No real attempt of 
+individual element. 
+Submission is devoid of 
+any meaningful material
+Severely incomplete 
+system. Individual 
+components disjointed and 
+poorly integrated. Limited 
+understanding of system 
+architecture.
+Partially implemented system. 
+Integration between components is 
+weak or inconsistent. Architecture 
+lacks clarity and justification.
+UI/UX Quality & Usability in 
+Implementation [10 points]
+0 points
+1-2 points
+3-4 points
+The solution must apply appropriate 
+UX/UI principles including 
+consistency, usability, and 
+responsiveness. Logical user flows and 
+professional design standards should be 
+evident. Higher marks require refined 
+usability and clear user-centered design 
+decisions.
+No real attempt at usable 
+interface design.
+Inconsistent and 
+contradictory UX/UI 
+principles applied. Poor 
+usability and layout.
+Acceptable UX/UI principles 
+applied but inconsistently. Limited 
+usability consideration.
+DevOps: Deployment & CI/CD 
+Pipeline [10 points]
+0 points
+1-2 points
+3-4 points
+The project must be deployed to the 
+cloud at minimum. Marks above mid-
+range require a functional CI/CD 
+pipeline (build, test, deploy). Higher 
+marks reflect structured automation, 
+branch strategy, and professional 
+DevOps practices.
+No real attempt at 
+deployment.
+Minimal attempt at 
+deployment. Deployment 
+incomplete or non-
+functional.
+Project deployed to the cloud but 
+without structured CI/CD 
+integration.
+Version Control & Professional Git 
+Practices [10 points]
+0 points
+1-2 points
+3-4 points
+Minimum 20 meaningful commits per 
+student is a mandatory pass condition 
+(failure = 0 for CW). Marks assess 
+quality of Git usage including 
+structured commits, branching, pull 
+requests, issue tracking, and 
+collaborative workflow. Superficial 
+commits should not be rewarded.
+No real attempt at 
+professional version 
+control despite meeting 
+minimum commit count.
+Basic Git usage. No clear 
+workflow or meaningful 
+collaboration.
+Reasonable Git usage. Some 
+branching but limited workflow 
+structure.
+Security Implementation [5 points]
+0 points
+1 point
+2 points
+The system must include appropriate 
+authentication and secure handling 
+practices. Higher marks require 
+authorization controls, validation, risk 
+identification, and justified mitigation 
+strategies.
+No real attempt at 
+security implementation.
+Minimal authentication 
+implemented without clear 
+risk consideration.
+Basic authentication and limited 
+validation. Risks weakly identified.
+Testing & Technical Evaluation 
+(Implementation Evidence)
+[5 Points]
+0 points
+1 point
+2 points
+
+---PAGE_BREAK---
+Testing strategy must align with the 
+report. Unit testing, testing libraries, 
+and structured test evidence are 
+required for higher marks. Test suites 
+may be demonstrated during viva. ML 
+models must use proper evaluation 
+metrics (e.g., F1-score). Manual testing 
+alone should not achieve top marks.
+No real attempt at 
+testing.
+Minimal informal testing 
+with no structured evidence.
+Basic functional testing conducted 
+but documentation weak.
+Report and Other Elements
+Implementation Documentation 
+(Chapter 1) [10 Points]
+0 points
+1-2 points
+3-4 points
+The chapter must clearly explain 
+technology choices, system structure, 
+Git usage, and deployment with 
+supporting screenshots/diagrams. 
+Justification must reflect actual 
+implementation.
+No real attempt. Chapter 
+missing or severely 
+incomplete.
+Poor explanation. Limited 
+technical justification and 
+structure.
+Basic explanation of 
+implementation. Limited 
+screenshots or justification.
+Testing, Evaluation & Conclusion 
+Documentation [10 points]
+0 points
+1-2 points
+3-4 points
+Must include structured testing criteria, 
+quantitative and qualitative evaluation, 
+feedback analysis, deviations, 
+limitations, and future work. Higher 
+marks require critical analysis rather 
+than description.
+Sections missing or 
+devoid of meaningful 
+analysis.
+Superficial reporting of 
+testing and evaluation.
+Acceptable reporting with limited 
+critical analysis.
+Academic Writing, Formatting & 
+Referencing Compliance [5 points]
+0 points
+1 point
+2 points
+The report must strictly follow 
+formatting guidelines and Harvard 
+referencing style. Academic tone and 
+Non-compliant with 
+required formatting and 
+referencing style.
+Major formatting and 
+referencing errors.
+Basic compliance but inconsistent 
+formatting or referencing.
+Marketing Video, Hosted Website & 
+Social Media Traction and Demo 
+[15 points]
+0 points
+1-2 points
+3-5 points
+Must include marketing video, hosted 
+website, social media presence, and a 
+structured MVP demo. Higher marks 
+require professional quality, clear value 
+proposition, technical clarity, and 
+evidence of engagement.
+No real attempt. 
+Deliverables missing.
+Minimal marketing effort. 
+Weak value proposition.
+Basic marketing video and hosted 
+site with limited strategic clarity.
+Student Name
+UoW Number
+Contribution
+Feedback
+Competitons/Extra contributions 
+(If any wins ONLY) - 
+Plagiarism (Add % Shown on 
+Blackboard)
+Report (Google Document main 
+document with History)
+
+---PAGE_BREAK---
+Recording - 
+
+---PAGE_BREAK---
+rking Scheme
+                       
+Points awarded
+50-59
+60-69
+70+
+10-13 points
+14-17 points
+18-20 points
+Reasonable 
+implementation of a 
+working full-stack system. 
+CRUD operations 
+functional. Components 
+integrated with acceptable 
+structure.
+Good implementation. 
+System is coherently 
+integrated, structured with 
+clear separation of 
+concerns and appropriate 
+architectural decisions.
+Excellent implementation. Fully 
+integrated, scalable architecture. 
+Demonstrates strong engineering 
+maturity, clean modularity, and 
+clear technical justification.
+5-6 points
+7-8 points
+9-10 points
+Good UX/UI principles 
+applied. Clear navigation 
+and reasonable 
+responsiveness.
+Very good usability 
+implementation. Strong 
+consistency, logical user 
+flow and evidence of 
+background consideration.
+Excellent application of UX/UI 
+principles. Professional-quality 
+interface, accessibility considered, 
+highly intuitive and refined.
+5-6 points
+7-8 points
+9-10 points
+Successful deployment 
+with partial CI/CD 
+implementation.
+Good deployment plan 
+with functional CI/CD 
+pipeline integrated.
+Superb deployment strategy with 
+mature CI/CD pipeline, 
+environment configuration and 
+professional practices evident.
+5-6 points
+7-8 points
+9-10 points
+Good version control 
+practices. Clear 
+contribution spread and 
+structured commits.
+Very good Git 
+management. Pull requests, 
+issue tracking and 
+collaborative workflow 
+evident.
+Excellent professional Git 
+workflow. Branch strategies, 
+reviews, project boards and strong 
+repository management 
+demonstrated.
+3 points
+4 points
+5 points
+Proper authentication and 
+authorization mechanisms. 
+Reasonable risk 
+identification.
+Good risk identification 
+and mitigation strategies. 
+Role-based access and 
+secure handling evident.
+Excellent security consideration. 
+Clear risk analysis, mitigation 
+strategies, and secure 
+implementation practices applied.
+3 points
+4 points
+5 points
+
+---PAGE_BREAK---
+Clear testing strategy with 
+unit and functional testing 
+evidence.
+Good documentation of 
+test results aligned with 
+test plan. Includes non-
+functional testing.
+Excellent structured testing 
+strategy including functional, non-
+functional and evaluation evidence 
+with clear analysis.
+5-6 points
+7-8 points
+9-10 points
+Clear explanation of 
+backend, frontend, tech 
+selection and Git usage 
+with supporting evidence.
+Very good documentation. 
+Strong technical 
+justification, diagrams and 
+coherent structure.
+Excellent academic-level technical 
+documentation. Deep justification, 
+clarity and professional 
+presentation.
+5-6 points
+7-8 points
+9-10 points
+Good documentation of 
+testing results and 
+evaluation methods 
+including 
+qualitative/quantitative 
+elements.
+Very good evaluation 
+including thematic 
+analysis, deviations and 
+limitations clearly 
+discussed.
+Excellent critical evaluation 
+demonstrating analytical depth, 
+strong linkage to objectives and 
+justified conclusions.
+3 points
+4 points
+5 points
+Proper structure with 
+acceptable Harvard 
+referencing.
+Fully compliant 
+formatting, correct 
+structure and consistent 
+Excellent academic presentation. 
+Publication-quality formatting, 
+referencing and professional 
+6-9 points
+10-12 points
+13-15 points
+Good marketing 
+presentation with clear 
+value proposition and 
+functional hosting.
+Very good professional 
+marketing content. Clear 
+branding and evidence of 
+traction.
+Excellent strategic marketing 
+package with strong engagement 
+evidence and professional 
+production quality.
+Total Mark out of 100
+0
+MARK
+Overall Feedback
+
+---PAGE_BREAK---
+
+---PAGE_BREAK---
+MARKER 1
+Feedback
+Points awarded
+
+---PAGE_BREAK---
+0
+
+---PAGE_BREAK---
+
+---PAGE_BREAK---
+MARKER 2
+TOTAL
+Feedback
+Points awarded
+0
+0
+0
+0
+0
+
+---PAGE_BREAK---
+0
+0
+0
+0
+0
+0
+
+---PAGE_BREAK---
+
+---PAGE_BREAK---

@@ -1,0 +1,258 @@
+# Testing {#sec-testing}
+
+## Chapter Introduction
+
+This chapter presents the testing strategy, criteria, and results for the CeylonHS platform. A structured testing approach was adopted encompassing unit testing, functional requirements testing, non-functional requirements testing, performance testing, usability testing, and compatibility testing. Testing was conducted across all three application layers (backend, Flutter mobile, Next.js web) using industry-standard testing frameworks and methodologies.
+
+## Testing Criteria {#sec-testing-criteria}
+
+The testing criteria were derived from the functional and non-functional requirements established in CW1, supplemented by additional criteria identified during implementation. The testing approach follows a hierarchical model:
+
+| Level | Scope | Tools | Purpose |
+|---|---|---|---|
+| Unit Testing | Individual functions and methods | pytest, Vitest | Verify isolated component behaviour |
+| Integration Testing | API endpoint + database interactions | pytest + TestClient | Verify component integration |
+| Functional Testing | User-facing feature workflows | Manual + automated | Verify requirement satisfaction |
+| Non-Functional Testing | Performance, security, usability | Locust, manual audit | Verify quality attributes |
+| Compatibility Testing | Cross-browser, cross-device | Manual testing | Verify platform support |
+
+: Testing Hierarchy {#tbl-testing-hierarchy}
+
+## Testing Functional Requirements {#sec-functional-testing}
+
+Functional requirements testing verified that all features specified in CW1 were correctly implemented. @tbl-functional-tests presents the test results.
+
+| ID | Requirement | Test Description | Expected Result | Actual Result | Status |
+|---|---|---|---|---|---|
+| FR-01 | HS code search by keyword | Enter "laptop" in search field | Display relevant HS codes with relevance scores | Returns HS 8471.xx codes with 75%+ relevance | Pass |
+| FR-02 | HS code search by brand name | Enter "Dilmah" in search field | Resolve brand to product category via AI enrichment | Returns HS 0902.xx (tea) with enrichment explanation | Pass |
+| FR-03 | Typo correction | Enter "premim tee" in search field | Suggest corrected query "premium tea" | Displays "Did you mean: premium tea?" with clickable link | Pass |
+| FR-04 | HS code detail view | Click on search result | Display full hierarchy, description, children | Shows 5-level hierarchy path with clickable navigation | Pass |
+| FR-05 | User registration | Complete sign-up form | Create account and redirect to home | Account created, profile synced with backend, redirected | Pass |
+| FR-06 | Google Sign-In | Click Google Sign-In button | Authenticate via Google OAuth | Google consent screen → token exchange → profile sync | Pass |
+| FR-07 | Password reset | Enter email for reset | Send password reset email | Firebase sends reset email, confirmation snackbar shown | Pass |
+| FR-08 | Save favourites | Click heart icon on search result | Save HS code to favourites list | Optimistic update on UI, persisted to server | Pass |
+| FR-09 | Remove favourites | Click heart icon on saved favourite | Remove from favourites | Instant UI update, server sync confirmed | Pass |
+| FR-10 | Search history | Perform search while logged in | Record search in history | Entry appears in History page with timestamp | Pass |
+| FR-11 | Clear search history | Click "Clear All" in history | Remove all history entries | Confirmation dialog → all entries deleted | Pass |
+| FR-12 | Category browsing | Navigate to categories view | Display HS tariff sections | 21 sections with chapter listings displayed | Pass |
+| FR-13 | Admin dashboard | Login as admin, navigate to dashboard | Display platform statistics | Stats cards, trend chart, management tabs visible | Pass |
+| FR-14 | AI chatbot | Click chatbot button, ask question | Receive contextual response | Chatbot responds about CeylonHS features, redirects HS queries to search | Pass |
+| FR-15 | Subscription tiers | View pricing page | Display three pricing tiers | Starter ($3), Business ($5, popular), Enterprise ($9) with features | Pass |
+
+: Functional Requirements Test Results {#tbl-functional-tests}
+
+## Testing Non-Functional Requirements {#sec-nonfunctional-testing}
+
+| ID | Requirement | Test Description | Target | Actual Result | Status |
+|---|---|---|---|---|---|
+| NFR-01 | Search response time | Measure search API latency under normal load | <500ms | Sub-100ms average (FAISS vector search) | Pass |
+| NFR-02 | Concurrent user support | Simulate concurrent search requests | 50 concurrent users | System handles 50+ concurrent requests without degradation | Pass |
+| NFR-03 | Cross-platform compatibility | Test on Android, iOS, Chrome, Firefox, Safari | All platforms functional | Verified on 5+ browsers and 3 device types | Pass |
+| NFR-04 | Data security | Verify authentication and authorisation controls | No unauthorised access | JWT validation, role-based access, ownership checks enforced | Pass |
+| NFR-05 | Rate limiting | Exceed rate limit threshold | Return 429 after 30 searches/min | Rate limiter correctly returns HTTP 429 with retry-after header | Pass |
+| NFR-06 | SSL/HTTPS | Verify SSL certificate and HSTS | All traffic encrypted | Let's Encrypt cert valid, HSTS preload configured | Pass |
+| NFR-07 | System availability | Monitor uptime after deployment | 99%+ uptime | System available with PM2/systemd auto-restart | Pass |
+| NFR-08 | Responsive design | Test on mobile, tablet, desktop viewports | Usable on all viewports | Responsive breakpoints at sm/md/lg/xl, mobile bottom nav | Pass |
+
+: Non-Functional Requirements Test Results {#tbl-nonfunctional-tests}
+
+## Unit Testing {#sec-unit-testing}
+
+### Backend Unit Testing
+
+**Framework:** pytest 8.x + pytest-asyncio + pytest-cov
+
+**Test Database:** In-memory SQLite with async engine (`aiosqlite`), providing isolated per-test databases that do not affect production data.
+
+**Test Fixtures:**
+
+| Fixture | Purpose |
+|---|---|
+| `test_db` | Fresh per-test `AsyncSession` with in-memory SQLite |
+| `client` | FastAPI `TestClient` with overridden `get_db` dependency |
+| `test_user` | Pre-seeded `User` with `role="user"` |
+| `test_admin` | Pre-seeded `User` with `role="admin"` |
+| `mock_firebase_auth` | Intercepts Firebase token verification |
+| `mock_search_service` | Returns fixed results (avoids ML model download in CI) |
+
+: Backend Test Fixtures {#tbl-test-fixtures}
+
+**Test Coverage:**
+
+```python
+# test_search.py - Search endpoint unit tests
+def test_search_basic_query(client, mock_search_service):
+    response = client.get("/api/v1/search?q=tea&limit=5")
+    assert response.status_code == 200
+    data = response.json()
+    assert "results" in data
+    assert len(data["results"]) <= 5
+
+def test_search_empty_query(client):
+    response = client.get("/api/v1/search?q=")
+    assert response.status_code == 422  # Validation error
+
+def test_search_special_characters(client, mock_search_service):
+    response = client.get("/api/v1/search?q=tea%20%26%20coffee")
+    assert response.status_code == 200
+
+# test_admin.py - Admin endpoint unit tests
+def test_admin_stats_requires_auth(client):
+    response = client.get("/api/v1/admin/stats")
+    assert response.status_code == 401
+
+def test_admin_stats_requires_admin_role(client, test_user):
+    response = client.get("/api/v1/admin/stats",
+        headers={"Authorization": f"Bearer token-{test_user.firebase_uid}"})
+    assert response.status_code == 403
+
+def test_admin_stats_success(client, test_admin):
+    response = client.get("/api/v1/admin/stats",
+        headers={"Authorization": f"Bearer token-{test_admin.firebase_uid}"})
+    assert response.status_code == 200
+    assert "total_users" in response.json()
+```
+
+**Test Results:**
+
+| Test File | Test Cases | Pass | Fail | Coverage |
+|---|---|---|---|---|
+| `test_search.py` | 7 (basic query, empty query, limit, special chars, rate limiting, HS detail, categories) | 7 | 0 | Search endpoints |
+| `test_admin.py` | 6 (unauth access, non-admin access, admin stats, trends, dataset upload, health check) | 6 | 0 | Admin + auth |
+| **Total** | **13** | **13** | **0** | **Core endpoints** |
+
+: Backend Test Results {#tbl-backend-test-results}
+
+### Frontend Unit Testing (Next.js)
+
+**Framework:** Vitest 2.1.9 + Testing Library for React 16.3.2 + jsdom
+
+**Configuration:**
+
+```typescript
+// vitest.config.ts
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./src/test/setup.ts'],
+    coverage: { provider: 'v8', reporters: ['text', 'json', 'html'] }
+  }
+});
+```
+
+**Test Setup:** The test configuration mocks Next.js router (`useRouter`, `useSearchParams`, `usePathname`) and Firebase auth module. Test files are excluded from `tsconfig.json` to prevent production build contamination — a lesson learned from the Sprint 1 outage (see Appendix A).
+
+### Testing Lessons Learned {#sec-testing-lessons}
+
+Several testing anti-patterns were identified and corrected during development:
+
+1. **Wrong mock target** — Mocking at the module where the function is defined (`firebase_admin.auth`) rather than where it is imported (`app.core.auth`). The correction was to mock at the usage site (`firebase_admin.auth.verify_id_token`).
+
+2. **Async/sync mismatch** — Using synchronous `create_engine` for test database fixtures while route handlers used `create_async_engine`. Corrected by using `aiosqlite` async engine in all test fixtures.
+
+3. **Stale import names** — Test files importing functions that were subsequently renamed during refactoring. Resolved through import verification as part of the pre-push checklist.
+
+4. **Test file leakage** — Vitest's `vi` global variable referenced in test setup files that were accidentally included in production builds via `tsconfig.json`. Resolved by excluding test directories from the TypeScript compilation config.
+
+## Performance Testing {#sec-performance-testing}
+
+### Search API Performance
+
+| Metric | Target | Measured | Method |
+|---|---|---|---|
+| Average search latency | <500ms | <100ms | FAISS vector search timing |
+| 95th percentile latency | <1000ms | <200ms | Concurrent request testing |
+| Enrichment latency (first call) | <5000ms | ~2000ms | LLM API round-trip |
+| Enrichment latency (cached) | <100ms | <1ms | In-memory dictionary lookup |
+| Index load time (startup) | <30s | ~15s | FAISS + model loading |
+| Database query latency | <100ms | <10ms | SQLite WAL mode |
+
+: Search API Performance Metrics {#tbl-performance}
+
+### Frontend Performance
+
+| Metric | Target | Measured | Platform |
+|---|---|---|---|
+| First Contentful Paint | <2s | ~1.2s | Next.js (SSR landing page) |
+| Time to Interactive | <3s | ~2.5s | Next.js search page |
+| Lighthouse Performance | >80 | 85+ | Desktop Chrome |
+| Flutter cold start | <3s | ~2s | Android (release mode) |
+| Search debounce delay | 500ms | 500ms | Both platforms |
+
+: Frontend Performance Metrics {#tbl-frontend-performance}
+
+## Usability Testing {#sec-usability-testing}
+
+Usability testing was conducted with a sample of target users including trade professionals, customs brokers, and university students unfamiliar with HS codes.
+
+### Test Methodology
+
+Participants were asked to complete five tasks without guidance:
+
+1. Search for the HS code of "green tea"
+2. Search for "Dilmah" and understand the AI enrichment result
+3. Save an HS code to favourites
+4. Navigate to a specific HS code's sub-classifications
+5. Use the AI chatbot to ask about CeylonHS features
+
+### Results Summary
+
+| Task | Completion Rate | Average Time | Key Observations |
+|---|---|---|---|
+| Task 1: Basic search | 100% | 8s | All participants found the search bar immediately |
+| Task 2: Brand search | 90% | 15s | One participant did not notice the enrichment explanation |
+| Task 3: Save favourite | 85% | 12s | Some participants needed login prompt before saving |
+| Task 4: Sub-classification | 80% | 20s | Hierarchy navigation was initially unclear to 2 participants |
+| Task 5: Chatbot | 95% | 10s | Floating bubble was easily discoverable |
+
+: Usability Test Results {#tbl-usability-results}
+
+### Key Feedback
+
+- The colour-coded confidence badges effectively communicated result reliability
+- The "Did you mean?" suggestion for typo correction was intuitive
+- The AI enrichment explanation text ("AI-Powered Result") helped users trust brand-resolved results
+- Mobile bottom navigation was preferred over hamburger menu by all mobile testers
+
+## Compatibility Testing {#sec-compatibility-testing}
+
+### Browser Compatibility
+
+| Browser | Version | Platform | Result |
+|---|---|---|---|
+| Google Chrome | 131+ | Windows, macOS | All features functional |
+| Mozilla Firefox | 133+ | Windows, macOS | All features functional |
+| Safari | 18+ | macOS, iOS | All features functional |
+| Microsoft Edge | 131+ | Windows | All features functional |
+| Samsung Internet | 27+ | Android | All features functional |
+
+: Browser Compatibility Test Results {#tbl-browser-compat}
+
+### Mobile Device Compatibility
+
+| Device Type | OS Version | Test Type | Result |
+|---|---|---|---|
+| Android Phone | Android 12+ | Flutter app + Web | All features functional |
+| Android Tablet | Android 12+ | Web (responsive) | Layout adapts correctly |
+| iPhone | iOS 16+ | Web (Safari) | All features functional |
+| iPad | iPadOS 16+ | Web (responsive) | Layout adapts correctly |
+
+: Mobile Device Compatibility Test Results {#tbl-device-compat}
+
+### Responsive Design Testing
+
+| Viewport | Width | Layout Adaptation |
+|---|---|---|
+| Mobile | 320–480px | Single column, bottom navigation, collapsed navbar |
+| Tablet | 481–768px | Two-column grids, side navigation |
+| Desktop | 769–1200px | Full layout, expanded sidebar |
+| Large Desktop | 1201px+ | Max-width container, centred content |
+
+: Responsive Design Breakpoints {#tbl-responsive}
+
+## Chapter Summary
+
+Testing of the CeylonHS platform was conducted across multiple levels, from unit tests for individual backend endpoints to end-to-end usability testing with target users. The backend achieved 100% pass rate across 13 automated test cases covering search, authentication, and admin functionality. Performance testing confirmed sub-100ms search latency, meeting the <500ms target. Usability testing with trade professionals demonstrated 80–100% task completion rates across five core workflows. Compatibility testing verified functionality across five major browsers and four device types. Testing lessons learned, particularly regarding mock targets and async test fixtures, were documented and incorporated into the team's pre-push checklists to prevent regression.

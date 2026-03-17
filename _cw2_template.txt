@@ -1,0 +1,286 @@
+ 
+ 
+SDGP 2025/26 CW 2 
+“Implementation”  
+Template and Guidelines 
+ 
+Deadline 
+Monday, 23rd of March 2026, on or before 1 PM via 
+Blackboard and Google Form - https://forms.gle/CuBfnEAMXrrpEs1F9  
+ 
+EVERYONE HAS TO SUBMIT BOTH SUBMISSIONS ON BLACKBOARD AND GOOGLE FORM 
+ 
+Vivas will be from the 30th of March 2026 onwards. Viva's schedule will be updated on the SDGP main 
+document. 
+ 
+Mitigation/SC 
+ 
+Please note that you can NOT mitigate the entire module now that we have completed the 
+module. However, if you wish you can apply for a SC and the module team has no problem 
+about it and will approve.  
+ 
+Otherwise, you can mitigate it if you think your project is incomplete. If only 1 member wants to 
+mitigate, the others can submit and face the viva. Viva for students who claim the SC will be 
+done before 30/04. All Mitigated projects approved will be done during the refer/defer period. 
+ 
+Details on the SC and mitigation process must be taken from the registry. 
+ 
+Other useful documents 
+●​ SDGP CW 2 Marking Scheme 
+ 
+Things to submit - 
+1.​ Implementation Zip file (If file is too large for BB, submit the full zip via the Google form and 
+limited zip via BB) 
+2.​ Implementation group report 
+3.​ Demo of MVP Video demonstration (YouTube Unlisted video) 
+4.​ Hosted marketing website 
+5.​ Marketing video 
+6.​ Social Media Page links 
+7.​ Git Commit history (minimum 20 commits) 
+ 
+
+---PAGE_BREAK---
+ 
+ 
+SDGP Module information for the Cover page  
+ 
+Module Name - Software Development Group Project 
+Module Code - 5COSC021C 
+Module Leader - Banuka Athuraliya 
+ 
+Topics to be covered 
+ 
+The following topics must be covered in the Implementation.  
+ 
+1.​ Cover Page 
+2.​ Declaration Page 
+3.​ Abstract + Keywords 
+4.​ Acknowledgement 
+5.​ Table of Contents 
+6.​ List of Figures 
+7.​ List of Tables 
+8.​ Abbreviations table 
+9.​ Chapter 1: Implementation 
+10.​Chapter 2: Testing 
+11.​ Chapter 3: Evaluation 
+12.​Chapter 4: Conclusion 
+13.​References 
+14.​Appendix 
+ 
+ 
+You have to make a demo video of your SDGP prototype and record the 
+functionality working as given in CW 1. If you have a hardware component, 
+you need to demo that functionality too. There can be slight changes to 
+what is mentioned in CW 1, but it has to be explained in the video. 
+(Maximum 20 minutes) 
+ 
+Guidelines to be covered 
+ 
+Ensure to include a good cover page with all the important information according to the university 
+standards. The cover page should not contain a page number. Numbering starts from the declaration page 
+and it should be numbered using lowercase roman letters. 
+The main content of the document starts from this point onwards. 
+The main content should use an indo-arabic numbering system. There is no set page limit for the 
+implementation report. 
+
+---PAGE_BREAK---
+ 
+ 
+You get marks for formatting. Therefore, make sure that the document is well-formatted. The following 
+are mandatory for every team report, 
+●​ The top right of the document should mention what chapter it is. Eg - "Chapter 1 - 
+Implementation" or "Chapter 2 - Testing". It should change from chapter to chapter. This can 
+be done using Section breaks on Microsoft Word. Watch some tutorials on it if you don't know 
+how to do it. 
+●​ Bottom right you should have the page number 
+●​ Bottom left you should have your team name and number (Eg - "IIT - SE-1") 
+●​ Use the appropriate font sizes (H1 size 16, H2 size 14, H3 size 12, and Body size 12) - and the 
+font must be Times New Roman and NOT any other fancy fonts!  
+●​ Make sure the text is justified and proper alignment is there. 
+●​ Images and tables should have captions and must be linked to the list of figures and tables. 
+●​ Don't have blank spacing unnecessarily. 
+It is a must to have the table of contents, list of figures, and list of tables. (All this must be auto-generated 
+and NOT typed) 
+ 
+Make sure to use uniform numbering in the document. Chapter 1 numbering should be 1, 1.1, 1.1.1, etc. 
+Chapter 3 should be 3, 3.1, 3.2, 3.2.1, etc. 
+ 
+Have references to prove your statements or points. It will give credibility to what you say with references 
+most of the time. Rather than you saying something, it is best to use valid research work to prove your 
+statements. It is mandatory to use the Harvard referencing style. 
+ 
+Make sure everyone contributes to the project report, and it is recommended that you use Google docs to 
+collaborate with your team (as this will be checked during the viva to see the Individual contribution) and 
+we recommend you finalize the formatting of the document finally using Microsoft Word.  
+ 
+The report must be written in academic writing, therefore please don't use terms like "We" or "I". Check 
+other IIT thesis or Sample thesis shared to get an idea. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Chapter 1: Implementation 
+
+---PAGE_BREAK---
+ 
+ 
+You can decide the topics that should be covered in your Implementation chapter. To get an 
+idea, check the older thesis shared with you. 
+  
+1.1 Chapter Overview 
+This is a small introduction to your chapter.  
+ 
+1.2 Overview of the prototype 
+ 
+Provide a summary of the implemented prototype 
+ 
+1.3 Technology selections 
+ 
+Justifications on the technologies selected and used. Add a graphic of the tech stack.  
+ 
+1.4 Implementation of the backend component 
+ 
+Explain how the backend is structured (with screenshots and justifications) 
+ 
+1.5 Implementation of the front end component 
+ 
+Explain how the frontend is structured (with screenshots and justifications) 
+ 
+1.6 Implementation of the data science component or hardware component (if applicable) 
+ 
+Explain in detail how the data science component has been implemented (with screenshots and 
+justifications) 
+ 
+1.7 GIT Repository 
+ 
+Explain how you used GIT with your project (with screenshots and justifications) 
+ 
+1.8 Deployments/CI-CD Pipeline 
+ 
+Explain about the deployment pipeline (with screenshots and justifications) 
+ 
+1.9 CRUD operations 
+ 
+This should contain a section for each student and with screenshots of code and justifications, 
+should contain how everyone was involved with the development of CRUD operations. 
+Chapter 2: Testing 
+
+---PAGE_BREAK---
+ 
+ 
+ 
+You have the freedom to decide the topics that should be covered in your Testing chapter. To 
+get an idea, check the older thesis shared with you. 
+ 
+2.1 Chapter Introduction 
+  
+This is a small introduction to your chapter.  
+ 
+2.2 Testing Criteria 
+ 
+Explain the criteria selected for testing 
+ 
+2.3 Testing functional requirements 
+ 
+Test results for all functional requirements 
+ 
+2.4 Testing non-functional requirements 
+ 
+Test results for non-functional requirements 
+ 
+2.5 Unit testing 
+ 
+Proof of unit testing conducted (with screenshots of code snippets, results and justifications) 
+ 
+2.6 Performance testing 
+ 
+Proof of performance testing conducted (with screenshots and justifications) 
+ 
+2.7 Usability testing 
+ 
+Proof of usability testing conducted (with screenshots and justifications) 
+ 
+2.8 Compatibility testing 
+ 
+Proof of compatibility testing conducted (with screenshots and justifications)  
+-​
+Browser compatibility, mobile device compatibility etc. 
+ 
+2.9 Chapter Summary 
+ 
+This is a small summary of your chapter. 
+
+---PAGE_BREAK---
+ 
+ 
+ 
+Chapter 3: Evaluation 
+ 
+You have the freedom to decide the topics that should be covered in your Evaluation chapter. To 
+get an idea, check the older thesis shared with you. 
+ 
+3.1   Chapter Overview 
+This is a small introduction to your chapter.  
+ 
+3.2 Evaluation methods 
+Explanation of evaluation methods used. 
+ 
+3.3 Quantitative evaluation 
+Justifications for quantitative evaluation 
+ 
+3.4 Qualitative evaluation (Feedback from end users, domain experts and industry experts) 
+Justifications for qualitative evaluation. Conduct a thematic analysis. Provide proof where 
+possible.  
+ 
+3.5 Self evaluation 
+Self evaluation must be conducted by all group members individually and this section will have 
+feedback from all group members. 
+ 
+3.6 Chapter Summary 
+This is a small summary of your chapter.
+ 
+
+---PAGE_BREAK---
+ 
+ 
+Chapter 4: Conclusion 
+4.1   Chapter Overview 
+This is a small introduction to your chapter.  
+ 
+4.2 Achievements of aims and objectives 
+Explain how this project has been successfully completed and how the aims and objectives of CW 
+1 - Design and Documentation have been achieved. 
+ 
+4.3 Deviations 
+Explain what was changed from the original scope that was given in CW1. Justify why the 
+changes were made.  
+ 
+4.4 Limitations of the project 
+Explain the limitations of the research and any areas you couldn’t complete due to the limitations 
+with justifications. 
+ 
+4.5 Future enhancements 
+Explain the future enhancements of this project and research 
+ 
+4.6 Extra work (Competitions, research papers, etc) 
+List down and provide proof of all the competitions/conferences/hackathons you or your team 
+has taken part in during the SDGP time. If one person in a team has even participated 
+individually, please add proof here 
+ 
+4.7 Concluding remarks 
+Conclusion of your project 
+References 
+Harvard referencing Westminster style ONLY accepted 
+ 
+Have a separate numbering sequence for the references section and Appendix. Ideally, the page 
+numbering should be Uppercase roman numerals 
+ 
+Appendix 
+Each section under the appendix should be named “Appendix A”, “Appendix B” etc. 
+Continue the numbering sequence from the reference section.  
+ 
+
+---PAGE_BREAK---

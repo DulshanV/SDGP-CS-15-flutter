@@ -1,0 +1,126 @@
+---
+title: "CeylonHS: AI-Powered HS Code Search & Trade Classification Platform"
+subtitle: "CW2 Implementation Report"
+---
+
+::: {.content-visible when-format="typst"}
+
+```{=typst}
+#align(center)[
+  #v(3cm)
+
+  #text(size: 14pt, weight: "bold")[INFORMATICS INSTITUTE OF TECHNOLOGY]
+
+  #text(size: 12pt)[Affiliated with]
+
+  #text(size: 14pt, weight: "bold")[UNIVERSITY OF WESTMINSTER, UK]
+
+  #v(0.5cm)
+
+  #text(size: 12pt)[BEng (Hons) Computer Science]
+
+  #v(0.3cm)
+
+  #text(size: 12pt, weight: "bold")[5COSC021C.Y: Software Development Group Project]
+
+  #text(size: 12pt)[Module Leader: Mr. Banuka Athuraliya]
+
+  #v(0.5cm)
+
+  #text(size: 12pt)[A project by CS-15]
+
+  #v(0.5cm)
+
+  #text(size: 16pt, weight: "bold")["CeylonHS": AI-Powered HS Code Search &\ Trade Classification Platform for Sri Lanka]
+
+  #v(0.3cm)
+
+  #text(size: 12pt)[Supervised by: Ms. Vishmi Embuldeniya]
+
+  #v(1cm)
+
+  #table(
+    columns: (auto, auto, auto),
+    inset: 8pt,
+    align: center,
+    stroke: 0.5pt,
+    [*Name*], [*IIT ID*], [*UOW ID*],
+    [T.R. Jayasekara], [20241953], [w2152987],
+    [D.V. Rathnayake], [20241630], [w2151904],
+    [L.T.R. De Silva], [20231244], [w2120219],
+    [C.A.R. Weerakoon], [20242094], [w2153607],
+    [D.M Dodamwala], [20233064], [w2120414],
+    [W.A.Y.G. Kalpage], [20241289], [w2153567],
+  )
+]
+```
+
+:::
+
+## Declaration {.unnumbered}
+
+The team certifies that the design, development, and documentation of the "CeylonHS" system are entirely their own work. Any ideas, data, images, or text resulting from the work of others (whether published or unpublished) are fully identified as such within the work and attributed to their originators in the text, bibliography, or references. All software code used from open-source libraries has been documented in accordance with the relevant licenses.
+
+| **Full Name** | **Registration ID** |
+|---|---|
+| Thevinu Radin Jayasekara | 20241953 \| w2152987 |
+| Dulshan Vidath Rathnayake | 20241630 \| w2151904 |
+| Liyanamadura Thamadi Ranuki De Silva | 20231244 \| w2120219 |
+| Chanugi Amoda Rathnayaka Weerakoon | 20242094 \| w2153607 |
+| Muditha Dodamwala | 20233064 \| w2120414 |
+| Yasmi Geethma Kalpage | 20241289 \| w2153567 |
+
+: Team Declaration {#tbl-declaration}
+
+## Abstract {.unnumbered}
+
+Accurate classification of goods using the Harmonized System (HS) is essential for international trade, yet Sri Lanka Customs currently relies on inefficient, manual processes involving static PDF documents and printed tariff books. This lack of digitalisation results in time-consuming searches, duty calculation errors, and operational bottlenecks for importers, exporters, and customs officers. This report presents the implementation of "CeylonHS," an intelligent AI-powered HS code search platform designed to modernise and streamline the classification process.
+
+The implemented solution utilises a hybrid search pipeline combining BM25 keyword search via Typesense with semantic vector search powered by FAISS and the all-MiniLM-L6-v2 sentence-transformer model (384-dimension embeddings). An LLM-powered enrichment cascade (Groq Llama 3.3, Google Gemini Flash 2.0, Cohere Command-R) resolves brand names and trade abbreviations into official HS terminology. The system architecture employs a FastAPI asynchronous backend serving both a Flutter mobile application (Android/iOS) and a Next.js web application with server-side rendering for SEO optimisation. Firebase Authentication provides identity management across all client platforms.
+
+The platform has been deployed to production on a DigitalOcean droplet with an automated CI/CD pipeline via GitHub Actions, nginx reverse proxy with SSL termination, and process management through PM2 and systemd. Testing was conducted using pytest for the backend and Vitest for the frontend, with structured functional, non-functional, and usability test cases. Evaluation results demonstrate that the hybrid AI search pipeline successfully resolves brand-name queries (e.g., "Dilmah" → HS 0902.xx for tea) with sub-100ms latency, achieving the project objectives established in CW1.
+
+**Keywords:** HS Code, Machine Learning, Semantic Search, Sri Lanka Customs, FastAPI, Flutter, Next.js, FAISS, Trade Facilitation, AI Enrichment
+
+## Acknowledgement {.unnumbered}
+
+The members of Team CeylonHS (CS-15) would like to express their gratitude to those who contributed to the success of this project.
+
+Sincere thanks are extended to the project supervisor, Ms. Vishmi Embuldeniya, for her guidance throughout the development lifecycle. Her expertise provided constructive feedback that helped refine the system architecture and ensure the successful implementation of the HS code search platform.
+
+Gratitude is also extended to the staff and computing faculty of the Informatics Institute of Technology (IIT) for providing the necessary resources and environment to conduct this project. Special thanks to Mr. Banuka Athuraliya for his lectures on the module content and guidance on software development best practices.
+
+The team also acknowledges the officials and staff of Sri Lanka Customs, whose domain expertise on import/export regulations and the Harmonised System provided the essential context needed to create a relevant and practical solution.
+
+Finally, appreciation is extended to family members and friends for their encouragement throughout this project.
+
+## Abbreviations {.unnumbered}
+
+| **Abbreviation** | **Definition** |
+|---|---|
+| AI | Artificial Intelligence |
+| API | Application Programming Interface |
+| BM25 | Best Matching 25 (ranking function) |
+| CI/CD | Continuous Integration / Continuous Deployment |
+| CORS | Cross-Origin Resource Sharing |
+| CRUD | Create, Read, Update, Delete |
+| CSV | Comma-Separated Values |
+| FAISS | Facebook AI Similarity Search |
+| HS | Harmonized System |
+| HSTS | HTTP Strict Transport Security |
+| JWT | JSON Web Token |
+| LLM | Large Language Model |
+| ML | Machine Learning |
+| NLP | Natural Language Processing |
+| ORM | Object-Relational Mapping |
+| REST | Representational State Transfer |
+| SEO | Search Engine Optimisation |
+| SPA | Single Page Application |
+| SQL | Structured Query Language |
+| SSR | Server-Side Rendering |
+| SSL | Secure Sockets Layer |
+| UI | User Interface |
+| UX | User Experience |
+| WCO | World Customs Organization |
+
+: List of Abbreviations {#tbl-abbreviations}

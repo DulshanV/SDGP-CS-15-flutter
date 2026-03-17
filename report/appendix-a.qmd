@@ -1,0 +1,48 @@
+# Sprint 1 Production Outage Analysis {#sec-appendix-a}
+
+## Incident Summary
+
+A single 1,922-line commit containing 18 new files was pushed directly to `main` without local testing on the production branch, causing a cascade of 9 failures that resulted in approximately 6 hours of downtime for `ceylonhs.com`.
+
+## Root Causes and Resolutions
+
+| # | Issue | Severity | Root Cause | Resolution |
+|---|---|---|---|---|
+| 1 | `package-lock.json` out of sync | Critical | `npm install` not run after adding devDependencies | Always commit updated lockfile |
+| 2 | Vitest `vi` global in production build | Critical | Test files included in `tsconfig.json` | Exclude test directories from tsconfig |
+| 3 | Wrong Firebase mock path | Moderate | Mocking at definition site, not usage site | Mock at `firebase_admin.auth.verify_id_token` |
+| 4 | Sync DB in async test fixtures | Moderate | `create_engine` used instead of `create_async_engine` | Use `aiosqlite` async engine in tests |
+| 5 | Test imports using renamed functions | Minor | Functions renamed without updating tests | Verify imports match actual exports |
+| 6 | Dependabot enabled before stable CI | Minor | 12 PRs created against broken CI | Enable only after CI verified stable |
+| 7 | Duplicate dependency in `requirements.txt` | Minor | `httpx` listed twice | Search before adding packages |
+| 8 | Force push did not trigger deployment | Minor | `paths`-filtered workflow ignores backward HEAD moves | Use `workflow_dispatch` for manual triggers |
+| 9 | Large multi-feature commit | Process | No code review, no feature branches | Use feature branches, test before merge |
+
+: Sprint 1 Outage Root Cause Analysis {#tbl-outage-rca}
+
+## Backend Bug Audit (10 Issues)
+
+| # | Issue | Severity | Resolution |
+|---|---|---|---|
+| 1 | Missing `get_current_user` dependency | Critical | Added proper async dependency with session expunge |
+| 2 | Port mismatch (Flutter 8001, backend 8000) | Critical | Aligned to port 8000 |
+| 3 | Sync search blocking event loop | Moderate | Wrapped with `asyncio.to_thread()` |
+| 4 | Double `db.commit()` | Moderate | Replaced with `flush()` (consistent pattern) |
+| 5 | No authorisation on subscriptions | Moderate | Added ownership + admin check |
+| 6 | Insecure default config | Moderate | Changed defaults to production-safe |
+| 7 | Dead endpoint call in Flutter | Minor | Removed non-existent API call |
+| 8 | Missing `requirements.txt` | Minor | Created from analysed imports |
+| 9 | Raw SQLite blocking event loop | Minor | Wrapped in `asyncio.to_thread()` |
+| 10 | Wrong return type annotation | Minor | Removed annotation + added session expunge |
+
+: Backend Bug Audit Summary {#tbl-bug-audit}
+
+## Process Improvements
+
+Following this incident, the team implemented:
+
+1. **Pre-push checklists** for both frontend and backend (see @sec-git)
+2. **Feature branch workflow** — No direct commits to `main`
+3. **CI validation** — All PRs must pass automated tests before merge
+4. **Database backup** — Production database backed up before every deployment
+5. **Staged rollout** — Large changes split into smaller, tested commits

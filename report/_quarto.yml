@@ -1,0 +1,53 @@
+project:
+  type: book
+  output-dir: _output
+
+book:
+  title: "CeylonHS: AI-Powered HS Code Search & Trade Classification Platform"
+  subtitle: "CW2 Implementation Report"
+  author:
+    - name: "T.R. Jayasekara"
+      affiliation: "IIT | 20241953 | w2152987"
+    - name: "D.V. Rathnayake"
+      affiliation: "IIT | 20241630 | w2151904"
+    - name: "L.T.R. De Silva"
+      affiliation: "IIT | 20231244 | w2120219"
+    - name: "C.A.R. Weerakoon"
+      affiliation: "IIT | 20242094 | w2153607"
+    - name: "D.M Dodamwala"
+      affiliation: "IIT | 20233064 | w2120414"
+    - name: "W.A.Y.G. Kalpage"
+      affiliation: "IIT | 20241289 | w2153567"
+  date: "March 2026"
+  chapters:
+    - index.qmd
+    - 01-implementation.qmd
+    - 02-testing.qmd
+    - 03-evaluation.qmd
+    - 04-conclusion.qmd
+    - references.qmd
+  appendices:
+    - appendix-a.qmd
+
+bibliography: references.bib
+csl: harvard-cite-them-right.csl
+
+format:
+  typst:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    number-depth: 3
+    fontsize: 12pt
+    mainfont: "Times New Roman"
+    margin:
+      x: 2.54cm
+      y: 2.54cm
+    columns: 1
+    papersize: a4
+    keep-typ: true
+  docx:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    number-depth: 3

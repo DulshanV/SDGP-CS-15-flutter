@@ -1,0 +1,598 @@
+# Implementation {#sec-implementation}
+
+## Chapter Overview
+
+This chapter presents the complete implementation of the CeylonHS platform, an AI-powered Harmonized System (HS) code search and trade classification system for Sri Lanka. The chapter covers the technology selections and justifications, backend architecture and search engine implementation, frontend development across Flutter mobile and Next.js web applications, database design, authentication and security measures, version control practices, deployment infrastructure, and CI/CD pipeline. Each section includes code-level evidence with technical justification demonstrating the engineering decisions made during development.
+
+## Overview of the Prototype
+
+CeylonHS is a production-deployed, multi-platform system that enables Sri Lankan trade professionals to search for HS codes using natural language queries, brand names, and trade abbreviations. The prototype implements a seven-stage hybrid search pipeline combining keyword matching (BM25), semantic vector search (FAISS with 384-dimensional embeddings), and LLM-powered brand enrichment (Groq/Gemini/Cohere cascade). The system is delivered through three integrated components:
+
+- **FastAPI Backend** — Asynchronous Python web server exposing 31 REST API endpoints across 9 route groups, handling search, authentication, user management, and administration.
+- **Flutter Mobile Application** — Cross-platform Android/iOS application with 7 screens, Provider-based state management, and Google Sign-In integration.
+- **Next.js Web Application** — Server-side rendered web application with SEO-optimised landing page, 10 modular landing components, and a comprehensive admin dashboard.
+
+All three components share a common backend and Firebase Authentication infrastructure, ensuring consistent user experience across platforms. The system has been deployed to production at `ceylonhs.com` on a DigitalOcean droplet with automated CI/CD via GitHub Actions.
+
+## Technology Selections {#sec-tech-selections}
+
+### Technology Stack Justification
+
+The technology stack was selected based on performance requirements, team expertise, scalability considerations, and alignment with the project objectives established in CW1. @tbl-backend-tech, @tbl-flutter-tech, @tbl-nextjs-tech, and @tbl-devops-tech present the complete technology inventory with justifications.
+
+| Technology | Version | Purpose | Justification |
+|---|---|---|---|
+| Python | 3.11+ | Server-side language | Mature ML ecosystem (PyTorch, FAISS, Sentence-Transformers) |
+| FastAPI | 0.135.1 | Async web framework | Native async support, auto-generated OpenAPI docs, Pydantic validation [@tiangolo2019fastapi] |
+| SQLAlchemy | 2.0.48 | Async ORM | Dialect-aware (SQLite dev, PostgreSQL prod), parameterised queries preventing SQL injection |
+| FAISS-CPU | 1.13.2 | Vector similarity search | Efficient inner-product search on 16,000+ vectors, no GPU required [@johnson2019billion] |
+| Sentence-Transformers | 3.2.1 | Text embeddings | all-MiniLM-L6-v2 produces 384-dim vectors with strong semantic similarity [@reimers2019sentence] |
+| Firebase Admin | 7.2.0 | Auth verification | Server-side JWT validation, Google OAuth integration |
+| Groq/Gemini/Cohere | Various | LLM providers | Multi-provider cascade maximises free-tier availability |
+| Typesense | 2.0.0 | Hybrid search | Built-in BM25 + vector search, auto-embedding support |
+
+: Backend Technology Stack {#tbl-backend-tech}
+
+| Technology | Version | Purpose | Justification |
+|---|---|---|---|
+| Flutter SDK | Latest Stable | Cross-platform mobile | Single codebase for Android/iOS, hot-reload development [@flutterteam2024] |
+| Dart | ^3.11.0 | Programming language | Null-safe, AOT-compiled for mobile performance |
+| Provider | ^6.1.0 | State management | Lightweight reactive state, recommended by Flutter team |
+| google_sign_in | ^6.2.1 | OAuth authentication | Native Google Sign-In dialogs |
+| shared_preferences | ^2.3.0 | Local storage | Device-persistent key-value storage for recent searches |
+
+: Flutter Mobile Technology Stack {#tbl-flutter-tech}
+
+| Technology | Version | Purpose | Justification |
+|---|---|---|---|
+| Next.js | 16.1.6 | React SSR/SSG framework | Server Components for SEO, App Router architecture |
+| React | 19.2.4 | UI library | Component-based architecture, large ecosystem |
+| TypeScript | 5.x | Type-safe JavaScript | Compile-time type checking reduces runtime errors |
+| Tailwind CSS | 4.x | Utility CSS | Rapid UI development, consistent design tokens |
+| Framer Motion | 12.34.3 | Animation library | Declarative animations with InView triggers |
+| Three.js | 0.183.2 | 3D graphics | WebGL particle effects for login page |
+| Firebase | 12.10.0 | Client-side auth | Direct Google OAuth and email/password flows |
+
+: Next.js Web Technology Stack {#tbl-nextjs-tech}
+
+| Technology | Purpose | Justification |
+|---|---|---|
+| DigitalOcean Droplet | Production hosting | Cost-effective Ubuntu VPS with full control |
+| Nginx | Reverse proxy + SSL | Industry-standard, handles SSL termination and routing |
+| PM2 | Process management | Auto-restart, cluster mode, log management for Node.js |
+| Systemd | Service management | OS-level service control for Python backend |
+| GitHub Actions | CI/CD pipeline | Native GitHub integration, free tier for public repos |
+| Docker/Docker Compose | Container deployment | Reproducible builds, PostgreSQL for production |
+| Let's Encrypt | SSL certificates | Free automated HTTPS certification |
+
+: DevOps & Infrastructure Stack {#tbl-devops-tech}
+
+### Technology Selection Rationale
+
+| Decision | Choice | Alternatives Considered | Rationale |
+|---|---|---|---|
+| Search engine | FAISS + Typesense | Algolia, Meilisearch, Weaviate | Self-hosted, free, hybrid search capability; no vendor lock-in |
+| Embedding model | all-MiniLM-L6-v2 | Larger transformer models | 384-dim vectors, fast CPU inference, strong quality-to-speed ratio |
+| LLM enrichment | Multi-provider cascade | Single provider, LangChain | Distributes load across three free tiers; avoids rate-limit bottleneck |
+| Backend framework | FastAPI | Django, Flask | Async-native, automatic OpenAPI documentation, Pydantic integration |
+| Mobile framework | Flutter | React Native, native SDKs | Cross-platform single codebase, performant rendering, rapid development |
+| Web framework | Next.js | Nuxt, Remix | SSR/SSG for SEO, React ecosystem maturity, team expertise |
+| Authentication | Firebase | Auth0, Supabase Auth | Google OAuth built-in, generous free tier, cross-platform SDKs |
+| Database | SQLite/PostgreSQL | MongoDB, MySQL | SQLAlchemy supports both dialects; simple development, robust production |
+
+: Technology Selection Decisions {#tbl-tech-rationale}
+
+## Implementation of the Backend Component {#sec-backend}
+
+### Application Structure
+
+The backend follows a modular structure adhering to Clean Architecture principles, separating concerns into core infrastructure, data models, API routes, and service layers. Figure 1.1 illustrates the directory organisation.
+
+```
+backend/
+├── app/
+│   ├── __init__.py
+│   ├── main.py                     # FastAPI app factory + lifespan
+│   ├── core/
+│   │   ├── config.py               # Pydantic Settings (env-driven)
+│   │   ├── auth.py                 # Firebase auth middleware
+│   │   ├── database.py             # Async SQLAlchemy engine
+│   │   └── limiter.py              # Rate limiter singleton
+│   ├── models/
+│   │   ├── user.py                 # User, SearchHistory, Favorite ORM
+│   │   ├── categories.py           # FeaturedCategory ORM
+│   │   └── schemas.py              # Pydantic request/response schemas
+│   ├── api/routes/
+│   │   ├── search.py               # Public search endpoints
+│   │   ├── users.py                # User CRUD operations
+│   │   ├── admin.py                # Admin analytics and management
+│   │   ├── categories.py           # Featured categories CRUD
+│   │   ├── pricing.py              # Subscription management
+│   │   ├── chat.py                 # AI chatbot endpoint
+│   │   ├── synonyms.py             # Enrichment cache admin
+│   │   ├── training.py             # Training data feedback loop
+│   │   └── datasets.py             # Dataset upload and embedding
+│   └── services/
+│       ├── search_base.py          # Abstract search interface (ABC)
+│       ├── search_factory.py       # Backend selection + fallback
+│       ├── faiss_search_service.py # FAISS vector search
+│       ├── typesense_search_service.py # Typesense hybrid search
+│       ├── enrichment_service.py   # LLM brand resolution
+│       └── training_collector.py   # Search logging + training pairs
+├── data/                           # FAISS index + datasets
+├── scripts/                        # Utility scripts
+├── tests/                          # pytest test suite
+└── Dockerfile                      # Container configuration
+```
+
+*Figure 1.1: Backend Directory Structure*
+
+### Application Initialisation
+
+The FastAPI application utilises an async context manager (lifespan) pattern for startup/shutdown sequencing:
+
+```python
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # STARTUP
+    search_service = search_factory.create_search_service()
+    await Base.metadata.create_all(bind=engine)
+    await ensure_schema_compatibility()
+    yield
+    # SHUTDOWN - cleanup resources
+```
+
+The middleware stack processes requests in order: CORS → Rate Limiting → Firebase Authentication → Route Handler. This ensures cross-origin requests are validated, rate limits are enforced, and authentication is verified before reaching business logic.
+
+### Configuration Management
+
+All configuration is managed through Pydantic `BaseSettings`, enabling environment-variable-driven configuration with type validation and secure defaults:
+
+| Group | Key Variables | Purpose |
+|---|---|---|
+| Environment | `env` (prod/dev), `host`, `port` | Runtime mode and binding |
+| Database | `database_url` (async dialect-aware) | SQLite (dev) / PostgreSQL (prod) |
+| Search | `search_backend`, `embedding_model` | Search engine selection |
+| Enrichment | `groq_api_key`, `gemini_api_key`, `cohere_api_key` | LLM provider credentials |
+| Rate Limiting | `rate_limit_search` (30/min), `rate_limit_default` (60/min) | API abuse prevention |
+| Security | `firebase_project_id`, `cors_origins` | Auth and CORS configuration |
+
+: Configuration Groups {#tbl-config}
+
+The configuration enforces **security-first defaults**: `env` defaults to `"production"`, `host` defaults to `"127.0.0.1"`, and development-mode authentication bypass only functions when `ENV=development` is explicitly set.
+
+### Database Layer
+
+The database layer uses async SQLAlchemy 2.0 with dialect-aware configuration. For development, SQLite with WAL mode provides lightweight persistence. For production, PostgreSQL 16 with connection pooling (`pool_size=10, max_overflow=20`) handles concurrent requests efficiently.
+
+A `get_db()` dependency provides transactional session management with automatic commit on success and rollback on failure:
+
+```python
+async def get_db() -> AsyncSession:
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+```
+
+Schema compatibility is maintained through a runtime migration function that inspects existing columns and executes `ALTER TABLE` statements using dialect-specific SQL, ensuring older database instances are safely upgraded without data loss.
+
+### Database Design
+
+The database schema supports six primary entities with proper normalisation and referential integrity. Figure 1.2 presents the entity-relationship diagram.
+
+```
+┌──────────────────┐     1:N     ┌──────────────────┐
+│      users        │────────────│  search_history   │
+│  firebase_uid(UQ) │            │  user_id (FK)     │
+│  email, role      │    1:N     │  query_text       │
+│  subscription_tier│────────────│  top_result_hscode │
+└──────────────────┘            └──────────────────┘
+        │
+        │ 1:N     ┌──────────────────┐
+        └─────────│    favorites      │
+                  │  user_id (FK)     │
+                  │  hscode           │
+                  │  UQ(user_id,hscode│
+                  └──────────────────┘
+
+┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│ featured_categories│ │  synonym_cache    │  │  training_pairs   │
+│ name (UQ)         │  │ source_term      │  │ query             │
+│ icon_code_point   │  │ resolved_keywords │  │ positive_desc     │
+│ order, is_active  │  │ confidence       │  │ source, approved  │
+└──────────────────┘  │ provider         │  └──────────────────┘
+                      └──────────────────┘
+```
+
+*Figure 1.2: Entity-Relationship Diagram*
+
+All request/response contracts are defined as Pydantic schemas providing input validation (query length 1–500 characters, limit 1–50), output serialisation with camelCase aliases, and auto-generated OpenAPI documentation.
+
+### API Endpoints
+
+The backend exposes 31 REST endpoints across 9 route groups. @tbl-search-endpoints, @tbl-user-endpoints, and @tbl-admin-endpoints present the endpoint inventory.
+
+| Method | Path | Rate Limit | Description |
+|---|---|---|---|
+| `GET` | `/api/v1/search?q=&limit=` | 30/min | Main hybrid search pipeline |
+| `GET` | `/api/v1/hs/{hscode}` | 30/min | Detailed HS code with hierarchy |
+| `GET` | `/api/v1/categories` | 30/min | List tariff sections with chapters |
+
+: Search Endpoints (Public, Rate-Limited) {#tbl-search-endpoints}
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `POST` | `/api/v1/users/sync` | Required | Create/update user from Firebase |
+| `GET` | `/api/v1/users/me` | Required | Current user profile |
+| `GET/POST/DELETE` | `/api/v1/users/me/history` | Required | Search history CRUD |
+| `GET/POST/DELETE` | `/api/v1/users/me/favorites` | Required | Favourites CRUD |
+
+: User Endpoints (Authenticated) {#tbl-user-endpoints}
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| `GET` | `/api/v1/admin/stats` | Admin | Platform statistics |
+| `GET` | `/api/v1/admin/trends` | Admin | Trending search queries |
+| `GET/POST/DELETE` | `/api/v1/admin/synonyms` | Admin | Enrichment cache management |
+| `POST/GET/DELETE` | `/api/v1/admin/datasets` | Admin | Dataset upload and activation |
+| `GET/POST/PATCH/DELETE` | `/api/v1/admin/training` | Admin | Training data management |
+| `GET/POST` | `/api/v1/pricing` | Mixed | Subscription management |
+| `POST` | `/api/v1/chat` | Public | AI chatbot |
+
+: Admin and Other Endpoints {#tbl-admin-endpoints}
+
+The `/users/sync` endpoint validates that the `firebase_uid` in the request body matches the UID from the authenticated JWT token, preventing UID impersonation attacks.
+
+### Search Engine Architecture
+
+The search engine follows the **Strategy Pattern** via an abstract base class (`BaseSearchService`), enabling two interchangeable implementations:
+
+1. **FaissSearchService** — Primary backend using FAISS `IndexFlatIP` (inner product similarity on normalised 384-dimensional vectors from all-MiniLM-L6-v2)
+2. **TypesenseSearchService** — Alternative backend with native BM25 + vector hybrid search
+
+A **Factory Pattern** with auto-fallback ensures zero downtime:
+
+```python
+def create_search_service() -> BaseSearchService:
+    if settings.search_backend == "typesense":
+        try:
+            service = TypesenseSearchService()
+            service.initialize()
+            return service
+        except Exception:
+            logger.warning("Typesense failed, falling back to FAISS")
+    service = FaissSearchService()
+    service.initialize()
+    return service
+```
+
+### Seven-Stage Search Pipeline
+
+The complete search pipeline processes a user query through seven stages, as illustrated in Figure 1.3:
+
+```
+User Query ("Dilmah premium")
+  │
+  ├─ Stage 1: HS Code Detection → direct lookup if >50% digits
+  ├─ Stage 2: Fuzzy Typo Correction → rapidfuzz + pyspellchecker
+  ├─ Stage 3: Semantic Search → SentenceTransformer → FAISS
+  ├─ Stage 4: Merge & Rank → sort by relevance_pct (0-100%)
+  ├─ Stage 5: Enrichment Trigger → LLM cascade if score < 35%
+  ├─ Stage 6: Re-search with enriched keywords
+  └─ Stage 7: Response Construction + Training Logging
+```
+
+*Figure 1.3: Seven-Stage Search Pipeline*
+
+**Fuzzy Correction** uses a two-tier approach: rapidfuzz matches against the HS description vocabulary (score cutoff 70), with pyspellchecker as fallback. Capitalised words are preserved as likely brand names (e.g., "Dilmah" is never corrected).
+
+**Semantic Search** encodes the query into a 384-dimensional vector using `model.encode(query, normalize_embeddings=True)` and performs inner-product similarity search against the FAISS index containing 16,000+ HS code embeddings.
+
+### AI Enrichment Pipeline
+
+The enrichment pipeline resolves unknown terms into HS-relevant keywords using a multi-provider LLM cascade. Enrichment triggers when: (1) top search score falls below 35%, or (2) the score is 35–65% and fewer than 50% of query words appear in result descriptions.
+
+The cascade tries Groq Llama 3.3 70B first, falls back to Google Gemini Flash 2.0, then to Cohere Command-R. Each provider receives the same prompt requesting a JSON response with `explanation`, `keywords`, and `confidence` fields. This distributes load across three free-tier providers (Groq: 30 RPM, Gemini: 15 RPM, Cohere: 20 RPM), maximising availability [@groq2024api].
+
+Enrichment results are cached **permanently** in a dual-layer architecture: in-memory dictionary for O(1) lookups and SQLite `synonym_cache` table for persistence. Each unknown term triggers exactly one LLM API call in its lifetime.
+
+### Training Data Collection
+
+The training collector implements a continuous learning feedback loop. Search logs are automatically recorded, and training pairs are generated when:
+
+- Enrichment was used and the re-search score exceeded 50% (source: `enrichment`)
+- No enrichment was needed and the search score exceeded 80% (source: `high_confidence`)
+- An administrator manually creates a pair (source: `manual`)
+
+These pairs can be exported as JSON for future fine-tuning of the embedding model via `scripts/finetune_embeddings.py`.
+
+### AI Chatbot Integration
+
+The chatbot uses Groq's Llama 3.3 70B model with a scoped system prompt that specifically instructs it to not perform HS code searches, redirecting classification queries to the search page. A knowledge base file (`data/knowledge_base.txt`) provides platform-specific context. This separation ensures the chatbot serves as a navigation assistant rather than an unreliable code classifier.
+
+## Implementation of the Frontend Component {#sec-frontend}
+
+### Flutter Mobile Application
+
+#### Application Structure
+
+The Flutter application follows a layered architecture with clear separation between models, services, and screens:
+
+```
+flutter_application_1/lib/
+├── main.dart              # Entry point, auth, tab navigation
+├── config.dart            # API URL, constants
+├── models/                # Data models (UserProfile, SearchResult, etc.)
+├── services/              # API client, auth, favourites, categories
+└── screens/               # 7 screens + admin dashboard
+```
+
+#### Navigation Architecture
+
+The application uses a bottom tab navigation pattern with five primary tabs:
+
+| Tab | Screen | Key Features |
+|---|---|---|
+| Home | `_HomeContent` | Quick search, action cards, recent searches carousel, featured categories grid |
+| Search | `SearchPage` | Live search with 500ms debounce, typo correction, AI enrichment context |
+| Recents | `RecentsPage` | Local + server history with filter bar |
+| Pricing | `PricingPage` | Three-tier pricing cards, feature comparison, FAQ |
+| Profile | `_ProfileContent` | User info, favourites, history, admin access, logout |
+
+: Flutter Tab Navigation Structure {#tbl-flutter-tabs}
+
+#### Service Layer
+
+The Flutter service layer implements several design patterns for maintainability:
+
+**Authentication Service** — Singleton with ChangeNotifier that manages Firebase Identity Toolkit REST authentication for email/password sign-up, Google Sign-In, and password reset. Rather than using the Firebase Flutter SDK directly, the service calls REST endpoints, enabling more control over error handling and development-mode token bypass.
+
+**API Service** — Centralised HTTP client with constructor injection for `baseUrl` and `http.Client`, enabling testing with mock HTTP clients. All endpoints have configured timeouts (5–30s based on operation complexity).
+
+**Favourites Service** — Singleton with ChangeNotifier implementing a dual-cache architecture: a `Set<String>` for O(1) `isFavorited()` lookups and a `List<FavoriteItem>` for display. Optimistic updates provide instant visual feedback while maintaining server-side consistency.
+
+**Categories Service** — Fetches featured categories from the backend with graceful fallback to six hardcoded default categories (Spices, Apparel, Stationery, Minerals, Animal Products, Cosmetics).
+
+#### Key Screens
+
+**Search Page** implements live search with 500ms debouncing. Results display HS codes with colour-coded relevance badges (green ≥50%, yellow 30–50%, grey <30%), confidence bar indicators, hierarchy breadcrumbs, and favourite toggle icons. Empty state shows quick-search chips and recent searches with delete buttons.
+
+**HS Code Detail Page** provides comprehensive code information including the full classification hierarchy (navigable breadcrumb path), metadata badges (section, level, parent), and clickable sub-classifications enabling recursive depth exploration.
+
+**Admin Dashboard** is access-controlled by `role == "admin"` and displays platform statistics (total users, total searches, today's searches) alongside trending search queries with configurable time periods (1d, 7d, 30d, 90d) and proportional bar chart visualisation.
+
+#### State Management
+
+The application uses a hybrid state management approach: `StatefulWidget` for screen-level state, Singleton + ChangeNotifier for global services (AuthService, FavoritesService), Provider for widget-tree injection, and SharedPreferences for device-persistent local data.
+
+### Next.js Web Application
+
+#### Application Architecture
+
+The Next.js application leverages the App Router with a hybrid rendering strategy: Server Components for SEO-critical pages (landing page) and Client Components (`"use client"`) for interactive features (search, favourites, admin dashboard).
+
+#### Landing Page & SEO Strategy
+
+The landing page implements a three-layer SEO architecture:
+
+1. **Next.js Metadata API** — Structured metadata with Open Graph, Twitter Card, and robots directives for crawler guidance
+2. **JSON-LD Structured Data** — a "graph" array containing `WebSite` (with `SearchAction`), `SoftwareApplication` (with `AggregateOffer`), and `Organization` schemas for rich snippet eligibility
+3. **Semantic HTML** — Single `<h1>`, semantic sectioning elements (`<nav>`, `<main>`, `<article>`, `<footer>`), and `aria` attributes for accessibility
+
+The landing page comprises 10 modular client components: `LandingNav`, `Hero`, `HeroCanvas` (coastal wave animation with product→HS code morphing labels), `Features`, `HowItWorks`, `Stats` (animated counters), `Pricing`, `Testimonials`, `Team`, and `Footer`.
+
+#### HeroCanvas Brand Animation
+
+The `HeroCanvas.tsx` is a purpose-built HTML5 canvas component combining minimal shoreline waves (three sine-composite curve layers with global surge oscillation) and floating product→HS code morphing labels. Six concurrent labels display product names ("Dilmah Tea", "iPhone 15") that cross-fade into their HS codes ("0902.30", "8517.13"), matching real HS classifications. Performance provisions include DPR-aware sizing (capped at 2x) and `aria-hidden="true"` for screen-reader exclusion.
+
+#### Core Application Pages
+
+The search page mirrors Flutter functionality with live debounced search, confidence badges, hierarchy expansion, and favourites toggling. Login and register pages feature underwater canvas animations (bubbles and light rays) as backgrounds. The learning/academy page provides five educational modules covering HS code fundamentals, AI-powered search techniques, and chatbot usage.
+
+#### Admin Dashboard
+
+The admin dashboard provides five tabs: Overview (stats + trends chart), Training Pairs (approve/reject/create for model improvement), Search Logs (raw logs with enrichment flags), Synonyms (brand→category CRUD), and Datasets (CSV upload with embedding progress monitoring).
+
+#### Theming and Design System
+
+The application follows a Linear/Vercel-inspired design system with blue-to-cyan gradient accents, rounded-3xl cards with hover translate-y animations, Inter font with `clamp()` fluid sizing, and glassmorphism utilities. The theme system stores preference in `localStorage`, falls back to `prefers-color-scheme`, and applies the `.dark` class to `<html>` for CSS custom property switching. Theme rendering is hydration-safe, deferring theme-dependent content until after mount.
+
+#### Security Headers
+
+The Next.js configuration applies seven security headers in production:
+
+| Header | Value | Purpose |
+|---|---|---|
+| X-Frame-Options | DENY | Prevents clickjacking |
+| X-Content-Type-Options | nosniff | Prevents MIME sniffing |
+| Referrer-Policy | strict-origin-when-cross-origin | Controls referrer information |
+| Permissions-Policy | camera=(), microphone=(), geolocation=() | Disables unnecessary APIs |
+| Strict-Transport-Security | max-age=63072000; includeSubDomains; preload | Enforces HTTPS |
+| Content-Security-Policy | upgrade-insecure-requests | Forces HTTPS resources |
+| X-DNS-Prefetch-Control | on | Enables DNS prefetching |
+
+: Security Headers Configuration {#tbl-security-headers}
+
+## Implementation of the Data Science Component {#sec-datascience}
+
+### Embedding Generation Pipeline
+
+The data science component centres on the embedding generation pipeline that converts HS code descriptions into 384-dimensional vector representations using the all-MiniLM-L6-v2 sentence transformer model [@reimers2019sentence]. The `scripts/embed_dataset.py` script processes CSV datasets through the following stages:
+
+1. **Data Loading** — Read CSV with columns: `hscode`, `description`, `section`, `level`, `parent`
+2. **Text Preprocessing** — Concatenate description with section context for richer embeddings
+3. **Batch Encoding** — Process descriptions through SentenceTransformer with normalisation
+4. **Index Building** — Create FAISS `IndexFlatIP` index for inner-product similarity search
+5. **Metadata Export** — Save metadata JSON and description vocabulary for spell-checking
+
+The system supports runtime hot-reload: administrators can upload new CSV datasets through the admin dashboard, trigger background embedding jobs, and activate new indices without server restart.
+
+### Fuzzy Correction System
+
+The fuzzy correction system uses a two-tier approach to handle typographical errors while preserving brand names:
+
+- **Tier 1 (rapidfuzz)** — Matches each query word against the HS description vocabulary with a score cutoff of 70, ensuring only strong matches are accepted
+- **Tier 2 (pyspellchecker)** — Falls back to general spell-checking for words not matched by rapidfuzz, boosted with domain-specific vocabulary
+
+Special rules preserve capitalised words (likely brand names), skip words with fewer than three characters, and retain the original form when correction confidence is insufficient.
+
+### Embedding Model Fine-Tuning
+
+The `scripts/finetune_embeddings.py` script enables periodic fine-tuning of the embedding model using collected training pairs. Training pairs are generated from three sources: successful enrichment searches (auto-generated), high-confidence direct matches (auto-generated), and manually curated pairs (admin-created). This creates a continuous learning loop where production search interactions gradually improve the model's understanding of domain-specific terminology.
+
+## GIT Repository {#sec-git}
+
+### Repository Structure
+
+The project utilises a single monorepo hosted on GitHub containing all three application components (backend, Flutter, Next.js) along with infrastructure configuration, deployment scripts, and documentation.
+
+### Branching Strategy
+
+The team adopted a **trunk-based development** approach following the Sprint 1 production outage (documented in Appendix A):
+
+- `main` — Production branch, protected with CI checks
+- Feature branches — Short-lived branches for individual features, merged via pull requests
+- CI validation — All pull requests trigger automated backend (pytest) and frontend (Vitest + build) checks before merge
+
+### Commit Practices
+
+Following the outage post-mortem, the team implemented structured commit practices:
+
+- Minimum 20 meaningful commits per team member (mandatory pass condition)
+- Descriptive commit messages following conventional format
+- No direct pushes to `main` without passing CI checks
+- Code review requirements on pull requests
+
+### Pre-Push Checklists
+
+**Frontend Checklist:**
+
+- `npm install` after `package.json` changes
+- `package-lock.json` committed
+- `npm run build` succeeds locally
+- `npm test` passes locally
+- Test files excluded from `tsconfig.json`
+
+**Backend Checklist:**
+
+- No duplicate packages in `requirements.txt`
+- `pytest tests/ -v` passes
+- `python -c "from app.main import app"` succeeds
+- All mocks verified to actually intercept
+
+## Deployments / CI-CD Pipeline {#sec-deployment}
+
+### Production Infrastructure
+
+The production system is deployed on a DigitalOcean Ubuntu droplet with the following architecture:
+
+```
+DigitalOcean Droplet (Ubuntu)
+├── Nginx (Reverse Proxy)
+│   ├── Port 443 → SSL Termination (Let's Encrypt)
+│   ├── /* → localhost:3000 (PM2 → Next.js)
+│   └── /api/v1/* → localhost:8000 (Systemd → Uvicorn)
+├── PM2 Process Manager
+│   └── ceylonhs-frontend (Next.js, port 3000)
+├── Systemd Service
+│   └── ceylonhs-backend (Uvicorn, port 8000)
+├── SQLite Database (WAL mode)
+├── FAISS Index (16,000+ vectors)
+└── Firebase Service Account
+```
+
+*Figure 1.4: Production Infrastructure Architecture*
+
+### Continuous Integration
+
+The CI pipeline (`ci.yml`) triggers on pull requests to `main` and pushes to all branches (except `main`), running two parallel jobs:
+
+**Backend Job:** Setup Python 3.11 → Cache pip dependencies → Install requirements (CPU-only PyTorch) → Run pytest with coverage → Import verification
+
+**Frontend Job:** Setup Node.js 20 → `npm ci` (deterministic install) → `npm run build` (production build verification) → `npm test` (Vitest)
+
+Both jobs use environment variables for dummy Firebase/API configuration to avoid real service dependencies in CI.
+
+### Continuous Deployment
+
+The CD pipeline (`deploy.yml`) triggers on pushes to `main` (path-filtered to `Nextjs/**`, `backend/**`, `deploy.sh`) and manual `workflow_dispatch`:
+
+1. Guard and backup production database
+2. Hard-reset to `origin/main` (avoids merge conflicts)
+3. Restore database if reset deleted it
+4. Inject secrets via `.env.local` from GitHub Secrets
+5. Install dependencies and build Next.js frontend
+6. Restart PM2 process manager
+7. Configure nginx proxy block and reload
+8. Install backend Python dependencies
+9. Restart systemd backend service
+
+SSH deployment uses the `appleboy/ssh-action` GitHub Action (v1) to execute remote commands on the DigitalOcean droplet.
+
+### Docker Deployment (Alternative)
+
+The project supports containerised deployment via Docker Compose with PostgreSQL 16 Alpine for persistent storage and a custom Python 3.12 Dockerfile for the API service. Health checks verify API availability with a 60-second start period to accommodate embedding model download.
+
+## CRUD Operations {#sec-crud}
+
+This section documents the CRUD (Create, Read, Update, Delete) operations implemented across the system, demonstrating each team member's involvement in full-stack development.
+
+### User Management CRUD
+
+| Operation | Backend Endpoint | Flutter Service | Next.js API |
+|---|---|---|---|
+| **Create** | `POST /api/v1/users/sync` | `AuthService.signUp()` | `syncUser()` |
+| **Read** | `GET /api/v1/users/me` | `AuthService.user` | `getUser()` |
+| **Update** | `POST /api/v1/users/sync` (upsert) | `AuthService.signIn()` | `syncUser()` |
+| **Delete** | Firebase console | Logout + clear cache | Sign out |
+
+: User CRUD Operations {#tbl-user-crud}
+
+### Search History CRUD
+
+| Operation | Backend Endpoint | Flutter | Next.js |
+|---|---|---|---|
+| **Create** | `POST /api/v1/users/me/history` | `ApiService.recordSearch()` | `recordSearch()` |
+| **Read** | `GET /api/v1/users/me/history` | `HistoryPage` | `history/PageClient.tsx` |
+| **Delete** | `DELETE /api/v1/users/me/history` | Clear History button | Clear History button |
+
+: Search History CRUD Operations {#tbl-history-crud}
+
+### Favourites CRUD
+
+| Operation | Backend Endpoint | Flutter | Next.js |
+|---|---|---|---|
+| **Create** | `POST /api/v1/users/me/favorites` | `FavoritesService.addFavorite()` | `addFavorite()` |
+| **Read** | `GET /api/v1/users/me/favorites` | `FavoritesPage` | `favorites/PageClient.tsx` |
+| **Delete** | `DELETE /api/v1/users/me/favorites/{hscode}` | Heart icon toggle | Heart icon toggle |
+
+: Favourites CRUD Operations {#tbl-favourites-crud}
+
+### Admin CRUD Operations
+
+| Entity | Create | Read | Update | Delete |
+|---|---|---|---|---|
+| Synonyms | `POST /admin/synonyms` | `GET /admin/synonyms` | — | `DELETE /admin/synonyms/{id}` |
+| Training Pairs | `POST /admin/training/pairs` | `GET /admin/training/pairs` | `PATCH /admin/training/pairs/{id}` | `DELETE /admin/training/pairs/{id}` |
+| Datasets | `POST /admin/datasets/upload` | `GET /admin/datasets` | `POST /admin/datasets/{id}/activate` | `DELETE /admin/datasets/{id}` |
+| Categories | `POST /api/v1/categories` | `GET /api/v1/categories` | — | — |
+| Subscriptions | — | `GET /pricing/subscription/{id}` | `POST /pricing/subscription/{id}/upgrade` | `POST /pricing/subscription/{id}/downgrade` |
+
+: Admin CRUD Operations {#tbl-admin-crud}
+
+### Authentication & Security in CRUD
+
+All CRUD operations are protected through a layered security model:
+
+- **Public endpoints** (search, categories) — Rate-limited at 30 requests/minute per IP
+- **Authenticated endpoints** (user CRUD) — Require valid Firebase JWT token
+- **Admin endpoints** — Require authentication plus `role == "admin"` in database
+- **Ownership checks** — Subscription endpoints verify the requesting user matches the target user ID or holds admin privileges, preventing horizontal privilege escalation
+
+## Chapter Summary
+
+This chapter presented the complete implementation of the CeylonHS platform across three integrated application layers. The backend implements a seven-stage hybrid search pipeline combining keyword and semantic search with LLM-powered brand enrichment up to three free-tier providers. The Flutter mobile application provides cross-platform access with reactive state management and offline-capable features. The Next.js web application delivers SEO-optimised content with server-side rendering and a professional admin dashboard. The system is deployed to production with automated CI/CD, and all CRUD operations are secured through role-based access control with Firebase Authentication.
