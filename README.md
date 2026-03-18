@@ -261,7 +261,7 @@ SDGP-CS-15-flutter/
 │   │   │   ├── api.ts                # API client functions
 │   │   │   ├── adminApi.ts           # Admin API calls
 │   │   │   └── firebase.ts           # Firebase config
-│   │   └── test/           # Vitest setup
+│   │   └── tests/          # Vitest setup
 │   ├── public/             # Static assets
 │   ├── tests/              # Vitest test suite
 │   ├── package.json
@@ -277,6 +277,9 @@ SDGP-CS-15-flutter/
 ├── DECISION_LOG.md         # Architectural decision records
 └── README.md               # This file
 ```
+
+> Active app folders are `backend/`, `Nextjs/nextjs/`, and `flutter_application_1/`.  
+> `SDGP-CS-15-flutter-main/` and `SDGP-main/` are legacy copies kept for reference only.
 
 ---
 

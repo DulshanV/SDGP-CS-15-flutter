@@ -110,7 +110,7 @@ src/
 │   ├── api.ts                 # Public API client functions
 │   └── adminApi.ts            # Admin API client functions
 │
-├── test/
+├── tests/
 │   └── setup.ts               # Vitest configuration
 │
 └── styles/
