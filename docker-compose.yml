@@ -23,7 +23,7 @@ services:
   # ── FastAPI Backend ──
   api:
     build:
-      context: ./backend
+      context: ./apps/backend
       dockerfile: Dockerfile
     container_name: hscode_api
     restart: unless-stopped
@@ -40,7 +40,7 @@ services:
       FIREBASE_CREDENTIALS_PATH: /app/firebase-service-account.json
     volumes:
       - chroma_data:/app/data/chroma_db
-      - ./all_chapters_extracted.csv:/app/data/all_chapters_extracted.csv:ro
+      - ./data/all_chapters_extracted.csv:/app/data/all_chapters_extracted.csv:ro
     depends_on:
       db:
         condition: service_healthy
