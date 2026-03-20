@@ -1,0 +1,38 @@
+# Prevent secrets and local env from entering Docker build context
+.env
+.env.*
+!.env.example
+firebase-service-account.json
+
+# Python local environments and cache
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local databases and generated data
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.sqlite3
+data/chroma_db/
+typesense-data/
+typesense/
+
+# Build/test artifacts
+*.log
+*.txt
+!README.txt
+dist/
+build/
+.eggs/
+*.egg-info/
+
+# VCS/IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
