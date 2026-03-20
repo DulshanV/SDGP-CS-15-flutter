@@ -18,8 +18,15 @@ class IntroPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('☂️', style: TextStyle(fontSize: 90)),
-                  const SizedBox(height: 48),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      height: 140,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
                   const Text(
                     'CeylonHS',
                     style: TextStyle(

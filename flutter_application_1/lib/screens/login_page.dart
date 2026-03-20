@@ -180,10 +180,13 @@ class _LoginPageState extends State<LoginPage> {
                             const Spacer(),
                             Align(
                               alignment: Alignment.center,
-                              child: Icon(
-                                Icons.location_city_rounded,
-                                size: 72,
-                                color: Colors.white.withValues(alpha: 0.7),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(14),
+                                child: Image.asset(
+                                  'assets/images/logo.png',
+                                  height: 84,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 6),
