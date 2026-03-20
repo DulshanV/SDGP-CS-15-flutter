@@ -166,7 +166,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(14),
                               child: Image.asset(
-                                'assets/images/logo.png',
+                                'assets/images/logo.jpeg',
                                 height: 84,
                                 fit: BoxFit.contain,
                               ),
