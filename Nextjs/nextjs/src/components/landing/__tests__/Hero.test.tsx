@@ -34,8 +34,8 @@ describe('Hero Component', () => {
   it('should render CTA buttons', () => {
     render(<Hero />);
 
-    const searchButton = screen.getByRole('link', { name: /Start Searching Free/i });
-    const learnButton = screen.getByRole('link', { name: /See How It Works/i });
+    const searchButton = screen.getByRole('link', { name: /Try It Free/i });
+    const learnButton = screen.getByRole('link', { name: /How It Works/i });
 
     expect(searchButton).toBeInTheDocument();
     expect(learnButton).toBeInTheDocument();
@@ -44,7 +44,7 @@ describe('Hero Component', () => {
   it('should have correct href for search button', () => {
     render(<Hero />);
 
-    const searchButton = screen.getByRole('link', { name: /Start Searching Free/i });
+    const searchButton = screen.getByRole('link', { name: /Try It Free/i });
     expect(searchButton).toHaveAttribute('href', '/search');
   });
 });

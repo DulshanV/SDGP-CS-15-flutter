@@ -37,20 +37,20 @@ export default function CTASection() {
         className="relative mx-auto max-w-3xl px-6 text-center"
       >
         <h2 className="mb-6 text-[clamp(1.75rem,5vw,3rem)] font-bold leading-tight text-white">
-          Ready to Simplify Your
+          Stop guessing HS codes.
           <br />
-          Trade Classification?
+          Start classifying with confidence.
         </h2>
         <p className="mx-auto mb-10 max-w-xl text-lg text-blue-100/80">
-          Join thousands of traders, customs brokers, and logistics professionals
-          who classify products in seconds — not hours.
+          CeylonHS is free to start — no account required. Upgrade when you need
+          more searches, brand intelligence, or API access.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/search"
             className="group inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-base font-semibold text-blue-700 shadow-xl transition-all hover:-translate-y-0.5 hover:shadow-2xl"
           >
-            Start Searching Free
+            Try It Free
             <svg
               className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
               fill="none"

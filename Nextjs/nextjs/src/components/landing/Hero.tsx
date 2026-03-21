@@ -92,7 +92,7 @@ export default function Hero() {
             href="/search"
             className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 px-8 py-3.5 text-base font-semibold text-white shadow-xl shadow-blue-500/25 transition-all hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-blue-500/30"
           >
-            Start Searching Free
+            Try It Free
             <svg
               className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
               fill="none"
@@ -118,50 +118,20 @@ export default function Hero() {
               stroke="currentColor"
               strokeWidth="2"
             >
-              <circle cx="12" cy="12" r="10" />
-              <polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none" />
+              <path d="M6 9l6 6 6-6" />
             </svg>
-            See How It Works
+            How It Works
           </a>
         </motion.div>
 
         {/* Trust indicators */}
         <motion.div
           variants={fade(0.4)}
-          className={`flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium ${
+          className={`text-sm font-medium ${
             isDark ? "text-gray-500" : "text-gray-400"
           }`}
         >
-          <span className="flex items-center gap-1.5">
-            <svg className="h-4 w-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            16,000+ HS Codes
-          </span>
-          <span className="flex items-center gap-1.5">
-            <svg className="h-4 w-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Sub-second Results
-          </span>
-          <span className="flex items-center gap-1.5">
-            <svg className="h-4 w-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 10-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            No Credit Card Required
-          </span>
+          16,000+ HS Codes&nbsp;&middot;&nbsp;Sub-second Results&nbsp;&middot;&nbsp;No Credit Card
         </motion.div>
       </motion.div>
 

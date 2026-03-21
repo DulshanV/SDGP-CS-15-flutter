@@ -69,17 +69,14 @@ export default function HowItWorks() {
           transition={{ duration: 0.6 }}
           className="mb-20 text-center"
         >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-blue-500">
-            Simple Workflow
-          </p>
           <h2
             className={`text-[clamp(1.75rem,4vw,3rem)] font-bold leading-tight ${
               isDark ? "text-white" : "text-gray-900"
             }`}
           >
-            Three Steps to the{" "}
+            Three steps to the{" "}
             <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
-              Right Code
+              right code
             </span>
           </h2>
         </motion.div>
@@ -104,27 +101,23 @@ export default function HowItWorks() {
               viewport={{ once: true, amount: 0.3 }}
               className="relative text-center"
             >
-              {/* Number badge */}
-              <div className="relative z-10 mx-auto mb-6 flex h-16 w-16 items-center justify-center">
+              {/* Step indicator — number + icon combined */}
+              <div className="relative z-10 mx-auto mb-6 flex h-16 w-16 flex-col items-center justify-center gap-0.5">
                 <div
                   className={`absolute inset-0 rounded-2xl ${
                     isDark ? "bg-blue-500/10" : "bg-blue-50"
                   }`}
                 />
-                <span className="relative text-2xl font-black text-blue-500">
+                <span className="relative text-[11px] font-black tracking-widest text-blue-400">
                   {step.num}
                 </span>
-              </div>
-
-              {/* Icon */}
-              <div
-                className={`mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-xl ${
-                  isDark
-                    ? "bg-white/[0.04] text-gray-300"
-                    : "bg-gray-50 text-gray-600"
-                }`}
-              >
-                {step.icon}
+                <div
+                  className={`relative ${
+                    isDark ? "text-blue-300" : "text-blue-600"
+                  }`}
+                >
+                  {step.icon}
+                </div>
               </div>
 
               <h3

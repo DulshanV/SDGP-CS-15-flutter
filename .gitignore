@@ -123,3 +123,4 @@ backend/*_test.db
 # --- Backend junk files ---
 backend/d
 
+flutter_application_1/NUL
