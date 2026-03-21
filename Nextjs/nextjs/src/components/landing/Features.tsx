@@ -91,18 +91,14 @@ export default function Features() {
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-blue-500">
-            Capabilities
-          </p>
           <h2
             className={`text-[clamp(1.75rem,4vw,3rem)] font-bold leading-tight ${
               isDark ? "text-white" : "text-gray-900"
             }`}
           >
-            Everything You Need for
-            <br className="hidden sm:block" />{" "}
+            How CeylonHS classifies{" "}
             <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
-              Trade Classification
+              your goods
             </span>
           </h2>
           <p
@@ -110,8 +106,8 @@ export default function Features() {
               isDark ? "text-gray-400" : "text-gray-500"
             }`}
           >
-            Powered by a hybrid AI pipeline that combines Typesense keyword search,
-            semantic embeddings, and real-time brand enrichment.
+            A hybrid pipeline combining Typesense keyword search, semantic embeddings,
+            and real-time brand enrichment — all returning results in under 100&nbsp;ms.
           </p>
         </motion.div>
 

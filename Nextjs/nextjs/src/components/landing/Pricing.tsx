@@ -17,6 +17,7 @@ const PLANS = [
       "Email support",
     ],
     cta: "Get Started",
+    href: "/register",
     popular: false,
   },
   {
@@ -33,6 +34,7 @@ const PLANS = [
       "Smart suggestions",
     ],
     cta: "Start Free Trial",
+    href: "/register",
     popular: true,
   },
   {
@@ -49,6 +51,7 @@ const PLANS = [
       "Admin dashboard",
     ],
     cta: "Contact Sales",
+    href: "mailto:hello@ceylonhs.com",
     popular: false,
   },
 ];
@@ -85,9 +88,6 @@ export default function Pricing() {
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-blue-500">
-            Pricing
-          </p>
           <h2
             className={`text-[clamp(1.75rem,4vw,3rem)] font-bold leading-tight ${
               isDark ? "text-white" : "text-gray-900"
@@ -95,9 +95,9 @@ export default function Pricing() {
           >
             Simple,{" "}
             <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
-              Transparent
+              transparent
             </span>{" "}
-            Pricing
+            plans
           </h2>
           <p
             className={`mx-auto mt-4 max-w-xl text-lg ${
@@ -197,7 +197,7 @@ export default function Pricing() {
               </ul>
 
               <Link
-                href={plan.popular ? "/register" : "/register"}
+                href={plan.href}
                 className={`mt-auto block rounded-full py-3 text-center text-sm font-semibold transition-all hover:-translate-y-0.5 ${
                   plan.popular
                     ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30"

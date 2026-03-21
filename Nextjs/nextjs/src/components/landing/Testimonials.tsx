@@ -64,9 +64,6 @@ export default function Testimonials() {
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-blue-500">
-            Testimonials
-          </p>
           <h2
             className={`text-[clamp(1.75rem,4vw,3rem)] font-bold leading-tight ${
               isDark ? "text-white" : "text-gray-900"
@@ -74,7 +71,7 @@ export default function Testimonials() {
           >
             Trusted by{" "}
             <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
-              Trade Professionals
+              trade professionals
             </span>
           </h2>
         </motion.div>

@@ -80,9 +80,6 @@ export default function Team() {
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-blue-500">
-            Our Team
-          </p>
           <h2
             className={`text-[clamp(1.75rem,4vw,3rem)] font-bold leading-tight ${
               isDark ? "text-white" : "text-gray-900"
@@ -90,7 +87,7 @@ export default function Team() {
           >
             Built by{" "}
             <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
-              Passionate Engineers
+              passionate engineers
             </span>
           </h2>
           <p
