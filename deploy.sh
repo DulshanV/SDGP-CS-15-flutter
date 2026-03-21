@@ -36,7 +36,7 @@ fi
 
 # --- 3. Git Pull ---
 echo "=> Pulling latest code from GitHub..."
-git pull origin master
+git pull origin main
 
 # Restore DB if git pull deleted it
 if [ ! -f "backend/data/hscode.db" ] && [ -f "backend/data/hscode.db.bak" ]; then

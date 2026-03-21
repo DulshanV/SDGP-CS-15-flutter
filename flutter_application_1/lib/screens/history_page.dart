@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import '../theme/app_colors.dart';
 import 'search_page.dart';
 
 /// Page showing the user's server-side search history.
@@ -18,8 +19,6 @@ class _HistoryPageState extends State<HistoryPage> {
   bool _isLoading = true;
   String? _error;
   int _total = 0;
-
-  static const Color primaryBlue = Color(0xFF0B3EA8);
 
   @override
   void initState() {
@@ -79,7 +78,7 @@ class _HistoryPageState extends State<HistoryPage> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
             child: const Text('Clear All'),
           ),
         ],
@@ -111,11 +110,11 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F4F8),
+      backgroundColor: AppColors.surface,
       appBar: AppBar(
         title: const Text('Search History',
             style: TextStyle(fontWeight: FontWeight.w700)),
-        backgroundColor: primaryBlue,
+        backgroundColor: AppColors.primaryBlue,
         foregroundColor: Colors.white,
         elevation: 0,
         actions: [
@@ -143,7 +142,7 @@ class _HistoryPageState extends State<HistoryPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.history, size: 64, color: Color(0xFFB7BFCC)),
+              const Icon(Icons.history, size: 64, color: AppColors.textMuted),
               const SizedBox(height: 16),
               Text(_error!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
@@ -160,17 +159,17 @@ class _HistoryPageState extends State<HistoryPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.history, size: 64, color: Color(0xFFB7BFCC)),
+            Icon(Icons.history, size: 64, color: AppColors.textMuted),
             SizedBox(height: 16),
             Text(
               'No search history yet',
-              style: TextStyle(fontSize: 18, color: Color(0xFF5D6778)),
+              style: TextStyle(fontSize: 18, color: AppColors.textMedium),
             ),
             SizedBox(height: 8),
             Text(
               'Your searches will appear here once\nyou start searching.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: Color(0xFF9BA5B7)),
+              style: TextStyle(fontSize: 14, color: AppColors.textLight),
             ),
           ],
         ),
@@ -187,7 +186,7 @@ class _HistoryPageState extends State<HistoryPage> {
             child: Text(
               '$_total search${_total == 1 ? '' : 'es'}',
               style: const TextStyle(
-                  fontSize: 14, color: Color(0xFF9BA5B7), fontWeight: FontWeight.w500),
+                  fontSize: 14, color: AppColors.textLight, fontWeight: FontWeight.w500),
             ),
           ),
           Expanded(
@@ -198,13 +197,8 @@ class _HistoryPageState extends State<HistoryPage> {
                 final item = _items[index];
                 return Card(
                   margin: const EdgeInsets.only(bottom: 8),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    side: const BorderSide(color: Color(0xFFDADCE0)),
-                  ),
                   child: ListTile(
-                    leading: const Icon(Icons.search, color: Color(0xFF9BA5B7)),
+                    leading: const Icon(Icons.search, color: AppColors.textLight),
                     title: Text(
                       item.queryText,
                       style: const TextStyle(
@@ -219,17 +213,17 @@ class _HistoryPageState extends State<HistoryPage> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                                fontSize: 12, color: Color(0xFF5D6778)),
+                                fontSize: 12, color: AppColors.textMedium),
                           ),
                         Text(
                           '${item.resultsCount} results • ${_formatDate(item.createdAt)}',
                           style: const TextStyle(
-                              fontSize: 11, color: Color(0xFF9BA5B7)),
+                              fontSize: 11, color: AppColors.textLight),
                         ),
                       ],
                     ),
                     trailing: const Icon(Icons.chevron_right,
-                        color: Color(0xFFB7BFCC)),
+                        color: AppColors.textMuted),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
