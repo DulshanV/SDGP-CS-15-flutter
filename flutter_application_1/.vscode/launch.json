@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flutter Web (Port 5000, Release Mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": [
+                "-d",
+                "web-server",
+                "--web-port=5000",
+                "--no-tree-shake-icons",
+                "--dart-define=GOOGLE_WEB_CLIENT_ID=1087856269110-1qjdo9n1rhc7qcrdl0vg1vdkn9ah1aa5.apps.googleusercontent.com"
+            ]
+        }
+    ]
+}
