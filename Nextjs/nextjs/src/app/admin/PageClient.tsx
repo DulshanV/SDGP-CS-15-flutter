@@ -190,6 +190,40 @@ export default function AdminDashboard() {
           <ThemeToggleButton />
           <AdminProfileWidget user={user} onSignOut={() => router.push("/login")} />
         </div>
+    );
+
+    return (
+        <div className="min-h-screen bg-page">
+            {/* Header */}
+            <div className="sticky top-0 z-20 bg-surface border-b border-border shadow-sm">
+                <div className="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+                    <Link href="/search" className="text-copy-muted hover:text-copy-muted transition-colors">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
+                    </Link>
+                    <div className="flex items-center gap-2 flex-1">
+                        <img src="/logo.png" alt="CeylonHS Logo" className="w-8 h-8 object-contain" />
+                        <span className="font-black text-copy text-lg">Admin Dashboard</span>
+                        <span className="text-gray-300 text-sm hidden sm:block">· CeylonHS</span>
+                    </div>
+                    <ThemeToggleButton />
+                    <AdminProfileWidget user={user} onSignOut={() => router.push('/login')} />
+                </div>
+                {/* Tab bar */}
+                <div className="max-w-5xl mx-auto px-4 pb-0">
+                    <div className="flex gap-0 overflow-x-auto">
+                        {TABS.map(t => (
+                            <button
+                                key={t.id}
+                                onClick={() => setActiveTab(t.id)}
+                                className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 whitespace-nowrap transition-colors ${activeTab === t.id ? 'border-blue-600 text-blue-700 dark:text-blue-300 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/40 dark:bg-blue-900/40/60' : 'border-transparent text-copy-muted hover:text-copy'}`}
+                            >
+                                <span className="text-base">{t.icon}</span>
+                                {t.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
 
         {/* Tab bar */}
         <div className="max-w-5xl mx-auto px-4 pb-0">
