@@ -26,7 +26,7 @@ export default function LandingNav() {
         setUser(JSON.parse(storedUser));
       }
     } catch (error) {
-      console.error("Invalid user data in localStorage");
+      console.error("Invalid user data in localStorage!");
     }
   }, []);
 
