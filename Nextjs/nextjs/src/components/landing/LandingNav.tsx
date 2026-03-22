@@ -98,12 +98,21 @@ export default function LandingNav() {
           </button>
 
           {/* Sign in (desktop) */}
-          <Link
-            href="/login"
-            className="hidden text-sm font-medium text-copy-muted transition-colors hover:text-copy md:inline-flex"
-          >
-            Sign in
-          </Link>
+          {user ? (
+            <Link
+              href="/dashboard"
+              className="hidden text-sm font-medium md:inline-flex"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden text-sm font-medium text-copy-muted transition-colors hover:text-copy md:inline-flex"
+            >
+              Sign in
+            </Link>
+          )}
 
           {/* CTA */}
           <Link
