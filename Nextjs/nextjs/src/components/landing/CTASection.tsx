@@ -43,7 +43,7 @@ export default function CTASection() {
         </h2>
         <p className="mx-auto mb-10 max-w-xl text-lg text-blue-100/80">
           Join thousands of traders, customs brokers, and logistics professionals
-          who classify products in seconds — not hours.
+          who classify products in seconds – not hours.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link

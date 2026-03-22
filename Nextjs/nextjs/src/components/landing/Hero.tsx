@@ -82,7 +82,7 @@ export default function Hero() {
         >
           Stop guessing customs codes. CeylonHS uses hybrid AI search and real&#8209;time
           brand recognition to classify your products to{" "}
-          <strong className={isDark ? "text-gray-200" : "text-gray-800"}>6&#8209;digit precision</strong> —
+          <strong className={isDark ? "text-gray-200" : "text-gray-800"}>6&#8209;digit precision</strong> –
           instantly.
         </motion.p>
 

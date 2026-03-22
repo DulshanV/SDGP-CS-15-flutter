@@ -37,7 +37,7 @@ const FEATURES = [
     icon: <IconAI />,
     title: "AI-Powered Classification",
     description:
-      "Describe your product in plain language — our hybrid engine combines keyword search with semantic AI to find the exact HS code every time.",
+      "Describe your product in plain language – our hybrid engine combines keyword search with semantic AI to find the exact HS code every time.",
     accent: "from-blue-500 to-indigo-500",
   },
   {
@@ -58,7 +58,7 @@ const FEATURES = [
     icon: <IconLayers />,
     title: "6-Digit Precision",
     description:
-      "Navigate the full HS code hierarchy — Section, Chapter, Heading. View parent codes, child codes, and related classifications at a glance.",
+      "Navigate the full HS code hierarchy – Section, Chapter, Heading. View parent codes, child codes, and related classifications at a glance.",
     accent: "from-emerald-500 to-teal-500",
   },
 ];

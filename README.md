@@ -1,4 +1,4 @@
-# CeylonHS — AI-Powered HS Code Search Platform
+# CeylonHS – AI-Powered HS Code Search Platform
 
 **CeylonHS** is a modern web application that helps Sri Lankan businesses find harmonized system (HS) codes for their products using AI-powered search and natural language processing. Built with Next.js, FastAPI, and advanced vector search.
 
@@ -323,10 +323,10 @@ sudo systemctl restart ceylonhs-backend
 
 ### Environment Variables (Production)
 Stored as GitHub Secrets:
-- `DROPLET_HOST` — Server IP
-- `DROPLET_SSH_KEY` — Private SSH key
-- `NEXT_PUBLIC_FIREBASE_*` — Firebase config
-- `NEXT_PUBLIC_EMAILJS_*` — EmailJS credentials
+- `DROPLET_HOST` – Server IP
+- `DROPLET_SSH_KEY` – Private SSH key
+- `NEXT_PUBLIC_FIREBASE_*` – Firebase config
+- `NEXT_PUBLIC_EMAILJS_*` – EmailJS credentials
 
 ---
 

@@ -153,10 +153,10 @@ class TypesenseSearchService(BaseSearchService):
         search_params = {
             "q": query,
             "query_by": "description,embedding",
-            "prefix": "false,false",          # no prefix matching — require full tokens
+            "prefix": "false,false",          # no prefix matching – require full tokens
             "num_typos": 1,                    # conservative typo tolerance
             "typo_tokens_threshold": 1,        # retry with typos if 0 exact matches
-            "drop_tokens_threshold": 0,        # NEVER drop query tokens — prevents
+            "drop_tokens_threshold": 0,        # NEVER drop query tokens – prevents
                                                # "mobile phone" matching just "mobile"
             "min_len_1typo": 3,                # allow typo correction for 3-char words
             "per_page": top_k,
@@ -273,7 +273,7 @@ class TypesenseSearchService(BaseSearchService):
             return True
         # If no token matched in any result, the query term is foreign to the dataset
         if not has_text_match:
-            logger.info("No text match found — triggering enrichment")
+            logger.info("No text match found – triggering enrichment")
             return True
         # If the top result's relevance is below threshold, try enrichment
         threshold = settings.enrichment_confidence_threshold * 100

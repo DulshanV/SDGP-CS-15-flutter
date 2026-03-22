@@ -1,4 +1,4 @@
-// PM2 ecosystem config — used by deploy.yml to start/restart the Next.js frontend
+// PM2 ecosystem config – used by deploy.yml to start/restart the Next.js frontend
 // Ensures PM2 always uses the correct working directory and port.
 module.exports = {
   apps: [

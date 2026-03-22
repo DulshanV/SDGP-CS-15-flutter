@@ -48,7 +48,7 @@ USER_PROMPT_TEMPLATE = 'Resolve this query for HS code classification: "{query}"
 # ── Provider implementations ───────────────────────────────────────────────
 
 def _call_groq(query: str) -> dict:
-    """Call Groq (Llama 3.3 70B) — fastest, 30 RPM free tier."""
+    """Call Groq (Llama 3.3 70B) – fastest, 30 RPM free tier."""
     from groq import Groq
 
     client = Groq(api_key=settings.groq_api_key)
@@ -67,7 +67,7 @@ def _call_groq(query: str) -> dict:
 
 
 def _call_gemini(query: str) -> dict:
-    """Call Google Gemini Flash — 15 RPM free tier."""
+    """Call Google Gemini Flash – 15 RPM free tier."""
     import google.generativeai as genai
 
     genai.configure(api_key=settings.gemini_api_key)
@@ -88,7 +88,7 @@ def _call_gemini(query: str) -> dict:
 
 
 def _call_cohere(query: str) -> dict:
-    """Call Cohere Command-R — 20 RPM free tier."""
+    """Call Cohere Command-R – 20 RPM free tier."""
     import cohere
 
     client = cohere.ClientV2(api_key=settings.cohere_api_key)
@@ -122,13 +122,13 @@ class EnrichmentService:
         self._providers = []
         if settings.groq_api_key:
             self._providers.append(("groq", _call_groq))
-            logger.info("  + Groq (Llama 3.3 70B) — primary")
+            logger.info("  + Groq (Llama 3.3 70B) – primary")
         if settings.gemini_api_key:
             self._providers.append(("gemini", _call_gemini))
-            logger.info("  + Gemini Flash — fallback")
+            logger.info("  + Gemini Flash – fallback")
         if settings.cohere_api_key:
             self._providers.append(("cohere", _call_cohere))
-            logger.info("  + Cohere Command-R — fallback")
+            logger.info("  + Cohere Command-R – fallback")
 
         if not self._providers:
             logger.warning("No enrichment providers configured (set GROQ_API_KEY, GEMINI_API_KEY, or COHERE_API_KEY)")
@@ -210,12 +210,12 @@ class EnrichmentService:
                 confidence = result.get("confidence", 0.0)
 
                 if not explanation or not keywords or confidence < 0.5:
-                    # Low confidence — cache to avoid re-calling
+                    # Low confidence – cache to avoid re-calling
                     self._cache_result(query_lower, None, None, 0.0, provider_name)
                     logger.info(f"{provider_name} returned low confidence for '{query}'")
                     return None
 
-                # Success — cache and return
+                # Success – cache and return
                 self._cache_result(query_lower, keywords, explanation, confidence, provider_name)
                 enrichment = {
                     "explanation": explanation,
@@ -233,7 +233,7 @@ class EnrichmentService:
                 error_str = str(e)
                 is_rate_limit = "429" in error_str or "rate" in error_str.lower() or "quota" in error_str.lower()
                 if is_rate_limit:
-                    logger.warning(f"{provider_name} rate-limited (429) — trying next provider...")
+                    logger.warning(f"{provider_name} rate-limited (429) – trying next provider...")
                     last_error = e
                     continue  # try next provider
                 else:

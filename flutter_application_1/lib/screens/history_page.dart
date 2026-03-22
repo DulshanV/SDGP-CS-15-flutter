@@ -209,7 +209,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       children: [
                         if (item.topResultHscode != null)
                           Text(
-                            'Top: ${item.topResultHscode}${item.topResultDescription != null ? ' — ${item.topResultDescription}' : ''}',
+                            'Top: ${item.topResultHscode}${item.topResultDescription != null ? ' – ${item.topResultDescription}' : ''}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(

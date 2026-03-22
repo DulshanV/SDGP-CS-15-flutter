@@ -2,12 +2,12 @@
 Dataset management admin routes.
 
 Endpoints:
-  GET    /api/v1/admin/datasets           — list all uploaded datasets
-  GET    /api/v1/admin/datasets/active     — get currently active dataset info
-  POST   /api/v1/admin/datasets/upload     — upload a new CSV dataset
-  POST   /api/v1/admin/datasets/{id}/activate — embed & activate a dataset (background)
-  DELETE /api/v1/admin/datasets/{id}       — delete a dataset
-  GET    /api/v1/admin/datasets/status     — get embedding job status
+  GET    /api/v1/admin/datasets           – list all uploaded datasets
+  GET    /api/v1/admin/datasets/active     – get currently active dataset info
+  POST   /api/v1/admin/datasets/upload     – upload a new CSV dataset
+  POST   /api/v1/admin/datasets/{id}/activate – embed & activate a dataset (background)
+  DELETE /api/v1/admin/datasets/{id}       – delete a dataset
+  GET    /api/v1/admin/datasets/status     – get embedding job status
 """
 
 import os
@@ -440,7 +440,7 @@ async def activate_dataset(
 ):
     """
     Activate a dataset: embed it in the background and hot-swap the FAISS index.
-    Returns immediately — poll GET /status for progress.
+    Returns immediately – poll GET /status for progress.
     """
     global _embedding_job
 

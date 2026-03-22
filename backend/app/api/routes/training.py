@@ -2,15 +2,15 @@
 Training data & feedback loop admin routes.
 
 Endpoints:
-  GET    /api/v1/admin/training/stats       — search stats + training pair counts
-  GET    /api/v1/admin/training/pairs       — list training pairs (filterable)
-  POST   /api/v1/admin/training/pairs       — manually add a training pair
-  PATCH  /api/v1/admin/training/pairs/{id}  — approve / reject a pair
-  DELETE /api/v1/admin/training/pairs/{id}  — delete a pair
-  GET    /api/v1/admin/training/logs        — recent search logs
-  GET    /api/v1/admin/training/feedback    — get feedback mode status
-  PUT    /api/v1/admin/training/feedback    — toggle feedback collection on/off
-  POST   /api/v1/admin/training/export      — export pairs as JSON for fine-tuning
+  GET    /api/v1/admin/training/stats       – search stats + training pair counts
+  GET    /api/v1/admin/training/pairs       – list training pairs (filterable)
+  POST   /api/v1/admin/training/pairs       – manually add a training pair
+  PATCH  /api/v1/admin/training/pairs/{id}  – approve / reject a pair
+  DELETE /api/v1/admin/training/pairs/{id}  – delete a pair
+  GET    /api/v1/admin/training/logs        – recent search logs
+  GET    /api/v1/admin/training/feedback    – get feedback mode status
+  PUT    /api/v1/admin/training/feedback    – toggle feedback collection on/off
+  POST   /api/v1/admin/training/export      – export pairs as JSON for fine-tuning
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Query

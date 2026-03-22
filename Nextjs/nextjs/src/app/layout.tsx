@@ -14,7 +14,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'CeylonHS — AI-Powered HS Code Search & Trade Classification',
+    default: 'CeylonHS – AI-Powered HS Code Search & Trade Classification',
     template: '%s | CeylonHS',
   },
   description:

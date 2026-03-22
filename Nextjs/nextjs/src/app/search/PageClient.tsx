@@ -215,7 +215,7 @@ function SearchContent() {
             )}
             <button onClick={() => submitSearch(q)} className="px-3 py-1.5 rounded-lg font-semibold text-white text-sm" style={{ background: '#0B3EA8' }}>Go</button>
           </div>
-          <p className="text-white/50 text-xs mt-1.5 pl-1">Try brand names like "Premio" or "Dilmah" — AI-powered search</p>
+          <p className="text-white/50 text-xs mt-1.5 pl-1">Try brand names like "Premio" or "Dilmah" – AI-powered search</p>
         </div>
       </div>
 
