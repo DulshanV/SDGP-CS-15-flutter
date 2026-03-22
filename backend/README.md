@@ -1,4 +1,4 @@
-# CeylonHS Backend — FastAPI + FAISS Vector Search
+# CeylonHS Backend – FastAPI + FAISS Vector Search
 
 The backend provides RESTful APIs for HS code search, user management, and admin operations. Built with FastAPI, FAISS for vector search, and SQLAlchemy for database operations.
 
@@ -95,51 +95,51 @@ Server will be available at:
 ### Public Endpoints
 
 #### Search
-- `GET /api/v1/search?q={query}&limit=10` — Search HS codes
-- `GET /api/v1/hs/{hscode}` — Get HS code details
-- `GET /api/v1/categories` — List all categories
+- `GET /api/v1/search?q={query}&limit=10` – Search HS codes
+- `GET /api/v1/hs/{hscode}` – Get HS code details
+- `GET /api/v1/categories` – List all categories
 
 #### Health
-- `GET /health` — Health check
-- `GET /api` — Service info
+- `GET /health` – Health check
+- `GET /api` – Service info
 
 ### Authenticated Endpoints (require Firebase token)
 
 #### Users
-- `POST /api/v1/users/sync` — Sync Firebase user to backend DB
-- `GET /api/v1/users/me` — Get current user profile
-- `GET /api/v1/users/me/history` — Search history (paginated)
-- `POST /api/v1/users/me/favorites` — Add favorite HS code
-- `GET /api/v1/users/me/favorites` — List favorites
-- `DELETE /api/v1/users/me/favorites/{id}` — Remove favorite
+- `POST /api/v1/users/sync` – Sync Firebase user to backend DB
+- `GET /api/v1/users/me` – Get current user profile
+- `GET /api/v1/users/me/history` – Search history (paginated)
+- `POST /api/v1/users/me/favorites` – Add favorite HS code
+- `GET /api/v1/users/me/favorites` – List favorites
+- `DELETE /api/v1/users/me/favorites/{id}` – Remove favorite
 
 ### Admin Endpoints (require admin role)
 
 #### Admin Dashboard
-- `GET /api/v1/admin/stats` — User/search statistics
-- `GET /api/v1/admin/trends?days=7` — Search trends
+- `GET /api/v1/admin/stats` – User/search statistics
+- `GET /api/v1/admin/trends?days=7` – Search trends
 
 #### Dataset Management
-- `POST /api/v1/admin/dataset/upload` — Upload CSV dataset
-- `GET /api/v1/datasets` — List datasets
-- `POST /api/v1/datasets/{id}/activate` — Activate dataset
-- `DELETE /api/v1/datasets/{id}` — Delete dataset
-- `GET /api/v1/datasets/{id}/embedding-status` — Check embedding job
+- `POST /api/v1/admin/dataset/upload` – Upload CSV dataset
+- `GET /api/v1/datasets` – List datasets
+- `POST /api/v1/datasets/{id}/activate` – Activate dataset
+- `DELETE /api/v1/datasets/{id}` – Delete dataset
+- `GET /api/v1/datasets/{id}/embedding-status` – Check embedding job
 
 #### Training Data
-- `GET /api/v1/training/pairs` — List training pairs
-- `POST /api/v1/training/pairs` — Add training pair
-- `PATCH /api/v1/training/pairs/{id}/approve` — Approve pair
-- `DELETE /api/v1/training/pairs/{id}` — Delete pair
-- `GET /api/v1/training/logs` — Search logs
-- `GET /api/v1/training/feedback-status` — Get feedback toggle state
-- `POST /api/v1/training/feedback-toggle` — Enable/disable feedback
-- `GET /api/v1/training/export` — Export training data as JSON
+- `GET /api/v1/training/pairs` – List training pairs
+- `POST /api/v1/training/pairs` – Add training pair
+- `PATCH /api/v1/training/pairs/{id}/approve` – Approve pair
+- `DELETE /api/v1/training/pairs/{id}` – Delete pair
+- `GET /api/v1/training/logs` – Search logs
+- `GET /api/v1/training/feedback-status` – Get feedback toggle state
+- `POST /api/v1/training/feedback-toggle` – Enable/disable feedback
+- `GET /api/v1/training/export` – Export training data as JSON
 
 #### Synonyms
-- `GET /api/v1/synonyms` — List synonym mappings
-- `POST /api/v1/synonyms` — Create synonym (brand→keyword)
-- `DELETE /api/v1/synonyms/{id}` — Delete synonym
+- `GET /api/v1/synonyms` – List synonym mappings
+- `POST /api/v1/synonyms` – Create synonym (brand→keyword)
+- `DELETE /api/v1/synonyms/{id}` – Delete synonym
 
 ## 🗄️ Database
 

@@ -1,10 +1,10 @@
 """
-Training data collector — logs every search interaction as potential
+Training data collector – logs every search interaction as potential
 fine-tuning data for the embedding model.
 
 Two tables:
-  search_log          — every search query + top results (raw signal)
-  training_pairs      — curated (query, positive_description) pairs for fine-tuning
+  search_log          – every search query + top results (raw signal)
+  training_pairs      – curated (query, positive_description) pairs for fine-tuning
 
 The feedback loop works like this:
   1. Every search is logged (query, top results, whether enrichment was used)
@@ -13,7 +13,7 @@ The feedback loop works like this:
   3. Admins can also manually approve/reject pairs via the API
   4. The fine-tuning script (scripts/finetune_embeddings.py) reads training_pairs
 
-This is a passive background system — zero overhead on search latency.
+This is a passive background system – zero overhead on search latency.
 """
 
 import os
@@ -45,7 +45,7 @@ class TrainingDataCollector:
 
         conn = sqlite3.connect(self._db_path)
 
-        # Raw search log — every query
+        # Raw search log – every query
         conn.execute("""
             CREATE TABLE IF NOT EXISTS search_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -98,7 +98,7 @@ class TrainingDataCollector:
         if len(q) < 3:
             return False  # too short
         if len(q.split()) < 2:
-            return False  # single word — usually too generic
+            return False  # single word – usually too generic
         if q in self._SKIP_QUERIES:
             return False
         if all(c == q[0] for c in q.replace(" ", "")):
@@ -168,7 +168,7 @@ class TrainingDataCollector:
             # 2. Auto-generate training pairs from enrichment successes
             #    Only when enrichment genuinely improved results (top score > 50%)
             if enrichment_used and enrichment_keywords and top.get("relevance_pct", 0) > 50:
-                # Only take the #1 result — more selective than top 3
+                # Only take the #1 result – more selective than top 3
                 desc = top.get("description", "")
                 hscode = top.get("hscode", "")
                 score = top.get("relevance_pct", 0)
@@ -187,7 +187,7 @@ class TrainingDataCollector:
                     except sqlite3.IntegrityError:
                         pass
 
-            # 3. High-confidence direct matches (>80% — truly excellent matches only)
+            # 3. High-confidence direct matches (>80% – truly excellent matches only)
             elif not enrichment_used and top.get("relevance_pct", 0) > 80:
                 desc = top.get("description", "")
                 hscode = top.get("hscode", "")

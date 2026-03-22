@@ -217,7 +217,7 @@ export default function Login() {
             <div className="absolute top-0 left-0 right-0 h-2 z-[2] pointer-events-none"
                 style={{ background: 'linear-gradient(90deg,rgba(100,210,255,0.3),rgba(200,240,255,0.5),rgba(100,210,255,0.3))' }} />
 
-            {/* Card — dive-in animation */}
+            {/* Card – dive-in animation */}
             <div
                 className="relative z-10 w-full max-w-[400px] mx-4 rounded-3xl p-8 transition-all duration-700"
                 style={{

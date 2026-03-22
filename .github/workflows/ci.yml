@@ -9,7 +9,7 @@ on:
 jobs:
   # ── Backend: install deps + import check ───────────────────────────────
   backend:
-    name: Backend — Import & Syntax Check
+    name: Backend – Import & Syntax Check
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -57,7 +57,7 @@ jobs:
 
   # ── Frontend: build check ───────────────────────────────────────────────
   frontend:
-    name: Frontend — Next.js Build Check
+    name: Frontend – Next.js Build Check
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -78,7 +78,7 @@ jobs:
 
       - name: Build
         env:
-          # Dummy Firebase config — prevents undefined errors during build
+          # Dummy Firebase config – prevents undefined errors during build
           NEXT_PUBLIC_FIREBASE_API_KEY: ci-dummy-key
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ci-dummy.firebaseapp.com
           NEXT_PUBLIC_FIREBASE_PROJECT_ID: ci-dummy-project

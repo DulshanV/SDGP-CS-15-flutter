@@ -12,13 +12,13 @@ import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
 
 /* ================================================================
-   SEO — Comprehensive metadata for crawlers & social sharing
+   SEO – Comprehensive metadata for crawlers & social sharing
    ================================================================ */
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ceylonhs.com"),
   title: {
-    default: "CeylonHS — AI-Powered HS Code Search & Trade Classification",
+    default: "CeylonHS – AI-Powered HS Code Search & Trade Classification",
     template: "%s | CeylonHS",
   },
   description:
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://ceylonhs.com",
     siteName: "CeylonHS",
-    title: "CeylonHS — AI-Powered HS Code Search & Trade Classification",
+    title: "CeylonHS – AI-Powered HS Code Search & Trade Classification",
     description:
       "Classify products to 6-digit HS codes in seconds with AI-powered hybrid search. Smart brand recognition, 16,000+ codes, sub-second results.",
     images: [
@@ -64,13 +64,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "CeylonHS — AI-Powered HS Code Classification",
+        alt: "CeylonHS – AI-Powered HS Code Classification",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CeylonHS — AI-Powered HS Code Search",
+    title: "CeylonHS – AI-Powered HS Code Search",
     description:
       "Classify products to 6-digit HS codes in seconds. Smart brand recognition, 16,000+ codes.",
     images: ["/og-image.png"],
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
 };
 
 /* ================================================================
-   JSON-LD — Structured data for rich search results
+   JSON-LD – Structured data for rich search results
    ================================================================ */
 
 const jsonLd = {
@@ -134,7 +134,7 @@ const jsonLd = {
 };
 
 /* ================================================================
-   Page — Server component (no "use client") for SEO-first rendering
+   Page – Server component (no "use client") for SEO-first rendering
    ================================================================ */
 
 export default function Home() {

@@ -125,7 +125,7 @@ def build_document_text(hscode: str, chain_desc: str, section: str) -> str:
 
 def main():
     print("=" * 60)
-    print("HS Code Dataset Embedding Script (FAISS) — v2 with parent chains")
+    print("HS Code Dataset Embedding Script (FAISS) – v2 with parent chains")
     print("=" * 60)
 
     # ── Check if already embedded ──
@@ -194,7 +194,7 @@ def main():
         descriptions_list.append(description)  # RAW description for display & vocabulary
         metadatas.append({
             "hscode": hscode,
-            "description": description,  # RAW — not concatenated (for display)
+            "description": description,  # RAW – not concatenated (for display)
             "section": section,
             "parent": parent if parent != "nan" else "",
             "level": level_int,

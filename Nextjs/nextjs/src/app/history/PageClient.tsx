@@ -112,7 +112,7 @@ export default function HistoryPage() {
                   {item.topResultHscode && (
                     <p className="text-gray-400 text-xs mt-0.5 truncate">
                       Top: <span className="text-[#0B3EA8] dark:text-blue-400 font-mono font-semibold">{item.topResultHscode}</span>
-                      {item.topResultDescription && ` — ${item.topResultDescription}`}
+                      {item.topResultDescription && ` – ${item.topResultDescription}`}
                     </p>
                   )}
                   <p className="text-gray-300 text-[11px] mt-0.5">

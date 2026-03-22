@@ -15,11 +15,11 @@ import { ThemeToggleButton } from '@/lib/ThemeContext';
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function fmt(n: number | null | undefined, suffix = '') {
-    if (n == null) return '—';
+    if (n == null) return '–';
     return n.toLocaleString() + suffix;
 }
 function fmtDate(s: string | null) {
-    if (!s) return '—';
+    if (!s) return '–';
     return new Date(s).toLocaleString();
 }
 function sourceColor(src: string) {
@@ -147,7 +147,7 @@ function OverviewTab() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="bg-surface rounded-2xl border border-border shadow-sm p-4">
                     <p className="text-xs text-copy-muted mb-1 font-medium uppercase tracking-wide">Avg Match Score</p>
-                    <p className="text-3xl font-black text-copy">{tStats?.avg_top_score?.toFixed(1) ?? '—'}<span className="text-base font-medium text-copy-muted">%</span></p>
+                    <p className="text-3xl font-black text-copy">{tStats?.avg_top_score?.toFixed(1) ?? '–'}<span className="text-base font-medium text-copy-muted">%</span></p>
                 </div>
                 <div className="bg-surface rounded-2xl border border-border shadow-sm p-4">
                     <p className="text-xs text-copy-muted mb-1 font-medium uppercase tracking-wide">AI Enriched Searches</p>
@@ -578,7 +578,7 @@ function DatasetsTab() {
                 <div className="bg-amber-50 dark:bg-amber-900/40 border border-amber-200 rounded-2xl p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-                        <p className="font-bold text-amber-700 dark:text-amber-300">Embedding in progress — {status.progress}%</p>
+                        <p className="font-bold text-amber-700 dark:text-amber-300">Embedding in progress – {status.progress}%</p>
                     </div>
                     <p className="text-amber-600 text-sm">{status.step}</p>
                     <div className="mt-3 h-2 bg-amber-100 rounded-full overflow-hidden">

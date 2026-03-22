@@ -1,17 +1,17 @@
 """
-Cache warming script — pre-populate synonym_cache with common brand names.
+Cache warming script – pre-populate synonym_cache with common brand names.
 
 Usage:
     cd backend
     python -m scripts.warm_cache
 
 This script calls the enrichment service for each brand name, which:
-1. Checks if already cached (skips if so — safe to re-run)
+1. Checks if already cached (skips if so – safe to re-run)
 2. Calls the LLM provider cascade (Groq → Gemini → Cohere) for uncached terms
 3. Stores the result (brand → HS keywords) in synonym_cache permanently
 
 Run this once after deployment, or whenever you add new brands to the list.
-Respects Groq's 30 RPM free tier — adds a 2.5s delay between LLM calls.
+Respects Groq's 30 RPM free tier – adds a 2.5s delay between LLM calls.
 
 Note: Each brand costs ONE LLM call the first time. After that it's cached forever.
 """
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 # ── Common global brands organized by product category ──────────────────────
 # These are the brands most likely to be searched by customs officers / importers.
-# Add more as needed — the script is idempotent (skips already-cached terms).
+# Add more as needed – the script is idempotent (skips already-cached terms).
 
 COMMON_BRANDS = [
     # ── Automobiles & Motorcycles ──

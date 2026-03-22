@@ -21,7 +21,7 @@ TYPESENSE_VERSION = "30.1"
 CONTAINER_NAME = "typesense"
 IMAGE = f"typesense/typesense:{TYPESENSE_VERSION}"
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "typesense-data")
-API_KEY = "xyz"  # Default dev API key — matches .env
+API_KEY = "xyz"  # Default dev API key – matches .env
 PORT = 8108
 
 

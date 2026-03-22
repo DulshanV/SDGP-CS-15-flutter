@@ -43,7 +43,7 @@ jobs:
             fi
 
             # ── 3. Write .env.local so NEXT_PUBLIC_* vars are baked into build ─
-            #   NEXT_PUBLIC_API_URL is intentionally omitted — in production the
+            #   NEXT_PUBLIC_API_URL is intentionally omitted – in production the
             #   browser uses relative URLs (same domain) and nginx proxies
             #   /api/v1/* to the FastAPI backend on port 8000.
             cd Nextjs/nextjs
@@ -114,10 +114,10 @@ jobs:
                 nginx -t && systemctl reload nginx
                 echo "   Added /api/ proxy block to nginx"
               else
-                echo "   /api/ proxy block already present — skipping"
+                echo "   /api/ proxy block already present – skipping"
               fi
             else
-              echo "   ⚠ No nginx config found — API proxy not configured"
+              echo "   ⚠ No nginx config found – API proxy not configured"
               echo "   Checked: ceylonhs, default in sites-available/enabled/conf.d"
             fi
 

@@ -123,7 +123,7 @@ class ApiService {
         const Duration(seconds: 5),
       );
     } catch (_) {
-      // Silently fail — history recording is best-effort
+      // Silently fail – history recording is best-effort
     }
   }
 

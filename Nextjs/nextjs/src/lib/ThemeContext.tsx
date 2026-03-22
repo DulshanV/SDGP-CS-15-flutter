@@ -48,7 +48,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         });
     }
 
-    // Prevent flash — render nothing until we know the real theme
+    // Prevent flash – render nothing until we know the real theme
     if (!mounted) return null;
 
     return (
@@ -62,7 +62,7 @@ export function useTheme(): ThemeContextValue {
     return useContext(ThemeContext);
 }
 
-/** A minimal ready-to-drop-in toggle button — import and reuse across pages. */
+/** A minimal ready-to-drop-in toggle button – import and reuse across pages. */
 export function ThemeToggleButton({ className = "" }: { className?: string }) {
     const { isDark, toggleTheme } = useTheme();
 

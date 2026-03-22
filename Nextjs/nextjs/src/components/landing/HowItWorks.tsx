@@ -8,7 +8,7 @@ const STEPS = [
     num: "01",
     title: "Describe Your Product",
     description:
-      'Type a product name, brand, or description into the search bar. Use natural language — say "wooden dining chairs" or even just "Dilmah".',
+      'Type a product name, brand, or description into the search bar. Use natural language – say "wooden dining chairs" or even just "Dilmah".',
     icon: (
       <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="4" width="20" height="16" rx="3" />

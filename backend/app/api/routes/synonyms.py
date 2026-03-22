@@ -1,6 +1,6 @@
 """
 Synonym management admin routes.
-CRUD for the synonym cache — admin controlled.
+CRUD for the synonym cache – admin controlled.
 """
 
 from fastapi import APIRouter, Depends, HTTPException

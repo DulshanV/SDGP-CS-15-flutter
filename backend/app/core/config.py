@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     typesense_api_key: str = "xyz"  # default dev key
     typesense_collection: str = "hs_codes"
 
-    # Enrichment — multi-provider cascade (Groq → Gemini → Cohere)
+    # Enrichment – multi-provider cascade (Groq → Gemini → Cohere)
     groq_api_key: str = ""
     groq_model: str = "llama-3.3-70b-versatile"
     gemini_api_key: str = ""

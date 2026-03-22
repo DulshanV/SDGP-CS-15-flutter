@@ -1,4 +1,4 @@
-# CeylonHS Frontend — Next.js 16 + React 19
+# CeylonHS Frontend – Next.js 16 + React 19
 
 Modern, responsive web interface for CeylonHS HS code search platform. Built with Next.js App Router, TypeScript, Tailwind CSS, and Framer Motion.
 
@@ -156,8 +156,8 @@ src/
 
 ### App Router (Next.js 16)
 Uses Server Components by default:
-- `page.tsx` — Server Component (for SEO, static generation)
-- `PageClient.tsx` — Client Component (for interactivity)
+- `page.tsx` – Server Component (for SEO, static generation)
+- `PageClient.tsx` – Client Component (for interactivity)
 
 Example:
 ```tsx
@@ -263,11 +263,11 @@ describe('Hero Component', () => {
 ## 🔒 Security
 
 ### Environment Variables
-**Never commit `.env.local`** — it contains Firebase credentials.
+**Never commit `.env.local`** – it contains Firebase credentials.
 
 Use `NEXT_PUBLIC_*` prefix for client-side vars:
-- ✅ `NEXT_PUBLIC_API_URL` — exposed to browser
-- ❌ `SECRET_API_KEY` — server-only (not accessible in browser)
+- ✅ `NEXT_PUBLIC_API_URL` – exposed to browser
+- ❌ `SECRET_API_KEY` – server-only (not accessible in browser)
 
 ### CORS
 Backend must allow frontend domain in `CORS_ORIGINS` env var.
@@ -328,7 +328,7 @@ NODE_OPTIONS="--max-old-space-size=4096" npm run build
 ```
 
 ### Hydration Errors
-Server/client mismatch — ensure:
+Server/client mismatch – ensure:
 - No `document`/`window` access in Server Components
 - Use `useEffect` for client-only logic
 - Check for incorrect nesting (e.g., `<p>` inside `<p>`)
