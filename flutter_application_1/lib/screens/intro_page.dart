@@ -10,7 +10,7 @@ class IntroPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+        color: Colors.white,
         child: SafeArea(
           child: Center(
             child: Padding(
@@ -18,12 +18,17 @@ class IntroPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('☂️', style: TextStyle(fontSize: 90)),
+                  Image.asset(
+                    'assets/images/Logo.png',
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.contain,
+                  ),
                   const SizedBox(height: 48),
-                  const Text(
+                  Text(
                     'CeylonHS',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.blue[900],
                       fontSize: 52,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.3,
@@ -32,7 +37,7 @@ class IntroPage extends StatelessWidget {
                   const SizedBox(height: 12),
                   RichText(
                     textAlign: TextAlign.center,
-                    text: const TextSpan(
+                    text:  TextSpan(
                       children: [
                         TextSpan(
                           text: 'From product to code\n',
@@ -48,7 +53,7 @@ class IntroPage extends StatelessWidget {
                         TextSpan(
                           text: 'in Seconds.',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.blue[800],
                             fontSize: 30,
                             fontWeight: FontWeight.w800,
                             fontStyle: FontStyle.italic,
