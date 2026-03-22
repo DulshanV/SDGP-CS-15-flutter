@@ -20,8 +20,8 @@ class IntroPage extends StatelessWidget {
                 children: [
                   Image.asset(
                     'assets/images/Logo.png',
-                    width: 100,
-                    height: 100,
+                    width: 150,
+                    height: 150,
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 48),
@@ -30,7 +30,7 @@ class IntroPage extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.blue[900],
                       fontSize: 52,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w900,
                       letterSpacing: 0.3,
                     ),
                   ),
@@ -42,9 +42,9 @@ class IntroPage extends StatelessWidget {
                         TextSpan(
                           text: 'From product to code\n',
                           style: TextStyle(
-                            color: AppColors.softBlue,
+                            color: Colors.blue[700],
                             fontSize: 24,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
                             fontStyle: FontStyle.italic,
                             letterSpacing: 0.3,
                             height: 1.25,
@@ -107,7 +107,7 @@ class IntroPage extends StatelessWidget {
                         );
                       },
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
+                        foregroundColor: Colors.blue[800],
                         minimumSize: const Size.fromHeight(48),
                         side: const BorderSide(
                             color: AppColors.softBlue, width: 1.5),
