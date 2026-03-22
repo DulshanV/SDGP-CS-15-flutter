@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In — HS Classifier</title>
+    <title>Sign In - HS Classifier</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -537,7 +537,7 @@
                 let methods = [];
                 try {
                     methods = await fetchSignInMethodsForEmail(auth, email);
-                } catch (_) { /* network issues — proceed to sign-in anyway */ }
+                } catch (_) { /* network issues - proceed to sign-in anyway */ }
 
                 if (methods.length === 0) {
                     showError(
@@ -576,7 +576,7 @@
                     'auth/invalid-credential': 'Incorrect password. Please try again.',
                     'auth/too-many-requests': 'Too many failed attempts. Please wait a few minutes and try again.',
                     'auth/user-disabled': 'This account has been disabled. Please contact support.',
-                    'auth/network-request-failed': 'Network error — check your internet connection.',
+                    'auth/network-request-failed': 'Network error - check your internet connection.',
                 };
                 showError(map[err.code] || `Error (${err.code}): ${err.message}`);
                 loginBtn.textContent = 'Sign In';

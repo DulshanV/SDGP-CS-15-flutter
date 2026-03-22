@@ -2774,7 +2774,7 @@
                 const displayName = user.displayName || localStorage.getItem('userName') || (user.email ? user.email.split('@')[0] : 'User');
                 const initial = displayName.charAt(0).toUpperCase();
 
-                // Profile avatar — show initial letter
+                // Profile avatar - show initial letter
                 if (profileAvatar) profileAvatar.textContent = initial;
 
                 // Switch button to horizontal logged-in layout
