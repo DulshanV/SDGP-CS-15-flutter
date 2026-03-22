@@ -1,22 +1,44 @@
-# ══════════════════════════════════════════════════════════════════════════
-# .gitignore for CeylonHS official university repo
-# ══════════════════════════════════════════════════════════════════════════
+# ==============================================================
+# .gitignore for CeylonHS
+# Focus: keep deploy-safe code in git, drop generated/local files
+# ==============================================================
 
-# ── Environment / Secrets ──
-.env
-.env.*
-!.env.example
-!.env.local.example
+# --- Academic reports and coursework artifacts ---
+report/
+Extracted base files for report/
+CW2_Implementation_Report.md
+CeylonHS_CW2_Implementation_Report.*
+_cw1_report.txt
+_cw2_rubric.txt
+_cw2_template.txt
+_extract_pdfs.py
+all_chapters_extracted.csv
 
-# ── Python ──
+# --- Development logs/docs (local planning only) ---
+DECISION_LOG.md
+FAILURE_LOG.md
+UI_DECISION_LOG.md
+UI_OVERHAUL_PLAN.md
+
+# --- Legacy/duplicate roots ---
+SDGP-CS-15-flutter/
+SDGP-CS-15-flutter-main/
+SDGP-main/
+
+# --- Environment and secrets ---
+**/.env
+**/.env.*
+!backend/.env.example
+!**/.env.local.example
+
+# --- Python cache and virtual environments ---
 backend/venv/
-backend/__pycache__/
+backend/.venv/
 backend/.pytest_cache/
 **/__pycache__/
-**/*.pyc
-*.pyo
+**/*.py[cod]
 
-# ── Database & Vector Index (generated files — run embed_dataset.py to rebuild) ──
+# --- Databases and vector indexes (rebuildable/generated) ---
 backend/data/*.db
 backend/data/*.db-shm
 backend/data/*.db-wal
@@ -25,17 +47,21 @@ backend/data/chroma_db/
 backend/hscode_dev.db
 backend/hscode_dev.db-shm
 backend/hscode_dev.db-wal
+backend/db_backup/
 
-# ── Log files ──
+# --- Logs ---
 backend/*.log
 backend/*.txt
 !backend/README.txt
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# ── Typesense binary data ──
+# --- Typesense generated data ---
 backend/typesense-data/
 backend/typesense/
 
-# ── ML Models & large binaries (sentence-transformers, FAISS, ONNX, etc.) ──
+# --- ML and model caches ---
 *.bin
 *.onnx
 *.pt
@@ -51,28 +77,35 @@ backend/typesense/
 **/sentence-transformers/
 **/huggingface/
 
-# ── Firebase credentials ──
+# --- Firebase credentials ---
 backend/firebase-service-account.json
 
-# ── Node / Next.js ──
+# --- Next.js build artifacts ---
 Nextjs/nextjs/node_modules/
 Nextjs/nextjs/.next/
 Nextjs/nextjs/out/
 Nextjs/nextjs/build/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# ── Flutter / Dart ──
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-build/
-*.g.dart
-*.freezed.dart
-pubspec.lock
+# --- Flutter and Gradle build artifacts ---
+flutter_application_1/.dart_tool/
+flutter_application_1/.flutter-plugins
+flutter_application_1/.flutter-plugins-dependencies
+flutter_application_1/build/
+flutter_application_1/android/.gradle/
+flutter_application_1/android/local.properties
+flutter_application_1/ios/Flutter/ephemeral/
+flutter_application_1/macos/Flutter/ephemeral/
+flutter_application_1/linux/flutter/ephemeral/
+flutter_application_1/windows/flutter/ephemeral/
 
-# ── IDE ──
+# Generated plugin registrants (frequent merge-conflict sources)
+flutter_application_1/linux/flutter/generated_plugin_registrant.*
+flutter_application_1/linux/flutter/generated_plugins.cmake
+flutter_application_1/windows/flutter/generated_plugin_registrant.*
+flutter_application_1/windows/flutter/generated_plugins.cmake
+flutter_application_1/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# --- IDE/OS ---
 .vscode/
 .idea/
 *.iml
@@ -81,11 +114,13 @@ pubspec.lock
 .DS_Store
 Thumbs.db
 
-# ── Docker / Legacy ──
-docker-compose.yml
+# --- CI/Test artifacts ---
+backend/ci_test.db
+backend/ci_test.db-shm
+backend/ci_test.db-wal
+backend/*_test.db
 
-backend/db_backup/
-backend/hscode_dev.db
-backend/hscode_dev.db-shm
-backend/hscode_dev.db-wal
+# --- Backend junk files ---
+backend/d
 
+flutter_application_1/NUL

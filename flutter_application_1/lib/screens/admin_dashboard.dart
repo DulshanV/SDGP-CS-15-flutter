@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import '../theme/app_colors.dart';
 
 /// Admin dashboard showing platform stats and search trends.
 class AdminDashboardPage extends StatefulWidget {
@@ -18,8 +19,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   bool _isLoading = true;
   String? _error;
   int _trendDays = 7;
-
-  static const Color primaryBlue = Color(0xFF0B3EA8);
 
   @override
   void initState() {
@@ -73,11 +72,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F4F8),
+      backgroundColor: AppColors.surface,
       appBar: AppBar(
         title: const Text('Admin Dashboard',
             style: TextStyle(fontWeight: FontWeight.w700)),
-        backgroundColor: primaryBlue,
+        backgroundColor: AppColors.primaryBlue,
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -98,10 +97,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(Icons.admin_panel_settings,
-                  size: 64, color: Color(0xFFB7BFCC)),
+                  size: 64, color: AppColors.textMuted),
               const SizedBox(height: 16),
               Text(_error!, textAlign: TextAlign.center,
-                  style: const TextStyle(color: Color(0xFF5D6778))),
+                  style: const TextStyle(color: AppColors.textMedium)),
               const SizedBox(height: 16),
               OutlinedButton(
                   onPressed: _loadData, child: const Text('Retry')),
@@ -126,7 +125,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF2C3442)),
+                    color: AppColors.textHeading),
               ),
               const SizedBox(height: 14),
               Row(
@@ -136,7 +135,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       label: 'Users',
                       value: '${_stats!.totalUsers}',
                       icon: Icons.people_outline,
-                      color: primaryBlue,
+                      color: AppColors.primaryBlue,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -145,7 +144,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       label: 'Total Searches',
                       value: '${_stats!.totalSearches}',
                       icon: Icons.search,
-                      color: const Color(0xFF1967D2),
+                      color: AppColors.linkBlue,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -171,14 +170,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF2C3442)),
+                      color: AppColors.textHeading),
                 ),
                 const Spacer(),
                 DropdownButton<int>(
                   value: _trendDays,
                   underline: const SizedBox(),
                   style: const TextStyle(
-                      fontSize: 13, color: Color(0xFF5D6778)),
+                      fontSize: 13, color: AppColors.textMedium),
                   items: const [
                     DropdownMenuItem(value: 1, child: Text('Today')),
                     DropdownMenuItem(value: 7, child: Text('7 days')),
@@ -203,15 +202,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFDADCE0)),
+                  border: Border.all(color: AppColors.cardBorder),
                 ),
                 child: const Column(
                   children: [
-                    Icon(Icons.trending_up, size: 48, color: Color(0xFFB7BFCC)),
+                    Icon(Icons.trending_up, size: 48, color: AppColors.textMuted),
                     SizedBox(height: 12),
                     Text('No search data for this period',
                         style: TextStyle(
-                            color: Color(0xFF9BA5B7), fontSize: 14)),
+                            color: AppColors.textLight, fontSize: 14)),
                   ],
                 ),
               )
@@ -230,7 +229,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: const Color(0xFFDADCE0)),
+                    border: Border.all(color: AppColors.cardBorder),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,8 +242,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: i < 3
-                                  ? primaryBlue
-                                  : const Color(0xFFE8F0FE),
+                                  ? AppColors.primaryBlue
+                                  : AppColors.backgroundBlue,
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -253,7 +252,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
                                 color:
-                                    i < 3 ? Colors.white : primaryBlue,
+                                    i < 3 ? Colors.white : AppColors.primaryBlue,
                               ),
                             ),
                           ),
@@ -270,7 +269,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                             '${trend.searchCount}',
                             style: const TextStyle(
                                 fontWeight: FontWeight.w700,
-                                color: primaryBlue,
+                                color: AppColors.primaryBlue,
                                 fontSize: 16),
                           ),
                         ],
@@ -281,12 +280,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         child: LinearProgressIndicator(
                           value: barFraction,
                           minHeight: 6,
-                          backgroundColor: const Color(0xFFE8F0FE),
+                          backgroundColor: AppColors.backgroundBlue,
                           valueColor:
                               AlwaysStoppedAnimation<Color>(
                             i < 3
-                                ? primaryBlue
-                                : const Color(0xFF4DA7FF),
+                                ? AppColors.primaryBlue
+                                : AppColors.accentBlue,
                           ),
                         ),
                       ),
@@ -321,7 +320,7 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFDADCE0)),
+        border: Border.all(color: AppColors.cardBorder),
       ),
       child: Column(
         children: [
@@ -337,7 +336,7 @@ class _StatCard extends StatelessWidget {
             label,
             textAlign: TextAlign.center,
             style: const TextStyle(
-                fontSize: 12, color: Color(0xFF5D6778), fontWeight: FontWeight.w500),
+                fontSize: 12, color: AppColors.textMedium, fontWeight: FontWeight.w500),
           ),
         ],
       ),

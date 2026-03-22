@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/search_result.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
+import '../theme/app_colors.dart';
 
 /// Detail page for a single HS code, showing full hierarchy and children.
 class HsCodeDetailPage extends StatefulWidget {
@@ -19,8 +20,6 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
   bool _isLoading = true;
   String? _error;
   bool _isFavorite = false;
-
-  static const Color primaryBlue = Color(0xFF0B3EA8);
 
   @override
   void initState() {
@@ -69,7 +68,9 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
               resp.items.any((f) => f.hscode == widget.hscode);
         });
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Could not check favorite status: $e');
+    }
   }
 
   Future<void> _toggleFavorite() async {
@@ -103,20 +104,20 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F4F8),
+      backgroundColor: AppColors.surface,
       appBar: AppBar(
         title: Text(
           'HS ${widget.hscode}',
           style: const TextStyle(fontWeight: FontWeight.w700),
         ),
-        backgroundColor: primaryBlue,
+        backgroundColor: AppColors.primaryBlue,
         foregroundColor: Colors.white,
         elevation: 0,
         actions: [
           if (AuthService().isLoggedIn)
             IconButton(
               icon: Icon(_isFavorite ? Icons.favorite : Icons.favorite_border),
-              color: _isFavorite ? Colors.redAccent : Colors.white,
+              color: _isFavorite ? AppColors.error : Colors.white,
               onPressed: _toggleFavorite,
               tooltip: _isFavorite ? 'Remove from favorites' : 'Add to favorites',
             ),
@@ -164,7 +165,7 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFDADCE0)),
+              border: Border.all(color: AppColors.cardBorder),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,7 +175,7 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
-                    color: primaryBlue,
+                    color: AppColors.primaryBlue,
                     fontFamily: 'monospace',
                   ),
                 ),
@@ -183,7 +184,7 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
                   d.description,
                   style: const TextStyle(
                     fontSize: 16,
-                    color: Color(0xFF2C3442),
+                    color: AppColors.textHeading,
                     height: 1.4,
                   ),
                 ),
@@ -209,7 +210,7 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF2C3442),
+                color: AppColors.textHeading,
               ),
             ),
             const SizedBox(height: 10),
@@ -219,7 +220,7 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFDADCE0)),
+                border: Border.all(color: AppColors.cardBorder),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,7 +238,7 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
                           height: 22,
                           margin: const EdgeInsets.only(right: 8),
                           decoration: BoxDecoration(
-                            color: isLast ? primaryBlue : const Color(0xFFE8F0FE),
+                            color: isLast ? AppColors.primaryBlue : AppColors.backgroundBlue,
                             shape: BoxShape.circle,
                           ),
                           child: Center(
@@ -246,7 +247,7 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,
-                                color: isLast ? Colors.white : primaryBlue,
+                                color: isLast ? Colors.white : AppColors.primaryBlue,
                               ),
                             ),
                           ),
@@ -261,8 +262,8 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: isLast
-                                      ? primaryBlue
-                                      : const Color(0xFF5D6778),
+                                      ? AppColors.primaryBlue
+                                      : AppColors.textMedium,
                                   fontWeight: isLast
                                       ? FontWeight.w600
                                       : FontWeight.w400,
@@ -288,17 +289,12 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF2C3442),
+                color: AppColors.textHeading,
               ),
             ),
             const SizedBox(height: 10),
             ...d.children.map((child) => Card(
                   margin: const EdgeInsets.only(bottom: 8),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    side: const BorderSide(color: Color(0xFFDADCE0)),
-                  ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 14, vertical: 4),
@@ -306,7 +302,7 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
                       child.hscode,
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
-                        color: primaryBlue,
+                        color: AppColors.primaryBlue,
                         fontFamily: 'monospace',
                         fontSize: 15,
                       ),
@@ -315,10 +311,10 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
                       child.description,
                       style: const TextStyle(
                         fontSize: 13,
-                        color: Color(0xFF5D6778),
+                        color: AppColors.textMedium,
                       ),
                     ),
-                    trailing: const Icon(Icons.chevron_right, color: Color(0xFFB7BFCC)),
+                    trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
@@ -339,7 +335,7 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F0FE),
+        color: AppColors.backgroundBlue,
         borderRadius: BorderRadius.circular(8),
       ),
       child: RichText(
@@ -349,12 +345,12 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
             TextSpan(
               text: '$label: ',
               style: const TextStyle(
-                  color: Color(0xFF5D6778), fontWeight: FontWeight.w500),
+                  color: AppColors.textMedium, fontWeight: FontWeight.w500),
             ),
             TextSpan(
               text: value,
               style: const TextStyle(
-                  color: Color(0xFF1967D2), fontWeight: FontWeight.w700),
+                  color: AppColors.linkBlue, fontWeight: FontWeight.w700),
             ),
           ],
         ),
