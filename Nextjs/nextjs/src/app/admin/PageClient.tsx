@@ -87,11 +87,11 @@ function Spinner() {
 
 type Tab = 'overview' | 'training' | 'logs' | 'synonyms' | 'datasets';
 const TABS: { id: Tab; label: string; icon: string }[] = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'training', label: 'Training Pairs', icon: '🧠' },
-    { id: 'logs', label: 'Search Logs', icon: '📋' },
-    { id: 'synonyms', label: 'Synonyms', icon: '🔗' },
-    { id: 'datasets', label: 'Datasets', icon: '🗄️' },
+    { id: 'overview', label: 'Overview', icon: '' },
+    { id: 'training', label: 'Training Pairs', icon: '' },
+    { id: 'logs', label: 'Search Logs', icon: '' },
+    { id: 'synonyms', label: 'Synonyms', icon: '' },
+    { id: 'datasets', label: 'Datasets', icon: '' },
 ];
 
 // ── Overview Tab ──────────────────────────────────────────────────────────
@@ -166,7 +166,7 @@ function OverviewTab() {
 
             {/* Trending queries */}
             <div className="bg-surface rounded-2xl border border-border shadow-sm p-5">
-                <SectionHeader title="🔥 Trending Searches (Last 7 Days)" />
+                <SectionHeader title=" Trending Searches (Last 7 Days)" />
                 {trends.length === 0 ? <EmptyState icon="📭" message="No searches recorded yet." /> : (
                     <div className="space-y-2">
                         {trends.map((t, i) => (
@@ -188,7 +188,7 @@ function OverviewTab() {
             {/* Top queries from training stats */}
             {tStats?.top_queries && tStats.top_queries.length > 0 && (
                 <div className="bg-surface rounded-2xl border border-border shadow-sm p-5">
-                    <SectionHeader title="📈 All-Time Top Queries" />
+                    <SectionHeader title=" All-Time Top Queries" />
                     <div className="flex flex-wrap gap-2">
                         {tStats.top_queries.map((q, i) => (
                             <span key={i} className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/40 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 dark:text-blue-300 text-sm font-medium">
@@ -804,7 +804,7 @@ export default function AdminDashboard() {
                                 onClick={() => setActiveTab(t.id)}
                                 className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 whitespace-nowrap transition-colors ${activeTab === t.id ? 'border-blue-600 text-blue-700 dark:text-blue-300 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/40 dark:bg-blue-900/40/60' : 'border-transparent text-copy-muted hover:text-copy'}`}
                             >
-                                <span className="text-base">{t.icon}</span>
+                                
                                 {t.label}
                             </button>
                         ))}
