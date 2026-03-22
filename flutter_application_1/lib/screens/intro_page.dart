@@ -20,20 +20,12 @@ class IntroPage extends StatelessWidget {
                 children: [
                   Image.asset(
                     'assets/images/Logo.png',
-                    width: 150,
-                    height: 150,
+                    width: 190,
+                    height: 190,
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 48),
-                  Text(
-                    'CeylonHS',
-                    style: TextStyle(
-                      color: Colors.blue[900],
-                      fontSize: 52,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
+                  
                   const SizedBox(height: 12),
                   RichText(
                     textAlign: TextAlign.center,
