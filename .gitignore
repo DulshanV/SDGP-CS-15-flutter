@@ -124,3 +124,8 @@ backend/*_test.db
 backend/d
 
 flutter_application_1/NUL
+
+# --- AI Workflows and Testing ---
+Skills/
+postman/
+.postman/
