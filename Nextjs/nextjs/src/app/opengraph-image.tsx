@@ -9,7 +9,7 @@ import { ImageResponse } from 'next/og';
  * Size: 1200x630 (recommended OG image dimensions)
  */
 export const runtime = 'edge';
-export const alt = 'CeylonHS - AI-Powered HS Code Search Platform';
+export const alt = 'CeylonHS: AI-Powered HS Code Search Platform';
 export const size = {
   width: 1200,
   height: 630,
