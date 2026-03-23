@@ -54,7 +54,7 @@ export default function LandingNav() {
           className="flex items-center gap-1.5 text-2xl font-black tracking-tight text-copy select-none"
         >
           <img
-            src="/logo1.png"
+            src="/logo.png"
             alt="CeylonHS Logo"
             className="h-8 w-8 object-contain"
           />
