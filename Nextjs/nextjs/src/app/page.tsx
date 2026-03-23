@@ -118,7 +118,7 @@ const jsonLd = {
       "@type": "Organization",
       name: "CeylonHS",
       url: "https://ceylonhs.com",
-      logo: "https://ceylonhs.com/logo.png",
+      logo: "https://ceylonhs.com/logo1.png",
       sameAs: [
         "https://twitter.com/ceylonhs",
         "https://www.linkedin.com/company/ceylonhs",

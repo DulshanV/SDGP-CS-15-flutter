@@ -788,7 +788,7 @@ export default function AdminDashboard() {
                         <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
                     </Link>
                     <div className="flex items-center gap-2 flex-1">
-                        <img src="/logo.png" alt="CeylonHS Logo" className="w-8 h-8 object-contain" />
+                        <img src="/logo1.png" alt="CeylonHS Logo" className="w-8 h-8 object-contain" />
                         <span className="font-black text-copy text-lg">Admin Dashboard</span>
                         <span className="text-gray-300 text-sm hidden sm:block">· CeylonHS</span>
                     </div>
