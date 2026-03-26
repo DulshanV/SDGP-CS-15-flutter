@@ -142,7 +142,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     child: _StatBox(
                       label: 'Favorites',
                       value: '${_favorites.favorites.length}',
-                      icon: Icons.favorite_rounded,
+                      icon: _favorites.favorites.isNotEmpty
+                          ? Icons.favorite
+                          : Icons.favorite_border,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -167,7 +169,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 child: Column(
                   children: [
                     _ProfileMenuItem(
-                      icon: Icons.bookmark_rounded,
+                      icon: _favorites.favorites.isNotEmpty
+                          ? Icons.favorite
+                          : Icons.favorite_border,
                       label: 'Favorites',
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
