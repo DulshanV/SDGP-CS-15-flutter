@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../theme/app_colors.dart';
 import '../services/auth_service.dart';
 import '../services/favorites_service.dart';
+import '../widgets/logo_app_bar.dart';
 import 'favorites_page.dart';
 import 'history_page.dart';
 import 'admin_dashboard.dart';
@@ -63,7 +64,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       return Scaffold(
         appBar: widget.isEmbedded
             ? null
-            : AppBar(title: const Text('Profile')),
+            : const LogoAppBar(title: 'Profile'),
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -94,6 +95,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
     return Scaffold(
       backgroundColor: AppColors.surface,
+      appBar: widget.isEmbedded ? null : const LogoAppBar(title: 'Profile'),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),

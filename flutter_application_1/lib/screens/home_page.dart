@@ -200,6 +200,16 @@ class _HomeContentState extends State<_HomeContent> {
       decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
       child: Row(
         children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 32,
+              width: 32,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 10),
           const Text(
             'CeylonHS',
             style: TextStyle(

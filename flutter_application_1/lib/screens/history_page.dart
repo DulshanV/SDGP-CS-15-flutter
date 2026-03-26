@@ -3,6 +3,7 @@ import '../models/user_model.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
+import '../widgets/logo_app_bar.dart';
 import 'search_page.dart';
 
 /// Page showing the user's server-side search history.
@@ -111,12 +112,9 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        title: const Text('Search History',
-            style: TextStyle(fontWeight: FontWeight.w700)),
-        backgroundColor: AppColors.primaryBlue,
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: LogoAppBar(
+        title: 'Search History',
+        showLogo: true,
         actions: [
           if (_items.isNotEmpty)
             IconButton(

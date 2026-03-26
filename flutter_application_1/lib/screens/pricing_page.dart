@@ -4,6 +4,7 @@ import '../models/pricing_model.dart';
 import '../services/pricing_service.dart';
 import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
+import '../widgets/logo_app_bar.dart';
 
 class PricingPage extends StatefulWidget {
   const PricingPage({super.key, this.isEmbedded = false});
@@ -44,10 +45,8 @@ class _PricingPageState extends State<PricingPage> {
     return Scaffold(
       appBar: widget.isEmbedded
           ? null
-          : AppBar(
-              title: const Text('Pricing Plans'),
-              backgroundColor: AppColors.primaryBlue,
-              elevation: 0,
+          : const LogoAppBar(
+              title: 'Pricing Plans',
             ),
       body: SingleChildScrollView(
         child: Container(

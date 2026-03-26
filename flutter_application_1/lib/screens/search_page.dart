@@ -7,6 +7,7 @@ import '../services/api_service.dart';
 import '../services/search_history_service.dart';
 import '../services/favorites_service.dart';
 import '../services/auth_service.dart';
+import '../widgets/logo_app_bar.dart';
 import 'hs_code_detail_page.dart';
 
 /// Full-featured search page with live search, typo correction, and result cards.

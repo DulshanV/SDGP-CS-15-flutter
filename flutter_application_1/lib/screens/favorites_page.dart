@@ -3,6 +3,7 @@ import '../models/user_model.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
+import '../widgets/logo_app_bar.dart';
 import 'hs_code_detail_page.dart';
 
 /// Page showing the user's favorited HS codes.
@@ -85,11 +86,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        title: const Text('Favorites', style: TextStyle(fontWeight: FontWeight.w700)),
-        backgroundColor: AppColors.primaryBlue,
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: const LogoAppBar(
+        title: 'Favorites',
+        showLogo: true,
       ),
       body: _buildBody(),
     );
