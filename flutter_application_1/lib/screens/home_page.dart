@@ -305,7 +305,7 @@ class _HomeContentState extends State<_HomeContent> {
         Expanded(
           child: _HomeActionCard(
             title: 'Favorites',
-            icon: Icons.bookmark_border_rounded,
+            icon: Icons.favorite_border_rounded,
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
