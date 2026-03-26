@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
-import '../services/api_service.dart';
-import '../services/auth_service.dart';
-import '../theme/app_colors.dart';
-import '../widgets/logo_app_bar.dart';
-import 'search_page.dart';
+import '../models/user_model.dart';// Contains SearchHistoryItem model
+import '../services/api_service.dart';// Handles API calls
+import '../services/auth_service.dart';// Handles authentication
+import '../theme/app_colors.dart';// App color constants
+import '../widgets/logo_app_bar.dart';// Custom AppBar widget
+import 'search_page.dart';// Page to navigate when a search is tapped
 
 /// Page showing the user's server-side search history.
 class HistoryPage extends StatefulWidget {
