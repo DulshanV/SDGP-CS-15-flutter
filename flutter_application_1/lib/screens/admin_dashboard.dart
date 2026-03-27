@@ -3,6 +3,7 @@ import '../models/user_model.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
+import '../widgets/logo_app_bar.dart';
 
 /// Admin dashboard showing platform stats and search trends.
 class AdminDashboardPage extends StatefulWidget {
@@ -73,12 +74,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        title: const Text('Admin Dashboard',
-            style: TextStyle(fontWeight: FontWeight.w700)),
-        backgroundColor: AppColors.primaryBlue,
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: LogoAppBar(
+        title: 'Admin Dashboard',
+        showLogo: true,
       ),
       body: _buildBody(),
     );

@@ -105,6 +105,39 @@ class _HomeContentState extends State<_HomeContent> {
   List<String> _recentSearches = [];
   bool _isLoadingCategories = true;
 
+  static const Map<String, _CategoryVisualStyle> _categoryStyleById = {
+    'spices': _CategoryVisualStyle(
+      icon: Icons.ramen_dining_rounded,
+      start: Color(0xFFFF9B59),
+      end: Color(0xFFFF7043),
+    ),
+    'apparel': _CategoryVisualStyle(
+      icon: Icons.checkroom_rounded,
+      start: Color(0xFF8B6CFF),
+      end: Color(0xFF6A5AE0),
+    ),
+    'stationery': _CategoryVisualStyle(
+      icon: Icons.edit_note_rounded,
+      start: Color(0xFF4DB6E5),
+      end: Color(0xFF2A92C4),
+    ),
+    'minerals': _CategoryVisualStyle(
+      icon: Icons.diamond_outlined,
+      start: Color(0xFF7F8C9A),
+      end: Color(0xFF5F6B77),
+    ),
+    'animal_products': _CategoryVisualStyle(
+      icon: Icons.pets_rounded,
+      start: Color(0xFFFFB86A),
+      end: Color(0xFFF58A3D),
+    ),
+    'cosmetics': _CategoryVisualStyle(
+      icon: Icons.auto_awesome_rounded,
+      start: Color(0xFFEB6EA5),
+      end: Color(0xFFD94C8B),
+    ),
+  };
+
   @override
   void initState() {
     super.initState();
@@ -167,6 +200,16 @@ class _HomeContentState extends State<_HomeContent> {
       decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
       child: Row(
         children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 32,
+              width: 32,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 10),
           const Text(
             'CeylonHS',
             style: TextStyle(
@@ -262,7 +305,7 @@ class _HomeContentState extends State<_HomeContent> {
         Expanded(
           child: _HomeActionCard(
             title: 'Favorites',
-            icon: Icons.bookmark_border_rounded,
+            icon: Icons.favorite_border_rounded,
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
@@ -304,6 +347,8 @@ class _HomeContentState extends State<_HomeContent> {
             crossAxisSpacing: 10,
             childAspectRatio: 1.05,
             children: _categories.map((cat) {
+              final style = _resolveCategoryVisualStyle(cat);
+
               return InkWell(
                 borderRadius: BorderRadius.circular(14),
                 onTap: () => widget.onSearch(cat.name),
@@ -316,8 +361,26 @@ class _HomeContentState extends State<_HomeContent> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(cat.getIconData(),
-                          color: AppColors.primaryBlue, size: 28),
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [style.start, style.end],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(13),
+                          boxShadow: [
+                            BoxShadow(
+                              color: style.end.withValues(alpha: 0.28),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Icon(style.icon, color: Colors.white, size: 24),
+                      ),
                       const SizedBox(height: 6),
                       Text(
                         cat.name,
@@ -336,6 +399,115 @@ class _HomeContentState extends State<_HomeContent> {
           ),
       ],
     );
+  }
+
+  _CategoryVisualStyle _resolveCategoryVisualStyle(FeaturedCategory cat) {
+    final idKey = cat.id.trim().toLowerCase();
+    final fromId = _categoryStyleById[idKey];
+    if (fromId != null) {
+      return fromId;
+    }
+
+    final searchSpace = '${cat.name} ${cat.description}'.toLowerCase();
+
+    if (_containsAny(searchSpace, [
+      'spice',
+      'herb',
+      'season',
+      'tea',
+      'food',
+    ])) {
+      return const _CategoryVisualStyle(
+        icon: Icons.ramen_dining_rounded,
+        start: Color(0xFFFF9B59),
+        end: Color(0xFFFF7043),
+      );
+    }
+
+    if (_containsAny(searchSpace, [
+      'textile',
+      'apparel',
+      'clothing',
+      'fabric',
+      'garment',
+    ])) {
+      return const _CategoryVisualStyle(
+        icon: Icons.checkroom_rounded,
+        start: Color(0xFF8B6CFF),
+        end: Color(0xFF6A5AE0),
+      );
+    }
+
+    if (_containsAny(searchSpace, [
+      'paper',
+      'stationery',
+      'book',
+      'office',
+      'print',
+    ])) {
+      return const _CategoryVisualStyle(
+        icon: Icons.edit_note_rounded,
+        start: Color(0xFF4DB6E5),
+        end: Color(0xFF2A92C4),
+      );
+    }
+
+    if (_containsAny(searchSpace, [
+      'mineral',
+      'ore',
+      'metal',
+      'stone',
+      'gem',
+    ])) {
+      return const _CategoryVisualStyle(
+        icon: Icons.diamond_outlined,
+        start: Color(0xFF7F8C9A),
+        end: Color(0xFF5F6B77),
+      );
+    }
+
+    if (_containsAny(searchSpace, [
+      'animal',
+      'livestock',
+      'leather',
+      'wool',
+      'dairy',
+    ])) {
+      return const _CategoryVisualStyle(
+        icon: Icons.pets_rounded,
+        start: Color(0xFFFFB86A),
+        end: Color(0xFFF58A3D),
+      );
+    }
+
+    if (_containsAny(searchSpace, [
+      'cosmetic',
+      'beauty',
+      'care',
+      'fragrance',
+      'perfume',
+    ])) {
+      return const _CategoryVisualStyle(
+        icon: Icons.auto_awesome_rounded,
+        start: Color(0xFFEB6EA5),
+        end: Color(0xFFD94C8B),
+      );
+    }
+
+    return _CategoryVisualStyle(
+      icon: cat.getIconData(),
+      start: const Color(0xFF4D9DFF),
+      end: const Color(0xFF2A72D6),
+    );
+  }
+
+  bool _containsAny(String source, List<String> terms) {
+    for (final term in terms) {
+      if (source.contains(term)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   Widget _buildRecentSearches() {
@@ -445,4 +617,16 @@ class _HomeActionCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _CategoryVisualStyle {
+  const _CategoryVisualStyle({
+    required this.icon,
+    required this.start,
+    required this.end,
+  });
+
+  final IconData icon;
+  final Color start;
+  final Color end;
 }

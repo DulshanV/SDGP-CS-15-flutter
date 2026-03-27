@@ -7,6 +7,7 @@ import '../services/api_service.dart';
 import '../services/search_history_service.dart';
 import '../services/favorites_service.dart';
 import '../services/auth_service.dart';
+import '../widgets/logo_app_bar.dart';
 import 'hs_code_detail_page.dart';
 
 /// Full-featured search page with live search, typo correction, and result cards.
@@ -170,8 +171,16 @@ class _SearchPageState extends State<SearchPage> {
         children: [
           Row(
             children: [
-              const Icon(Icons.public, color: Colors.white, size: 20),
-              const SizedBox(width: 6),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  height: 28,
+                  width: 28,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(width: 8),
               const Text('CeylonHS', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w700)),
               const Spacer(),
               const Text('HS Code Search', style: TextStyle(color: Color(0xCCFFFFFF), fontSize: 14, fontWeight: FontWeight.w500)),

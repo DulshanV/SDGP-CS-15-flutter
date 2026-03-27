@@ -3,6 +3,7 @@ import '../models/search_result.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../theme/app_colors.dart';
+import '../widgets/logo_app_bar.dart';
 
 /// Detail page for a single HS code, showing full hierarchy and children.
 class HsCodeDetailPage extends StatefulWidget {
@@ -105,14 +106,9 @@ class _HsCodeDetailPageState extends State<HsCodeDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        title: Text(
-          'HS ${widget.hscode}',
-          style: const TextStyle(fontWeight: FontWeight.w700),
-        ),
-        backgroundColor: AppColors.primaryBlue,
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: LogoAppBar(
+        title: 'HS ${widget.hscode}',
+        showLogo: true,
         actions: [
           if (AuthService().isLoggedIn)
             IconButton(

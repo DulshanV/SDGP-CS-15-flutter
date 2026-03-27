@@ -4,6 +4,7 @@ import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/search_history_service.dart';
 import '../theme/app_colors.dart';
+import '../widgets/logo_app_bar.dart';
 import 'search_page.dart';
 
 /// Dedicated page for viewing and managing recent searches.
@@ -151,12 +152,8 @@ class _RecentsPageState extends State<RecentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.isEmbedded ? null : AppBar(
-        title: const Text('Recent Searches'),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        foregroundColor: AppColors.primaryBlue,
+      appBar: widget.isEmbedded ? null : const LogoAppBar(
+        title: 'Recent Searches',
       ),
       body: Column(
         children: [

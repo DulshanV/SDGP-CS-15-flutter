@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/user_model.dart';
-import '../services/api_service.dart';
-import '../services/auth_service.dart';
-import '../theme/app_colors.dart';
-import 'search_page.dart';
+import '../models/user_model.dart';// Contains SearchHistoryItem model
+import '../services/api_service.dart';// Handles API calls
+import '../services/auth_service.dart';// Handles authentication
+import '../theme/app_colors.dart';// App color constants
+import '../widgets/logo_app_bar.dart';// Custom AppBar widget
+import 'search_page.dart';// Page to navigate when a search is tapped
 
 /// Page showing the user's server-side search history.
 class HistoryPage extends StatefulWidget {
@@ -111,12 +112,9 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.surface,
-      appBar: AppBar(
-        title: const Text('Search History',
-            style: TextStyle(fontWeight: FontWeight.w700)),
-        backgroundColor: AppColors.primaryBlue,
-        foregroundColor: Colors.white,
-        elevation: 0,
+      appBar: LogoAppBar(
+        title: 'Search History',
+        showLogo: true,
         actions: [
           if (_items.isNotEmpty)
             IconButton(

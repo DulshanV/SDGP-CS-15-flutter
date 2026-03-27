@@ -49,7 +49,10 @@ class FeaturedCategory {
   /// Get the IconData from the stored code point.
   IconData getIconData() {
     try {
-      final codePoint = int.parse(iconCodePoint, radix: 16);
+      final normalized = iconCodePoint.trim().toLowerCase().startsWith('0x')
+          ? iconCodePoint.trim().substring(2)
+          : iconCodePoint.trim();
+      final codePoint = int.parse(normalized, radix: 16);
       return IconData(codePoint, fontFamily: 'MaterialIcons');
     } catch (e) {
       // Fallback to default icon
