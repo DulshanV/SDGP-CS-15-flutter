@@ -209,7 +209,7 @@ export default function PixelBeach({ theme, onToggle }: Props) {
 
             // ── Dark mode: Moon + Stars ──
             if (dark) {
-                // Moon — visible in upper right, well above horizon
+                // Moon – visible in upper right, well above horizon
                 const moonX = cols - 25; // moved further left to ensure visibility
                 const moonY = Math.floor(horizonRow * 0.2); // high up
                 const moonData = [
@@ -239,7 +239,7 @@ export default function PixelBeach({ theme, onToggle }: Props) {
 
             // ── Light mode: Sun + Wind wisps ──
             if (!dark) {
-                // Sun — upper left, clearly visible
+                // Sun – upper left, clearly visible
                 const sx = 20, sy = Math.floor(horizonRow * 0.25);
                 for (let dr = -3; dr <= 3; dr++) {
                     for (let dc = -3; dc <= 3; dc++) {

@@ -15,11 +15,11 @@ import { ThemeToggleButton } from '@/lib/ThemeContext';
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function fmt(n: number | null | undefined, suffix = '') {
-    if (n == null) return '—';
+    if (n == null) return '–';
     return n.toLocaleString() + suffix;
 }
 function fmtDate(s: string | null) {
-    if (!s) return '—';
+    if (!s) return '–';
     return new Date(s).toLocaleString();
 }
 function sourceColor(src: string) {
@@ -87,11 +87,11 @@ function Spinner() {
 
 type Tab = 'overview' | 'training' | 'logs' | 'synonyms' | 'datasets';
 const TABS: { id: Tab; label: string; icon: string }[] = [
-    { id: 'overview', label: 'Overview', icon: '📊' },
-    { id: 'training', label: 'Training Pairs', icon: '🧠' },
-    { id: 'logs', label: 'Search Logs', icon: '📋' },
-    { id: 'synonyms', label: 'Synonyms', icon: '🔗' },
-    { id: 'datasets', label: 'Datasets', icon: '🗄️' },
+    { id: 'overview', label: 'Overview', icon: '' },
+    { id: 'training', label: 'Training Pairs', icon: '' },
+    { id: 'logs', label: 'Search Logs', icon: '' },
+    { id: 'synonyms', label: 'Synonyms', icon: '' },
+    { id: 'datasets', label: 'Datasets', icon: '' },
 ];
 
 // ── Overview Tab ──────────────────────────────────────────────────────────
@@ -147,7 +147,7 @@ function OverviewTab() {
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="bg-surface rounded-2xl border border-border shadow-sm p-4">
                     <p className="text-xs text-copy-muted mb-1 font-medium uppercase tracking-wide">Avg Match Score</p>
-                    <p className="text-3xl font-black text-copy">{tStats?.avg_top_score?.toFixed(1) ?? '—'}<span className="text-base font-medium text-copy-muted">%</span></p>
+                    <p className="text-3xl font-black text-copy">{tStats?.avg_top_score?.toFixed(1) ?? '–'}<span className="text-base font-medium text-copy-muted">%</span></p>
                 </div>
                 <div className="bg-surface rounded-2xl border border-border shadow-sm p-4">
                     <p className="text-xs text-copy-muted mb-1 font-medium uppercase tracking-wide">AI Enriched Searches</p>
@@ -166,7 +166,7 @@ function OverviewTab() {
 
             {/* Trending queries */}
             <div className="bg-surface rounded-2xl border border-border shadow-sm p-5">
-                <SectionHeader title="🔥 Trending Searches (Last 7 Days)" />
+                <SectionHeader title=" Trending Searches (Last 7 Days)" />
                 {trends.length === 0 ? <EmptyState icon="📭" message="No searches recorded yet." /> : (
                     <div className="space-y-2">
                         {trends.map((t, i) => (
@@ -188,7 +188,7 @@ function OverviewTab() {
             {/* Top queries from training stats */}
             {tStats?.top_queries && tStats.top_queries.length > 0 && (
                 <div className="bg-surface rounded-2xl border border-border shadow-sm p-5">
-                    <SectionHeader title="📈 All-Time Top Queries" />
+                    <SectionHeader title=" All-Time Top Queries" />
                     <div className="flex flex-wrap gap-2">
                         {tStats.top_queries.map((q, i) => (
                             <span key={i} className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/40 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 dark:text-blue-300 text-sm font-medium">
@@ -578,7 +578,7 @@ function DatasetsTab() {
                 <div className="bg-amber-50 dark:bg-amber-900/40 border border-amber-200 rounded-2xl p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="w-4 h-4 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-                        <p className="font-bold text-amber-700 dark:text-amber-300">Embedding in progress — {status.progress}%</p>
+                        <p className="font-bold text-amber-700 dark:text-amber-300">Embedding in progress – {status.progress}%</p>
                     </div>
                     <p className="text-amber-600 text-sm">{status.step}</p>
                     <div className="mt-3 h-2 bg-amber-100 rounded-full overflow-hidden">
@@ -788,9 +788,7 @@ export default function AdminDashboard() {
                         <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
                     </Link>
                     <div className="flex items-center gap-2 flex-1">
-                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center">
-                            <svg width="16" height="16" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10" /><path d="m16 8 4-4" /><path d="M22 2h-4v4" /></svg>
-                        </div>
+                        <img src="/logo.png" alt="CeylonHS Logo" className="w-8 h-8 object-contain" />
                         <span className="font-black text-copy text-lg">Admin Dashboard</span>
                         <span className="text-gray-300 text-sm hidden sm:block">· CeylonHS</span>
                     </div>
@@ -806,7 +804,7 @@ export default function AdminDashboard() {
                                 onClick={() => setActiveTab(t.id)}
                                 className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold border-b-2 whitespace-nowrap transition-colors ${activeTab === t.id ? 'border-blue-600 text-blue-700 dark:text-blue-300 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/40 dark:bg-blue-900/40/60' : 'border-transparent text-copy-muted hover:text-copy'}`}
                             >
-                                <span className="text-base">{t.icon}</span>
+                                
                                 {t.label}
                             </button>
                         ))}

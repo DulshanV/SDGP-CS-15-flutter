@@ -44,7 +44,7 @@ for _p in _kb_paths:
         break
 
 if not _KNOWLEDGE_BASE:
-    logger.warning("No knowledge_base.txt found — chatbot will operate without KB context")
+    logger.warning("No knowledge_base.txt found – chatbot will operate without KB context")
 
 
 # ── System prompt ─────────────────────────────────────────────────────────
@@ -88,12 +88,12 @@ def _get_groq_client():
             from groq import Groq
             api_key = settings.groq_api_key
             if not api_key:
-                logger.warning("GROQ_API_KEY not set — chat will not work")
+                logger.warning("GROQ_API_KEY not set – chat will not work")
                 return None
             _groq_client = Groq(api_key=api_key)
             logger.info("Groq client initialized (model: %s)", settings.groq_model)
         except ImportError:
-            logger.error("groq package not installed — run: pip install groq")
+            logger.error("groq package not installed – run: pip install groq")
             return None
         except Exception as e:
             logger.error("Failed to init Groq client: %s", e)

@@ -23,7 +23,7 @@ from app.core.limiter import limiter
 # ── Structured JSON Logging ────────────────────────────────────────────────
 
 class _JSONFormatter(logging.Formatter):
-    """Emit one JSON object per log line — easy to parse in production."""
+    """Emit one JSON object per log line – easy to parse in production."""
 
     def format(self, record: logging.LogRecord) -> str:
         log_obj = {
@@ -73,7 +73,7 @@ async def lifespan(app: FastAPI):
     # Safety: warn loudly if dev mode is active on a non-localhost host
     if not settings.is_production and settings.host != "127.0.0.1":
         logger.warning(
-            "\u26a0\ufe0f  ENV=%s with HOST=%s — dev-token auth bypass is ACTIVE. "
+            "\u26a0\ufe0f  ENV=%s with HOST=%s – dev-token auth bypass is ACTIVE. "
             "Set ENV=production for public deployments!",
             settings.env,
             settings.host,

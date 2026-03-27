@@ -167,7 +167,7 @@ class FaissSearchService(BaseSearchService):
         """
         Hot-reload the FAISS index, metadata, and vocabulary from disk.
         Called after a new dataset is embedded and saved.
-        The embedding model is kept — only data is refreshed.
+        The embedding model is kept – only data is refreshed.
         """
         logger.info("Hot-reloading FAISS search service...")
 
@@ -231,8 +231,8 @@ class FaissSearchService(BaseSearchService):
     def _fuzzy_correct_word(self, word: str) -> Optional[str]:
         """
         Correct a single misspelled word using a two-tier approach:
-        1. HS vocabulary (rapidfuzz) — domain-specific terms like polyethylene, terephthalate
-        2. English dictionary (pyspellchecker) — common words like laptop, computer
+        1. HS vocabulary (rapidfuzz) – domain-specific terms like polyethylene, terephthalate
+        2. English dictionary (pyspellchecker) – common words like laptop, computer
         When both return matches, pick the one with shorter edit distance.
         If tied, prefer the dictionary correction (more likely to be correct English).
         """
@@ -311,7 +311,7 @@ class FaissSearchService(BaseSearchService):
                 corrected_words.append(word)
                 continue
 
-            # Skip correction for capitalized words — these are likely brand names,
+            # Skip correction for capitalized words – these are likely brand names,
             # product names, or proper nouns (e.g. "Dilmah", "Premio", "Samsung").
             # Correcting them would corrupt brand queries before enrichment runs.
             if word[0].isupper():
@@ -546,7 +546,7 @@ class FaissSearchService(BaseSearchService):
         #   a) Top result has low confidence (< threshold), OR
         #   b) The query words don't appear in any top-3 result descriptions
         #      (i.e. FAISS matched on embedding similarity but the term is foreign
-        #       to the HS vocabulary — e.g. "oreo" → matched "ores" at ~37%)
+        #       to the HS vocabulary – e.g. "oreo" → matched "ores" at ~37%)
         enrichment_info = None
         enriched_query = None
         _should_enrich = False
@@ -559,7 +559,7 @@ class FaissSearchService(BaseSearchService):
                 # Use a RATIO check: if fewer than half the query words appear
                 # in the top-3 descriptions, the query likely contains brand /
                 # model names that FAISS can't resolve on its own.
-                # e.g. "rolls royce phantom 8 centurion long wheel base" —
+                # e.g. "rolls royce phantom 8 centurion long wheel base" –
                 #       only "wheel" matches, 1/7 = 14% → enrich.
                 q_words = {w.lower() for w in query.split() if len(w) >= 3 and not w.isdigit()}
                 top_descs = " ".join(
@@ -572,7 +572,7 @@ class FaissSearchService(BaseSearchService):
                         _should_enrich = True
                         logger.info(
                             f"Only {matched_count}/{len(q_words)} query words "
-                            f"({match_ratio:.0%}) found in top results — "
+                            f"({match_ratio:.0%}) found in top results – "
                             f"triggering enrichment"
                         )
         if _should_enrich:

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 /**
- * HeroCanvas — Product → HS Code particle transformation animation.
+ * HeroCanvas – Product → HS Code particle transformation animation.
  *
  * Product names slide in horizontally from the left at different vertical
  * levels. Near the center headings they disintegrate into particles which
@@ -169,7 +169,7 @@ export default function HeroCanvas({ isDark }: Props) {
     }
     resize();
 
-    // Build lanes — fewer on mobile to avoid clutter
+    // Build lanes – fewer on mobile to avoid clutter
     let mobile = W < 768;
     let laneYs = mobile ? LANE_YS_MOBILE : LANE_YS_DESKTOP;
     let lanes: Lane[] = laneYs.map((y, i) =>
@@ -231,7 +231,7 @@ export default function HeroCanvas({ isDark }: Props) {
         const p = lane.phase;
         const py = lane.y * H;
 
-        /* ── 1. Product text — slide in, hold, fade out ── */
+        /* ── 1. Product text – slide in, hold, fade out ── */
         if (p < P_PROD_GONE) {
           const slideT = Math.min(1, p / P_PROD_IN);
           const textX = lerp(
@@ -261,7 +261,7 @@ export default function HeroCanvas({ isDark }: Props) {
           ctx.restore();
         }
 
-        /* ── 2. Particles — crossfade overlap with text & HS code ── */
+        /* ── 2. Particles – crossfade overlap with text & HS code ── */
         if (p >= P_PARTS_START && p < P_PARTS_END) {
           ctx.save();
 
@@ -329,7 +329,7 @@ export default function HeroCanvas({ isDark }: Props) {
           ctx.restore();
         }
 
-        /* ── 3. HS code — crossfade in, then slide out ──── */
+        /* ── 3. HS code – crossfade in, then slide out ──── */
         if (p >= P_HS_START) {
           let alpha: number;
           let textX: number;

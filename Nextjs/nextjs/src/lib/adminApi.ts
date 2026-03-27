@@ -6,7 +6,7 @@ import { auth } from './firebase';
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? (
     typeof window !== 'undefined' && window.location.hostname === 'localhost'
         ? 'http://127.0.0.1:8000'
-        : '' // relative URL — nginx proxies /api/v1/* to the backend
+        : '' // relative URL – nginx proxies /api/v1/* to the backend
 );
 
 async function authHeaders() {

@@ -1,5 +1,5 @@
 """
-Rate limiter instance — shared across all route modules.
+Rate limiter instance – shared across all route modules.
 Separated from main.py to avoid circular imports.
 """
 

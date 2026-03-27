@@ -242,7 +242,7 @@ class _SearchPageState extends State<SearchPage> {
           const Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Try brand names like "Premio" or "Dilmah" — AI-powered search',
+              'Try brand names like "Premio" or "Dilmah" – AI-powered search',
               style: TextStyle(color: Color(0x99FFFFFF), fontSize: 12, fontWeight: FontWeight.w400),
             ),
           ),

@@ -40,7 +40,7 @@ class AuthService extends ChangeNotifier {
 
   static const String _googleWebClientId = String.fromEnvironment(
     'GOOGLE_WEB_CLIENT_ID',
-    defaultValue: '',
+    defaultValue: '1087856269110-1qjdo9n1rhc7qcrdl0vg1vdkn9ah1aa5.apps.googleusercontent.com',
   );
 
   bool get _useLocalDevToken {

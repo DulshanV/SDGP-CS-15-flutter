@@ -33,7 +33,7 @@
   --page-header-bg: #ffffff;
 }
 
-/* Dark mode overrides — applied by ThemeProvider via .dark on <html> */
+/* Dark mode overrides – applied by ThemeProvider via .dark on <html> */
 html.dark {
   color-scheme: dark;
 

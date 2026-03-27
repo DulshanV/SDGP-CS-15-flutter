@@ -6,7 +6,7 @@ import { auth } from './firebase';
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? (
     typeof window !== 'undefined' && window.location.hostname === 'localhost'
         ? 'http://127.0.0.1:8000'
-        : '' // relative URL — nginx proxies /api/v1/* to the backend
+        : '' // relative URL – nginx proxies /api/v1/* to the backend
 );
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
@@ -37,7 +37,7 @@ export async function syncUser() {
             { headers, timeout: 10000 }
         );
     } catch {
-        // fire-and-forget — don't block login flow
+        // fire-and-forget – don't block login flow
     }
 }
 
@@ -68,7 +68,7 @@ export async function search(q: string, limit = 15): Promise<SearchResponse> {
         timeout: 30000,
     });
     const data = res.data;
-    // Normalise response — backend may use different field names
+    // Normalise response – backend may use different field names
     const hits: HsCodeResult[] = (data.results ?? data.hits ?? []).map((h: any) => {
         const doc = h.document ?? h;
         const score = h.text_match ?? h.hybrid_search_info?.rank_fusion_score ?? 0;

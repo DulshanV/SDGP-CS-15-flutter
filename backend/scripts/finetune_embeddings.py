@@ -106,7 +106,7 @@ def augment_with_synonym_cache() -> List[Dict]:
 def create_hard_negatives(pairs: List[Dict], metadata_path: str) -> List[tuple]:
     """
     Create (query, positive, negative) triplets for better training.
-    Hard negatives are descriptions that are *close* but wrong — e.g.,
+    Hard negatives are descriptions that are *close* but wrong – e.g.,
     for "iPhone" the positive is "smartphone" but a hard negative is "telephone parts".
     """
     import random
@@ -149,7 +149,7 @@ def finetune(
     """
     Fine-tune the base embedding model on collected training pairs.
 
-    Uses MultipleNegativesRankingLoss — the standard loss for training
+    Uses MultipleNegativesRankingLoss – the standard loss for training
     retrieval models. Each batch provides implicit negatives.
     """
     from sentence_transformers import SentenceTransformer, InputExample, losses
@@ -235,7 +235,7 @@ def evaluate_model(model_path: str, pairs: List[Dict], top_k: int = 10):
     metadata_file = os.path.join(persist_dir, "hs_codes_metadata.json")
 
     if not os.path.exists(metadata_file):
-        logger.warning("No metadata file — skipping evaluation")
+        logger.warning("No metadata file – skipping evaluation")
         return
 
     with open(metadata_file, "r", encoding="utf-8") as f:
@@ -348,7 +348,7 @@ def main():
     if len(unique_pairs) < args.min_pairs:
         logger.warning(
             f"\n⚠ Only {len(unique_pairs)} pairs available, need at least {args.min_pairs}. "
-            f"Keep using the app — training pairs accumulate automatically from:\n"
+            f"Keep using the app – training pairs accumulate automatically from:\n"
             f"  • Enrichment successes (brand searches)\n"
             f"  • High-confidence direct matches (>75%)\n"
             f"  • Manual admin additions\n"

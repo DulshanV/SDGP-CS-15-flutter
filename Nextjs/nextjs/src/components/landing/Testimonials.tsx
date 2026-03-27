@@ -6,7 +6,7 @@ import { useTheme } from "@/lib/ThemeContext";
 const TESTIMONIALS = [
   {
     quote:
-      "CeylonHS cut our HS lookup time from 20 minutes down to seconds. The brand recognition feature alone is worth it — it correctly classified 'Dilmah' as tea without any extra configuration.",
+      "CeylonHS cut our HS lookup time from 20 minutes down to seconds. The brand recognition feature alone is worth it – it correctly classified 'Dilmah' as tea without any extra configuration.",
     name: "Amara Perera",
     role: "Senior Customs Broker",
     company: "LK Trade Solutions",

@@ -153,8 +153,8 @@ class SearchService:
     def _fuzzy_correct_word(self, word: str) -> Optional[str]:
         """
         Correct a single misspelled word using a two-tier approach:
-        1. HS vocabulary (rapidfuzz) — domain-specific terms like polyethylene, terephthalate
-        2. English dictionary (pyspellchecker) — common words like laptop, computer
+        1. HS vocabulary (rapidfuzz) – domain-specific terms like polyethylene, terephthalate
+        2. English dictionary (pyspellchecker) – common words like laptop, computer
         When both return matches, pick the one with shorter edit distance.
         If tied, prefer the dictionary correction (more likely to be correct English).
         """

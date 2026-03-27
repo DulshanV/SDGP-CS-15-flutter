@@ -17,6 +17,20 @@ export default function LandingNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
 
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error("Invalid user data in localStorage!");
+    }
+  }, []);
+
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -39,19 +53,11 @@ export default function LandingNav() {
           href="/"
           className="flex items-center gap-1.5 text-2xl font-black tracking-tight text-copy select-none"
         >
-          <svg
-            className="h-7 w-7 text-blue-500"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 2L2 7l10 5 10-5-10-5Z" />
-            <path d="M2 17l10 5 10-5" />
-            <path d="M2 12l10 5 10-5" />
-          </svg>
+          <img
+            src="/logo.png"
+            alt="CeylonHS Logo"
+            className="h-8 w-8 object-contain"
+          />
           Ceylon
           <span className="bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
             HS
@@ -92,12 +98,15 @@ export default function LandingNav() {
           </button>
 
           {/* Sign in (desktop) */}
-          <Link
-            href="/login"
-            className="hidden text-sm font-medium text-copy-muted transition-colors hover:text-copy md:inline-flex"
-          >
-            Sign in
-          </Link>
+          {user ? (
+            <Link href="/dashboard" className="hidden text-sm font-medium md:inline-flex">
+              Dashboard
+            </Link>
+          ) : (
+            <Link href="/login" className="hidden text-sm font-medium text-copy-muted md:inline-flex">
+              Sign in
+            </Link>
+          )}
 
           {/* CTA */}
           <Link

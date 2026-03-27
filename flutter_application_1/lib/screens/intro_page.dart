@@ -10,7 +10,7 @@ class IntroPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.primaryGradient),
+        color: Colors.white,
         child: SafeArea(
           child: Center(
             child: Padding(
@@ -18,35 +18,25 @@ class IntroPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      height: 140,
-                      fit: BoxFit.contain,
-                    ),
+                  Image.asset(
+                    'assets/images/Logo.png',
+                    width: 190,
+                    height: 190,
+                    fit: BoxFit.contain,
                   ),
-                  const SizedBox(height: 32),
-                  const Text(
-                    'CeylonHS',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 52,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.3,
-                    ),
-                  ),
+                  const SizedBox(height: 48),
+                  
                   const SizedBox(height: 12),
                   RichText(
                     textAlign: TextAlign.center,
-                    text: const TextSpan(
+                    text:  TextSpan(
                       children: [
                         TextSpan(
                           text: 'From product to code\n',
                           style: TextStyle(
-                            color: AppColors.softBlue,
+                            color: Colors.blue[700],
                             fontSize: 24,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
                             fontStyle: FontStyle.italic,
                             letterSpacing: 0.3,
                             height: 1.25,
@@ -55,7 +45,7 @@ class IntroPage extends StatelessWidget {
                         TextSpan(
                           text: 'in Seconds.',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.blue[800],
                             fontSize: 30,
                             fontWeight: FontWeight.w800,
                             fontStyle: FontStyle.italic,
@@ -109,7 +99,7 @@ class IntroPage extends StatelessWidget {
                         );
                       },
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
+                        foregroundColor: Colors.blue[800],
                         minimumSize: const Size.fromHeight(48),
                         side: const BorderSide(
                             color: AppColors.softBlue, width: 1.5),
