@@ -102,6 +102,21 @@ export default function HsCodeDetailPage() {
                   </Link>
                 )}
               </div>
+
+              {/* --- NEW: CALCULATE TAXES BUTTON --- */}
+              <div className="mt-6 pt-5 border-t border-border">
+                <Link 
+                  href={`/calculator?hscode=${detail.hscode}`} 
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#133665] to-[#3A9EEA] text-white font-bold py-3.5 px-4 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                >
+                  <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  Calculate Taxes for this Code
+                </Link>
+              </div>
+              {/* ----------------------------------- */}
+
             </div>
 
             {/* Hierarchy */}
