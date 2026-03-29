@@ -11,6 +11,7 @@ import 'recents_page.dart';
 import 'pricing_page.dart';
 import 'profile_page.dart';
 import 'favorites_page.dart';
+import 'whats_new_page.dart';
 
 /// Main shell page with bottom navigation bar and tab switching.
 class MainHomePage extends StatefulWidget {
@@ -310,6 +311,19 @@ class _HomeContentState extends State<_HomeContent> {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
                     builder: (_) => const FavoritesPage()),
+              );
+            },
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _HomeActionCard(
+            title: "What's New",
+            icon: Icons.new_releases_outlined,
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                    builder: (_) => const WhatsNewPage()),
               );
             },
           ),
