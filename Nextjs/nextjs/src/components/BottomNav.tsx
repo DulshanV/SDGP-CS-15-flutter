@@ -108,13 +108,13 @@ export default function BottomNav() {
                     );
                 })}
 
-                {/* Profile button */}
-                <button
-                    onClick={() => setShowProfile(!showProfile)}
+                {/* Profile Link (Updated to route to the new page) */}
+                <Link
+                    href="/profile"
                     className={`flex flex-col items-center justify-center gap-0.5 px-5 py-1 rounded-xl transition-all`}
                 >
                     {user ? (
-                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#133665] to-[#3A9EEA] flex items-center justify-center text-white font-bold text-xs shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#133665] to-[#3A9EEA] flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-sm">
                             {(user.displayName || user.email || 'U')[0].toUpperCase()}
                         </div>
                     ) : (
@@ -123,7 +123,7 @@ export default function BottomNav() {
                         </svg>
                     )}
                     <span className="text-[10px] font-semibold text-[#9BA5B7]">Profile</span>
-                </button>
+                </Link>
             </nav>
 
             {/* Safe padding for content above bottom nav */}
