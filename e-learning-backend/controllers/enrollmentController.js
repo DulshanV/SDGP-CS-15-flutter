@@ -127,10 +127,57 @@ async function getMyEnrollments(req, res, next) {
   }
 }
 
+async function assignEnrollment(req, res, next) {
+  try {
+    const userId = parseInt(req.params.userId, 10);
+    const courseId = parseInt(req.body.courseId, 10);
+
+    if (!Number.isInteger(userId) || userId <= 0) {
+      return res.status(400).json({ message: "Invalid user ID." });
+    }
+
+    if (!Number.isInteger(courseId) || courseId <= 0) {
+      return res.status(400).json({ message: "Course ID is required and must be a positive integer." });
+    }
+
+    const user = await query("SELECT id FROM Users WHERE id = ?", [userId]);
+    if (user.length === 0) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    const course = await query("SELECT id FROM Courses WHERE id = ?", [courseId]);
+    if (course.length === 0) {
+      return res.status(404).json({ message: "Course not found." });
+    }
+
+    const existing = await query(
+      "SELECT id, status FROM Enrollments WHERE user_id = ? AND course_id = ?",
+      [userId, courseId]
+    );
+
+    if (existing.length > 0) {
+      return res.status(409).json({
+        message: `User is already enrolled with status: ${existing[0].status}.`
+      });
+    }
+
+    const result = await query(
+      "INSERT INTO Enrollments (user_id, course_id, status, approved_at) VALUES (?, ?, 'approved', NOW())",
+      [userId, courseId]
+    );
+
+    const [enrollment] = await query("SELECT * FROM Enrollments WHERE id = ?", [result.insertId]);
+    return res.status(201).json(enrollment);
+  } catch (error) {
+    return next(error);
+  }
+}
+
 module.exports = {
   requestEnrollment,
   getEnrollments,
   updateEnrollment,
-  getMyEnrollments
+  getMyEnrollments,
+  assignEnrollment
 };
 
