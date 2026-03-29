@@ -86,6 +86,11 @@ Nextjs/nextjs/.next/
 Nextjs/nextjs/out/
 Nextjs/nextjs/build/
 
+# --- E-learning node_modules ---
+e-learning-backend/node_modules/
+e-learning-frontend/node_modules/
+node_modules/
+
 # --- Flutter and Gradle build artifacts ---
 flutter_application_1/.dart_tool/
 flutter_application_1/.flutter-plugins
