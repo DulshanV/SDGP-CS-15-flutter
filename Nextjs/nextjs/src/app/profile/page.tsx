@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 // IMPORT YOUR GLOBAL COMPONENTS
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/landing/LandingNav';
 import Footer from '@/components/landing/Footer';
 
 export default function ProfilePage() {

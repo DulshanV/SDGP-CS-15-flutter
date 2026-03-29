@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "@/lib/ThemeContext";
+import { auth } from '@/lib/firebase';
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
@@ -17,19 +19,18 @@ export default function LandingNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
 
-  const [user, setUser] = useState(null);
+  // Updated to use Firebase User Type
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
+  // Replaced localStorage with Firebase Auth Listener
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-    } catch (error) {
-      console.error("Invalid user data in localStorage!");
-    }
+    setIsClient(true);
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
   }, []);
-
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -97,13 +98,15 @@ export default function LandingNav() {
             )}
           </button>
 
-          {/* Sign in (desktop) */}
-          {user ? (
-            <Link href="/dashboard" className="hidden text-sm font-medium md:inline-flex">
-              Dashboard
+          {/* DYNAMIC SIGN IN / PROFILE AVATAR */}
+          {isClient && user ? (
+            <Link href="/profile" className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity ml-2">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#133665] to-[#3A9EEA] flex items-center justify-center text-white font-bold text-sm shadow-md border-2 border-white">
+                {(user.displayName || user.email || 'U')[0].toUpperCase()}
+              </div>
             </Link>
           ) : (
-            <Link href="/login" className="hidden text-sm font-medium text-copy-muted md:inline-flex">
+            <Link href="/login" className="hidden text-sm font-bold text-copy-muted md:inline-flex hover:text-copy transition-colors ml-2 mr-1">
               Sign in
             </Link>
           )}
@@ -111,7 +114,7 @@ export default function LandingNav() {
           {/* CTA */}
           <Link
             href="/search"
-            className="rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-2 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/30"
+            className="rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-2 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/30 ml-2"
           >
             Try Free
           </Link>
@@ -120,7 +123,7 @@ export default function LandingNav() {
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
-            className="grid h-9 w-9 place-items-center rounded-lg text-copy md:hidden"
+            className="grid h-9 w-9 place-items-center rounded-lg text-copy md:hidden ml-1"
           >
             {mobileOpen ? (
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -137,7 +140,7 @@ export default function LandingNav() {
 
       {/* ── Mobile dropdown ──────────────────── */}
       <div
-        className={`overflow-hidden transition-all duration-300 md:hidden ${mobileOpen ? "max-h-80 border-b border-border" : "max-h-0"
+        className={`overflow-hidden transition-all duration-300 md:hidden ${mobileOpen ? "max-h-[400px] border-b border-border" : "max-h-0"
           } bg-surface/95 backdrop-blur-2xl`}
       >
         {NAV_LINKS.map((l) => (
@@ -150,13 +153,25 @@ export default function LandingNav() {
             {l.label}
           </a>
         ))}
-        <Link
-          href="/login"
-          onClick={() => setMobileOpen(false)}
-          className="block px-6 py-3 text-sm font-medium text-copy-muted"
-        >
-          Sign in
-        </Link>
+        
+        {/* Mobile Dropdown Logic */}
+        {isClient && user ? (
+           <Link
+           href="/profile"
+           onClick={() => setMobileOpen(false)}
+           className="block px-6 py-4 text-sm font-bold text-[#0B3EA8] border-t border-border mt-2"
+         >
+           My Profile Dashboard
+         </Link>
+        ) : (
+          <Link
+            href="/login"
+            onClick={() => setMobileOpen(false)}
+            className="block px-6 py-3 text-sm font-medium text-copy-muted"
+          >
+            Sign in
+          </Link>
+        )}
       </div>
     </header>
   );

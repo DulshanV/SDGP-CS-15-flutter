@@ -25,8 +25,8 @@ export default function Navbar() {
 
     const navItems = [
         { href: '/', icon: 'home', label: 'Home' },
-        { href: '#finder', icon: 'search', label: 'Finder' },
-        { href: '#team', icon: 'users', label: 'Team' },
+        { href: '/finder', icon: 'search', label: 'Finder' },
+        { href: '/team', icon: 'users', label: 'Team' },
         { href: '/learning', icon: 'book', label: 'Learn' },
     ];
 
