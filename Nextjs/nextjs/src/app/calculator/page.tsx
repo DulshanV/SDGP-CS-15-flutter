@@ -1,10 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation'; // 1. NEW IMPORT
 import { Search, Calculator, Receipt, ChevronRight } from 'lucide-react';
 import { TaxEngine, dummyHSCodes, HSCodeItem, CalculationResult } from '@/lib/taxCalculator';
 
 export default function SmartCalculatorPage() {
+  const searchParams = useSearchParams(); // 2. INITIALIZE QUERY PARAMS
+
   // States
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedHS, setSelectedHS] = useState<HSCodeItem | null>(null);
@@ -12,6 +15,21 @@ export default function SmartCalculatorPage() {
   const [rawTextInput, setRawTextInput] = useState('');
   const [isCalculating, setIsCalculating] = useState(false);
   const [result, setResult] = useState<CalculationResult | null>(null);
+
+  // 3. NEW EFFECT: Auto-select HS Code if it exists in the URL
+  useEffect(() => {
+    const urlHsCode = searchParams.get('hscode');
+    
+    if (urlHsCode) {
+      // Find the matching code in our database
+      const foundItem = dummyHSCodes.find((item) => item.code === urlHsCode);
+      
+      if (foundItem) {
+        // Auto-select it, which instantly skips the Search UI
+        setSelectedHS(foundItem);
+      }
+    }
+  }, [searchParams]);
 
   // Derived State (Search Filtering)
   const filteredCodes = useMemo(() => {
