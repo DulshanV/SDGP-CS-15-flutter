@@ -29,6 +29,8 @@ SDGP-main/
 **/.env
 **/.env.*
 !backend/.env.example
+!e-learning-backend/.env.example
+!e-learning-frontend/.env.example
 !**/.env.local.example
 
 # --- Python cache and virtual environments ---
