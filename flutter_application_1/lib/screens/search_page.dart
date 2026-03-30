@@ -174,7 +174,7 @@ class _SearchPageState extends State<SearchPage> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(6),
                 child: Image.asset(
-                  'assets/images/logo.png',
+                  'assets/images/Logo.png',
                   height: 28,
                   width: 28,
                   fit: BoxFit.cover,

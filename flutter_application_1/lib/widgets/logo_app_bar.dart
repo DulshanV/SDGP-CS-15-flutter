@@ -30,7 +30,7 @@ class LogoAppBar extends StatelessWidget implements PreferredSizeWidget {
                 GestureDetector(
                   onTap: onLogoTap,
                   child: Image.asset(
-                    'assets/images/logo.png',
+                    'assets/images/Logo.png',
                     height: 40,
                     fit: BoxFit.contain,
                   ),
