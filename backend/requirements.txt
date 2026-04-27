@@ -1,8 +1,8 @@
 # Web framework
 fastapi==0.135.1
-uvicorn[standard]==0.34.0
-gunicorn==25.1.0
-python-multipart==0.0.22
+uvicorn[standard]==0.46.0
+gunicorn==25.3.0
+python-multipart==0.0.26
 
 # Rate limiting
 slowapi==0.1.9
@@ -10,27 +10,27 @@ slowapi==0.1.9
 # Embeddings & Vector DB
 sentence-transformers==3.2.1
 faiss-cpu==1.13.2
-torch==2.10.0
+torch==2.11.0
 
 # Typo tolerance / fuzzy matching
-rapidfuzz==3.14.3
-pyspellchecker==0.8.4
+rapidfuzz==3.14.5
+pyspellchecker==0.9.0
 
 # Database
 sqlalchemy[asyncio]==2.0.48
 aiosqlite==0.22.1
 asyncpg==0.31.0
 alembic==1.18.4
-psycopg2-binary==2.9.11
-greenlet==3.3.2
+psycopg2-binary==2.9.12
+greenlet==3.4.0
 
 # Auth
-firebase-admin==7.2.0
+firebase-admin==7.4.0
 
 # Utilities
-pandas==3.0.1
-numpy==2.4.2
-pydantic-settings==2.13.1
+pandas==3.0.2
+numpy==2.4.4
+pydantic-settings==2.14.0
 python-dotenv==1.2.2
 httpx==0.28.1
 
@@ -39,7 +39,7 @@ typesense==2.0.0
 
 # LLM enrichment providers
 google-generativeai==0.8.6
-groq==1.0.0
+groq==1.2.0
 cohere==5.20.7
 
 # Testing
